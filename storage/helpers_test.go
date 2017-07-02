@@ -5,7 +5,7 @@ import "testing"
 func TestDataToBytesAndBackIsEqual(t *testing.T) {
 	type Person struct {
 		Name string
-		age  int
+		Age  int
 	}
 
 	da := Person{"Douglas Adams", 49}
@@ -14,12 +14,12 @@ func TestDataToBytesAndBackIsEqual(t *testing.T) {
 		t.Error(err)
 	}
 	da2 := Person{}
-	err = bytesToData(*da2, b)
+	err = bytesToData(&da2, b)
 	if err != nil {
 		t.Error(err)
 	}
 
 	if da != da2 {
-		t.Fail()
+		t.Errorf("The two structs aren't equal: \n%v\n%v", da, da2)
 	}
 }

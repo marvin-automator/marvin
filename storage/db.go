@@ -2,7 +2,6 @@ package storage
 
 import (
 	"github.com/boltdb/bolt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
