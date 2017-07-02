@@ -15,7 +15,7 @@ func NewAccount(email, password string) (Account, error) {
 	id := uuid.NewV4().String()
 	hash, err := hashPw(password)
 	if (err != nil) {
-		return nil, err
+		return Account{}, err
 	}
 
 	return Account{id, email, hash}, nil

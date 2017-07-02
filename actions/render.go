@@ -1,28 +1,21 @@
 package actions
 
 import (
-	"net/http"
-
-	rice "github.com/GeertJohan/go.rice"
 	"github.com/gobuffalo/buffalo/render"
-	"github.com/gobuffalo/buffalo/render/resolvers"
+	"github.com/gobuffalo/packr"
 )
 
 var r *render.Engine
 
 func init() {
 	r = render.New(render.Options{
-		HTMLLayout:     "application.html",
-		CacheTemplates: ENV == "production",
-		FileResolverFunc: func() resolvers.FileResolver {
-			return &resolvers.RiceBox{
-				Box: rice.MustFindBox("../templates"),
-			}
-		},
-	})
-}
+		// HTML layout to be used for all HTML requests:
+		HTMLLayout: "application.html",
 
-func assetsPath() http.FileSystem {
-	box := rice.MustFindBox("../public/assets")
-	return box.HTTPBox()
+		// Box containing all of the templates:
+		TemplatesBox: packr.NewBox("../templates"),
+
+		// Add template helpers here:
+		Helpers: render.Helpers{},
+	})
 }

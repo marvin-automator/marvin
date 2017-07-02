@@ -26,7 +26,7 @@ func newStore(wrt bool) (s Store, err error) {
 	s = Store{}
 	s.tx, err = db.Begin(wrt)
 	if err != nil {
-		s = nil
+		s = Store{}
 	}
 
 	return

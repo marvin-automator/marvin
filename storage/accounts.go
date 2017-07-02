@@ -22,12 +22,12 @@ func (s Store) SaveAccount(acct domain.Account) error {
 func (s Store) GetAccountByID(aid string) (domain.Account, error) {
 	bucket, err := s.getOrCreateAccountsBucket()
 	if err != nil {
-		return nil, err
+		return domain.Account{}, err
 	}
 
 	act := domain.Account{}
 	ab := bucket.Get([]byte(aid))
-	return act, bytesToData(act, ab)
+	return act, bytesToData(*act, ab)
 }
 
 func (s Store) getOrCreateAccountsBucket() (*bolt.Bucket, error) {
