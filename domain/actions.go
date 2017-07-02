@@ -4,7 +4,6 @@ import (
 	"github.com/xeipuuv/gojsonschema"
 )
 
-
 type ActionProvider interface {
 	getActionSet() ActionSet
 }
@@ -15,12 +14,10 @@ type ActionSet interface {
 	getAction(key string) Action
 }
 
-
 type ActionSetMeta struct {
-	Name string
+	Name        string
 	Description string
 }
-
 
 type ActionMeta struct {
 	ActionSetMeta

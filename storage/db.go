@@ -2,10 +2,10 @@ package storage
 
 import (
 	"github.com/boltdb/bolt"
-	"log"
-	"path"
-	"os"
 	"io/ioutil"
+	"log"
+	"os"
+	"path"
 )
 
 var db *bolt.DB
@@ -36,12 +36,10 @@ func CloseDB() {
 	db.Close()
 }
 
-
-func DeleteDBFile(){
+func DeleteDBFile() {
 	db.Close()
 	os.Remove(db.Path())
 }
-
 
 // A Store is the way you access stored data. When you know you're not going to need to write data, open a read-only
 // store. There can only be one writable store open at a time, but multiple read-only stores.

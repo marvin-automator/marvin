@@ -5,7 +5,7 @@ import "testing"
 func TestDataToBytesAndBackIsEqual(t *testing.T) {
 	type Person struct {
 		Name string
-		age int
+		age  int
 	}
 
 	da := Person{"Douglas Adams", 49}
@@ -23,4 +23,3 @@ func TestDataToBytesAndBackIsEqual(t *testing.T) {
 		t.Fail()
 	}
 }
-

@@ -16,7 +16,6 @@ func dataToBytes(data interface{}) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-
 func bytesToData(data interface{}, b []byte) error {
 	buf := bytes.NewBuffer(b)
 	dec := gob.NewDecoder(buf)

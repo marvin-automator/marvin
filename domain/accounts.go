@@ -6,21 +6,20 @@ import (
 )
 
 type Account struct {
-	ID string
-	Email string
+	ID           string
+	Email        string
 	PasswordHash []byte
 }
 
 func NewAccount(email, password string) (Account, error) {
 	id := uuid.NewV4().String()
 	hash, err := hashPw(password)
-	if (err != nil) {
+	if err != nil {
 		return Account{}, err
 	}
 
 	return Account{id, email, hash}, nil
 }
-
 
 func hashPw(pwd string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
