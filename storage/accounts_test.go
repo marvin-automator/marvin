@@ -4,7 +4,6 @@ import (
 	"testing"
 	"github.com/bigblind/marvin/domain"
 	"github.com/stretchr/testify/require"
-	"bytes"
 )
 
 func TestSaveAndGetAccount(t *testing.T) {
@@ -48,7 +47,7 @@ func TestGetAccountByEmailDoesNotExist(t *testing.T) {
 func TestGetDefaultAccount(t *testing.T) {
 	WithTestDB(t, func(s Store) {
 		act, err := s.GetDefaultAccount()
-		require.NoError(err)
+		require.NoError(t, err)
 
 		require.Equal(t, "default", act.ID, "Didn't return the default user.")
 	})
