@@ -3,6 +3,7 @@ package storage
 import (
 	"testing"
 	"github.com/bigblind/marvin/domain"
+	"github.com/stretchr/testify/require"
 	"bytes"
 )
 
@@ -10,19 +11,12 @@ func TestSaveAndGetAccount(t *testing.T) {
 	WithTestDB(t, func(s Store) {
 		a1 := domain.Account{"042", "foo@example.com", []byte("nothashed")}
 		err := s.SaveAccount(a1)
-		if err != nil {
-			t.Error(err)
-		}
+		require.NoError(t, err)
 
 		a2, err := s.GetAccountByID("042")
-		if err != nil {
-			t.Error(err)
-		}
+		require.NoError(t, err)
 
-		if a1.ID != a2.ID || a1.Email != a2.Email || !bytes.Equal(a1.PasswordHash, a2.PasswordHash){
-			t.Error("The saved account does not equal the retrieved account.")
-		}
-
+		require.Equal(t, a1, a2)
 	})
 }
 
@@ -30,18 +24,12 @@ func TestGetAccountByEmailExists(t *testing.T) {
 	WithTestDB(t, func(s Store) {
 		a1 := domain.Account{"042", "foo@example.com", []byte("nothashed")}
 		err := s.SaveAccount(a1)
-		if err != nil {
-			t.Error(err)
-		}
+		require.NoError(t, err)
 
 		a2, err := s.GetAccountByEmail("foo@example.com")
-		if err != nil {
-			t.Error(err)
-		}
+		require.NoError(t, err)
 
-		if a1.ID != a2.ID || a1.Email != a2.Email || !bytes.Equal(a1.PasswordHash, a2.PasswordHash){
-			t.Errorf("The saved account does not equal the retrieved account: \n%v\n%v", a1, a2)
-		}
+		require.Equal(t, a1, a2, "The saved and retrieved accounts aren't equal.")
 
 	})
 }
@@ -50,30 +38,19 @@ func TestGetAccountByEmailDoesNotExist(t *testing.T) {
 	WithTestDB(t, func(s Store) {
 		a1 := domain.Account{"042", "foo@example.com", []byte("nothashed")}
 		err := s.SaveAccount(a1)
-		if err != nil {
-			t.Error(err)
-		}
+		require.NoError(t, err)
 
-		a2, err := s.GetAccountByEmail("bar@example.com")
-		if err != AccountNotFound {
-			t.Errorf("Account should not be found, but didn't get AccountNotFound error. got %v instead.", err)
-		}
-		if a2.ID != "" || a2.Email != "" || !bytes.Equal(a2.PasswordHash, []byte{}) {
-			t.Error("The passed in account should not be altered.")
-		}
+		_, err = s.GetAccountByEmail("bar@example.com")
+		require.EqualError(t, err, AccountNotFound.Error())
 	})
 }
 
 func TestGetDefaultAccount(t *testing.T) {
 	WithTestDB(t, func(s Store) {
 		act, err := s.GetDefaultAccount()
-		if err != nil {
-			t.Error(err)
-		}
+		require.NoError(err)
 
-		if act.ID != "default" {
-			t.Errorf("Didn't get the default account, got %v", act)
-		}
+		require.Equal(t, "default", act.ID, "Didn't return the default user.")
 	})
 }
 
