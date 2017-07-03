@@ -64,4 +64,18 @@ func TestGetAccountByEmailDoesNotExist(t *testing.T) {
 	})
 }
 
+func TestGetDefaultAccount(t *testing.T) {
+	WithTestDB(t, func(s Store) {
+		act, err := s.GetDefaultAccount()
+		if err != nil {
+			t.Error(err)
+		}
+
+		if act.ID != "default" {
+			t.Errorf("Didn't get the default account, got %v", act)
+		}
+	})
+}
+
+
 

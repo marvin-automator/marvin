@@ -38,6 +38,11 @@ func (s Store) GetAccountByID(aid string) (domain.Account, error) {
 
 	act := domain.Account{}
 	ab := bucket.Get([]byte(aid))
+
+	if ab == nil {
+		return act, AccountNotFound
+	}
+
 	return act, bytesToData(&act, ab)
 }
 
@@ -66,6 +71,23 @@ func (s Store) GetAccountByEmail(email string) (domain.Account, error) {
 	}
 
 	return act, nil
+}
+
+func (s Store) GetDefaultAccount() (act domain.Account, err error) {
+	act, err = s.GetAccountByID("default")
+	if err == nil {
+		return
+	} else if err == AccountNotFound {
+		act, err = domain.NewAccount("", "")
+		if err != nil {
+			return
+		}
+
+		act.ID = "default"
+		err = s.SaveAccount(act)
+	}
+
+	return
 }
 
 func (s Store) getOrCreateAccountsBucket() (*bolt.Bucket, error) {
