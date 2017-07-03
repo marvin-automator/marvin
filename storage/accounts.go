@@ -9,6 +9,13 @@ import (
 var accountFound = errors.New("Account found")
 var AccountNotFound = errors.New("Account not found")
 
+
+type AccountStore interface {
+	SaveAccount(account domain.Account) error
+	GetAccountByID(aid string) (domain.Account, error)
+	GetAccountbyEmail(email string) (domain.Account, error)
+}
+
 func (s Store) SaveAccount(acct domain.Account) error {
 	bucket, err := s.getOrCreateAccountsBucket()
 	if err != nil {

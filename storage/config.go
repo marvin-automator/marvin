@@ -5,6 +5,10 @@ import (
 	"github.com/boltdb/bolt"
 )
 
+type ConfigStore interface {
+	GetConfig() (domain.Config, error)
+}
+
 func (s Store) GetConfig() (c domain.Config, err error) {
 	c = domain.DefaultConfig
 
