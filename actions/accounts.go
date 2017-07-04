@@ -1,8 +1,8 @@
 package actions
 
 import (
-	"github.com/bigblind/marvin/domain"
 	"errors"
+	"github.com/bigblind/marvin/domain"
 )
 
 // Returned when trying to log in when accounts are disabled
@@ -13,13 +13,13 @@ var ErrLoginFailed = errors.New("Incorrect email/password combination.")
 
 // The Account type that the actions return to handlers.
 type Account struct {
-	ID string
+	ID    string
 	Email string
 }
 
 type Login struct {
 	AccountStore domain.AccountStore
-	ConfigStore domain.ConfigStore
+	ConfigStore  domain.ConfigStore
 }
 
 func (l Login) Execute(email, password string) (Account, error) {
@@ -62,7 +62,7 @@ type CreateAccount struct {
 	AccountStore domain.AccountStore
 }
 
-func (c CreateAccount) Execute(email, password string) (Account, error){
+func (c CreateAccount) Execute(email, password string) (Account, error) {
 	act, err := domain.NewAccount(email, password)
 	if err != nil {
 		return Account{}, err

@@ -2,9 +2,9 @@ package grifts
 
 import (
 	"fmt"
-	. "github.com/markbates/grift/grift"
-	"github.com/bigblind/marvin/storage"
 	"github.com/bigblind/marvin/actions"
+	"github.com/bigblind/marvin/storage"
+	. "github.com/markbates/grift/grift"
 )
 
 var _ = Add("create:account", func(c *Context) error {

@@ -19,7 +19,7 @@ var T *i18n.Translator
 // App is where all routes and middleware for buffalo
 // should be defined. This is the nerve center of your
 // application.
-func 	App() *buffalo.App {
+func App() *buffalo.App {
 	if app == nil {
 		app = buffalo.Automatic(buffalo.Options{
 			Env:         ENV,

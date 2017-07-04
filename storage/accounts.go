@@ -1,9 +1,9 @@
 package storage
 
 import (
+	"errors"
 	"github.com/bigblind/marvin/domain"
 	"github.com/boltdb/bolt"
-	"errors"
 )
 
 var accountFound = errors.New("Account found")

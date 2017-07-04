@@ -1,9 +1,9 @@
 package storage
 
 import (
-	"testing"
 	"github.com/bigblind/marvin/domain"
 	"github.com/stretchr/testify/require"
+	"testing"
 )
 
 func TestSaveAndGetAccount(t *testing.T) {
@@ -52,6 +52,3 @@ func TestGetDefaultAccount(t *testing.T) {
 		require.Equal(t, "default", act.ID, "Didn't return the default user.")
 	})
 }
-
-
-

@@ -1,9 +1,9 @@
 package storage
 
 import (
-	"testing"
 	"github.com/bigblind/marvin/domain"
 	"github.com/stretchr/testify/require"
+	"testing"
 )
 
 func TestGetConfigNoSaved(t *testing.T) {
@@ -14,7 +14,6 @@ func TestGetConfigNoSaved(t *testing.T) {
 		require.Equal(t, domain.DefaultConfig, c)
 	})
 }
-
 
 func TestSaveAndGetConfig(t *testing.T) {
 	WithTestDB(t, func(s Store) {

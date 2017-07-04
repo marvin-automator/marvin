@@ -4,7 +4,7 @@ import "github.com/bigblind/marvin/domain"
 
 type MockConfigStore struct {
 	Config domain.Config
-	Error error
+	Error  error
 }
 
 func (m MockConfigStore) GetConfig() (domain.Config, error) {
