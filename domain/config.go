@@ -11,3 +11,7 @@ type Config struct {
 var DefaultConfig = Config{
 	AccountsEnabled: true,
 }
+
+type ConfigStore interface {
+	GetConfig() (domain.Config, error)
+}

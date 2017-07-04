@@ -36,3 +36,9 @@ func (a Account) checkPassword(pw string) (bool, error) {
 
 	return false, err
 }
+
+type AccountStore interface {
+	SaveAccount(account domain.Account) error
+	GetAccountByID(aid string) (domain.Account, error)
+	GetAccountbyEmail(email string) (domain.Account, error)
+}
