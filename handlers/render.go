@@ -1,4 +1,4 @@
-package actions
+package handlers
 
 import (
 	"github.com/gobuffalo/buffalo/render"

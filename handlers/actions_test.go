@@ -1,9 +1,9 @@
-package actions_test
+package handlers_test
 
 import (
 	"testing"
 
-	"github.com/bigblind/marvin/actions"
+	"github.com/bigblind/marvin/handlers"
 	"github.com/gobuffalo/suite"
 )
 
@@ -12,6 +12,6 @@ type ActionSuite struct {
 }
 
 func Test_ActionSuite(t *testing.T) {
-	as := &ActionSuite{suite.NewAction(actions.App())}
+	as := &ActionSuite{suite.NewAction(handlers.App())}
 	suite.Run(t, as)
 }
