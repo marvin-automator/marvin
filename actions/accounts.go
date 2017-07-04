@@ -72,3 +72,7 @@ func (c CreateAccount) Execute(email, password string) (Account, error){
 
 	return Account{act.ID, act.Email}, nil
 }
+
+type ICreateAccount interface {
+	Execute(email, password string) (Account, error)
+}
