@@ -28,7 +28,7 @@ func hashPw(pwd string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
 }
 
-func (a Account) checkPassword(pw string) (bool, error) {
+func (a Account) CheckPassword(pw string) (bool, error) {
 	err := bcrypt.CompareHashAndPassword(a.PasswordHash, []byte(pw))
 
 	if err == nil {
@@ -43,5 +43,5 @@ func (a Account) checkPassword(pw string) (bool, error) {
 type AccountStore interface {
 	SaveAccount(account Account) error
 	GetAccountByID(aid string) (Account, error)
-	GetAccountbyEmail(email string) (Account, error)
+	GetAccountByEmail(email string) (Account, error)
 }
