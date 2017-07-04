@@ -7,8 +7,6 @@ import (
 )
 
 var accountFound = errors.New("Account found")
-var AccountNotFound = errors.New("Account not found")
-
 
 func (s Store) SaveAccount(acct domain.Account) error {
 	bucket, err := s.getOrCreateAccountsBucket()
@@ -34,7 +32,7 @@ func (s Store) GetAccountByID(aid string) (domain.Account, error) {
 	ab := bucket.Get([]byte(aid))
 
 	if ab == nil {
-		return act, AccountNotFound
+		return act, domain.ErrAccountNotFound
 	}
 
 	return act, bytesToData(&act, ab)
@@ -59,7 +57,7 @@ func (s Store) GetAccountByEmail(email string) (domain.Account, error) {
 	})
 
 	if err == nil {
-		return domain.Account{}, AccountNotFound
+		return domain.Account{}, domain.ErrAccountNotFound
 	} else if err != accountFound {
 		return domain.Account{}, err
 	}
@@ -71,7 +69,7 @@ func (s Store) GetDefaultAccount() (act domain.Account, err error) {
 	act, err = s.GetAccountByID("default")
 	if err == nil {
 		return
-	} else if err == AccountNotFound {
+	} else if err == domain.ErrAccountNotFound {
 		act, err = domain.NewAccount("", "")
 		if err != nil {
 			return

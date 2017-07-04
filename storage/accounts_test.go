@@ -40,7 +40,7 @@ func TestGetAccountByEmailDoesNotExist(t *testing.T) {
 		require.NoError(t, err)
 
 		_, err = s.GetAccountByEmail("bar@example.com")
-		require.EqualError(t, err, AccountNotFound.Error())
+		require.EqualError(t, err, domain.ErrAccountNotFound.Error())
 	})
 }
 

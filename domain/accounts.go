@@ -1,9 +1,12 @@
 package domain
 
 import (
+	"errors"
 	"github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var ErrAccountNotFound = errors.New("Account not found")
 
 type Account struct {
 	ID           string
@@ -38,7 +41,7 @@ func (a Account) checkPassword(pw string) (bool, error) {
 }
 
 type AccountStore interface {
-	SaveAccount(account domain.Account) error
-	GetAccountByID(aid string) (domain.Account, error)
-	GetAccountbyEmail(email string) (domain.Account, error)
+	SaveAccount(account Account) error
+	GetAccountByID(aid string) (Account, error)
+	GetAccountbyEmail(email string) (Account, error)
 }

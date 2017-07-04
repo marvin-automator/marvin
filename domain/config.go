@@ -1,5 +1,6 @@
 package domain
 
+
 // This struct stores... config variables. What a surprise!
 type Config struct {
 	// Whether users need to log in to use Marvin.
@@ -13,5 +14,5 @@ var DefaultConfig = Config{
 }
 
 type ConfigStore interface {
-	GetConfig() (domain.Config, error)
+	GetConfig() (Config, error)
 }
