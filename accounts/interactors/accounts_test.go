@@ -1,8 +1,10 @@
-package actions
+package interactors
 
 import (
 	"errors"
-	"github.com/bigblind/marvin/domain"
+	"github.com/bigblind/marvin/accounts"
+	"github.com/bigblind/marvin/accounts/domain"
+	configdomain "github.com/bigblind/marvin/domain"
 	"github.com/bigblind/marvin/mocks"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -13,9 +15,9 @@ func TestSuccessfulLogin(t *testing.T) {
 	acc, err := domain.NewAccount("test@example.com", "pwd")
 	require.NoError(t, err)
 	exp := Account{acc.ID, "test@example.com"}
-	ma := mocks.NewMockAccountStore()
+	ma := accounts.NewMockAccountStore()
 	ma.On("GetAccountByEmail", "test@example.com").Return(acc, nil)
-	mc := mocks.MockConfigStore{domain.DefaultConfig, nil}
+	mc := mocks.MockConfigStore{configdomain.DefaultConfig, nil}
 
 	login := Login{ma, mc}
 	res, err := login.Execute("test@example.com", "pwd")
@@ -24,9 +26,9 @@ func TestSuccessfulLogin(t *testing.T) {
 
 func TestWrongPassword(t *testing.T) {
 	acc, err := domain.NewAccount("test@example.com", "pwd")
-	ma := mocks.NewMockAccountStore()
+	ma := accounts.NewMockAccountStore()
 	ma.On("GetAccountByEmail", "test@example.com").Return(acc, nil)
-	mc := mocks.MockConfigStore{domain.DefaultConfig, nil}
+	mc := mocks.MockConfigStore{configdomain.DefaultConfig, nil}
 	require.NoError(t, err)
 
 	login := Login{ma, mc}
@@ -35,9 +37,9 @@ func TestWrongPassword(t *testing.T) {
 }
 
 func TestAccountNotFoundReturnsFailedLogin(t *testing.T) {
-	ma := mocks.NewMockAccountStore()
+	ma := accounts.NewMockAccountStore()
 	ma.On("GetAccountByEmail", "test@example.com").Return(domain.Account{}, domain.ErrAccountNotFound)
-	mc := mocks.MockConfigStore{domain.DefaultConfig, nil}
+	mc := mocks.MockConfigStore{configdomain.DefaultConfig, nil}
 
 	login := Login{ma, mc}
 	_, err := login.Execute("test@example.com", "pwd")
@@ -45,9 +47,9 @@ func TestAccountNotFoundReturnsFailedLogin(t *testing.T) {
 }
 
 func TestConfigStoreError(t *testing.T) {
-	ma := mocks.NewMockAccountStore()
+	ma := accounts.NewMockAccountStore()
 	configError := errors.New("something went wrong")
-	mc := mocks.MockConfigStore{domain.DefaultConfig, configError}
+	mc := mocks.MockConfigStore{configdomain.DefaultConfig, configError}
 
 	login := Login{ma, mc}
 	_, err := login.Execute("test@example.com", "pwd")
@@ -56,9 +58,9 @@ func TestConfigStoreError(t *testing.T) {
 
 func TestAccountStoreError(t *testing.T) {
 	accountError := errors.New("something went wrong")
-	ma := mocks.NewMockAccountStore()
+	ma := accounts.NewMockAccountStore()
 	ma.On("GetAccountByEmail", "test@example.com").Return(domain.Account{}, accountError)
-	mc := mocks.MockConfigStore{domain.DefaultConfig, nil}
+	mc := mocks.MockConfigStore{configdomain.DefaultConfig, nil}
 
 	login := Login{ma, mc}
 	_, err := login.Execute("test@example.com", "pwd")
@@ -66,8 +68,8 @@ func TestAccountStoreError(t *testing.T) {
 }
 
 func TestAccountsDisabled(t *testing.T) {
-	ma := mocks.NewMockAccountStore()
-	mc := mocks.MockConfigStore{domain.Config{AccountsEnabled: false}, nil}
+	ma := accounts.NewMockAccountStore()
+	mc := mocks.MockConfigStore{configdomain.Config{AccountsEnabled: false}, nil}
 
 	login := Login{ma, mc}
 	_, err := login.Execute("test@example.com", "pwd")
@@ -75,7 +77,7 @@ func TestAccountsDisabled(t *testing.T) {
 }
 
 func TestCreateAccount(t *testing.T) {
-	ma := mocks.NewMockAccountStore()
+	ma := accounts.NewMockAccountStore()
 	ma.On("SaveAccount", mock.AnythingOfType("Account")).Return(nil)
 
 	ca := CreateAccount{ma}
@@ -87,7 +89,7 @@ func TestCreateAccount(t *testing.T) {
 }
 
 func TestDeleteAccountByID(t *testing.T) {
-	ma := mocks.NewMockAccountStore()
+	ma := accounts.NewMockAccountStore()
 	expectedError := errors.New("This was expected.")
 	ma.On("DeleteAccount", "042").Return(expectedError)
 
@@ -97,7 +99,7 @@ func TestDeleteAccountByID(t *testing.T) {
 }
 
 func TestDeleteAccountByEmail(t *testing.T) {
-	ma := mocks.NewMockAccountStore()
+	ma := accounts.NewMockAccountStore()
 	act := domain.Account{"042", "test@example.com", []byte("nothashed")}
 	expectedError := errors.New("This was expected.")
 	ma.On("GetAccountByEmail", "test@example.com").Return(act, nil)

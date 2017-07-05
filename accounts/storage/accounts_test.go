@@ -1,13 +1,15 @@
 package storage
 
 import (
-	"github.com/bigblind/marvin/domain"
+	"github.com/bigblind/marvin/accounts/domain"
+	"github.com/bigblind/marvin/storage"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func TestSaveAndGetAccount(t *testing.T) {
-	WithTestDB(t, func(s Store) {
+	storage.WithTestDB(t, func(dbs storage.Store) {
+		s := NewAccountStore(dbs)
 		a1 := domain.Account{"042", "foo@example.com", []byte("nothashed")}
 		err := s.SaveAccount(a1)
 		require.NoError(t, err)
@@ -20,7 +22,8 @@ func TestSaveAndGetAccount(t *testing.T) {
 }
 
 func TestGetAccountByEmailExists(t *testing.T) {
-	WithTestDB(t, func(s Store) {
+	storage.WithTestDB(t, func(dbs storage.Store) {
+		s := NewAccountStore(dbs)
 		a1 := domain.Account{"042", "foo@example.com", []byte("nothashed")}
 		err := s.SaveAccount(a1)
 		require.NoError(t, err)
@@ -34,7 +37,8 @@ func TestGetAccountByEmailExists(t *testing.T) {
 }
 
 func TestGetAccountByEmailDoesNotExist(t *testing.T) {
-	WithTestDB(t, func(s Store) {
+	storage.WithTestDB(t, func(dbs storage.Store) {
+		s := NewAccountStore(dbs)
 		a1 := domain.Account{"042", "foo@example.com", []byte("nothashed")}
 		err := s.SaveAccount(a1)
 		require.NoError(t, err)
@@ -45,7 +49,8 @@ func TestGetAccountByEmailDoesNotExist(t *testing.T) {
 }
 
 func TestGetDefaultAccount(t *testing.T) {
-	WithTestDB(t, func(s Store) {
+	storage.WithTestDB(t, func(dbs storage.Store) {
+		s := NewAccountStore(dbs)
 		act, err := s.GetDefaultAccount()
 		require.NoError(t, err)
 
@@ -54,7 +59,8 @@ func TestGetDefaultAccount(t *testing.T) {
 }
 
 func TestDeleteAccount(t *testing.T) {
-	WithTestDB(t, func(s Store) {
+	storage.WithTestDB(t, func(dbs storage.Store) {
+		s := NewAccountStore(dbs)
 		// Insert an account
 		act := domain.Account{"042", "foo@example.com", []byte("nothashed")}
 		err := s.SaveAccount(act)

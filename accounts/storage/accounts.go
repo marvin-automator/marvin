@@ -2,19 +2,28 @@ package storage
 
 import (
 	"errors"
-	"github.com/bigblind/marvin/domain"
+	"github.com/bigblind/marvin/accounts/domain"
+	"github.com/bigblind/marvin/storage"
 	"github.com/boltdb/bolt"
 )
 
 var accountFound = errors.New("Account found")
 
-func (s Store) SaveAccount(acct domain.Account) error {
+type AccountStore struct {
+	storage.Store
+}
+
+func NewAccountStore(s storage.Store) AccountStore {
+	return AccountStore{s}
+}
+
+func (s AccountStore) SaveAccount(acct domain.Account) error {
 	bucket, err := s.getOrCreateAccountsBucket()
 	if err != nil {
 		return err
 	}
 
-	ab, err := dataToBytes(acct)
+	ab, err := s.EncodeBytes(acct)
 	if err != nil {
 		return err
 	}
@@ -22,7 +31,7 @@ func (s Store) SaveAccount(acct domain.Account) error {
 	return bucket.Put([]byte(acct.ID), ab)
 }
 
-func (s Store) GetAccountByID(aid string) (domain.Account, error) {
+func (s AccountStore) GetAccountByID(aid string) (domain.Account, error) {
 	bucket, err := s.getOrCreateAccountsBucket()
 	if err != nil {
 		return domain.Account{}, err
@@ -35,10 +44,10 @@ func (s Store) GetAccountByID(aid string) (domain.Account, error) {
 		return act, domain.ErrAccountNotFound
 	}
 
-	return act, bytesToData(&act, ab)
+	return act, s.DecodeBytes(&act, ab)
 }
 
-func (s Store) GetAccountByEmail(email string) (domain.Account, error) {
+func (s AccountStore) GetAccountByEmail(email string) (domain.Account, error) {
 	bucket, err := s.getOrCreateAccountsBucket()
 	if err != nil {
 		return domain.Account{}, err
@@ -46,7 +55,7 @@ func (s Store) GetAccountByEmail(email string) (domain.Account, error) {
 
 	act := domain.Account{}
 	err = bucket.ForEach(func(_, ab []byte) error {
-		err = bytesToData(&act, ab)
+		err = s.DecodeBytes(&act, ab)
 		if err == nil && act.Email == email {
 			// Returning an error stops the iteration.
 			// ForEach then returns the same error.
@@ -65,7 +74,7 @@ func (s Store) GetAccountByEmail(email string) (domain.Account, error) {
 	return act, nil
 }
 
-func (s Store) GetDefaultAccount() (act domain.Account, err error) {
+func (s AccountStore) GetDefaultAccount() (act domain.Account, err error) {
 	act, err = s.GetAccountByID("default")
 	if err == nil {
 		return
@@ -82,7 +91,7 @@ func (s Store) GetDefaultAccount() (act domain.Account, err error) {
 	return
 }
 
-func (s Store) DeleteAccount(aid string) error {
+func (s AccountStore) DeleteAccount(aid string) error {
 	b, err := s.getOrCreateAccountsBucket()
 	if err != nil {
 		return err
@@ -91,6 +100,6 @@ func (s Store) DeleteAccount(aid string) error {
 	return b.Delete([]byte(aid))
 }
 
-func (s Store) getOrCreateAccountsBucket() (*bolt.Bucket, error) {
-	return s.tx.CreateBucketIfNotExists([]byte("accounts"))
+func (s AccountStore) getOrCreateAccountsBucket() (*bolt.Bucket, error) {
+	return s.Tx.CreateBucketIfNotExists([]byte("accounts"))
 }

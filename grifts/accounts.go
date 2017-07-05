@@ -2,24 +2,26 @@ package grifts
 
 import (
 	"fmt"
-	"strings"
-	"github.com/bigblind/marvin/actions"
-	"github.com/bigblind/marvin/storage"
+	"github.com/bigblind/marvin/accounts/interactors"
+	"github.com/bigblind/marvin/accounts/storage"
+	globalstorage "github.com/bigblind/marvin/storage"
 	. "github.com/markbates/grift/grift"
+	"strings"
 )
 
 var _ = Add("accounts:create", func(c *Context) error {
-	storage.Setup()
-	defer storage.CloseDB()
+	globalstorage.Setup()
+	defer globalstorage.CloseDB()
 
-	s, err := storage.NewWritableStore()
-	defer s.Close()
+	dbs, err := globalstorage.NewWritableStore()
+	defer dbs.Close()
+	s := storage.NewAccountStore(dbs)
 
 	if err != nil {
 		panic(err)
 	}
 
-	action := actions.CreateAccount{s}
+	action := interactors.CreateAccount{s}
 	acc, err := action.Execute(c.Args[0], c.Args[1])
 	if err != nil {
 		return err
@@ -30,17 +32,18 @@ var _ = Add("accounts:create", func(c *Context) error {
 })
 
 var _ = Add("accounts:delete", func(c *Context) error {
-	storage.Setup()
-	defer storage.CloseDB()
+	globalstorage.Setup()
+	defer globalstorage.CloseDB()
 
-	s, err := storage.NewWritableStore()
-	defer s.Close()
+	dbs, err := globalstorage.NewWritableStore()
+	defer dbs.Close()
+	s := storage.NewAccountStore(dbs)
 
 	if err != nil {
 		panic(err)
 	}
 
-	action := actions.DeleteAccount{s}
+	action := interactors.DeleteAccount{s}
 	arg := c.Args[0]
 	var t string
 
@@ -59,5 +62,3 @@ var _ = Add("accounts:delete", func(c *Context) error {
 	fmt.Printf("Deleted account with %v: %v\n", t, arg)
 	return nil
 })
-
-

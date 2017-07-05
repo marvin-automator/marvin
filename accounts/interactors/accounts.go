@@ -1,8 +1,9 @@
-package actions
+package interactors
 
 import (
 	"errors"
-	"github.com/bigblind/marvin/domain"
+	"github.com/bigblind/marvin/accounts/domain"
+	olddomain "github.com/bigblind/marvin/domain"
 )
 
 // Returned when trying to log in when accounts are disabled
@@ -19,7 +20,7 @@ type Account struct {
 
 type Login struct {
 	AccountStore domain.AccountStore
-	ConfigStore  domain.ConfigStore
+	ConfigStore  olddomain.ConfigStore
 }
 
 func (l Login) Execute(email, password string) (Account, error) {
