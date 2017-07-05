@@ -50,6 +50,14 @@ func (l Login) Execute(email, password string) (Account, error) {
 	return Account{act.ID, act.Email}, nil
 }
 
+func(l Login) IsRequired(aid string) (bool, error) {
+	c, err := l.ConfigStore.GetConfig();
+	if err != nil {
+		return true, err
+	}
+	return c.AccountsEnabled, nil
+}
+
 type ILogin interface {
 	Execute(email, password string) (bool, error)
 }
