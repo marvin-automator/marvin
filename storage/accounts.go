@@ -82,6 +82,15 @@ func (s Store) GetDefaultAccount() (act domain.Account, err error) {
 	return
 }
 
+func (s Store) DeleteAccount(aid string) error {
+	b, err := s.getOrCreateAccountsBucket()
+	if err != nil {
+		return err
+	}
+
+	return b.Delete([]byte(aid))
+}
+
 func (s Store) getOrCreateAccountsBucket() (*bolt.Bucket, error) {
 	return s.tx.CreateBucketIfNotExists([]byte("accounts"))
 }

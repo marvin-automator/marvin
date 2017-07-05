@@ -44,4 +44,5 @@ type AccountStore interface {
 	SaveAccount(account Account) error
 	GetAccountByID(aid string) (Account, error)
 	GetAccountByEmail(email string) (Account, error)
+	DeleteAccount(id string) error
 }

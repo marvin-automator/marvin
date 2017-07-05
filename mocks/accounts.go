@@ -27,3 +27,8 @@ func (a MockAccountStore) GetAccountByEmail(email string) (domain.Account, error
 	vals := a.Called(email)
 	return vals.Get(0).(domain.Account), vals.Error(1)
 }
+
+func (a MockAccountStore) DeleteAccount(aid string) error {
+	vals := a.Called(aid)
+	return vals.Error(0)
+}
