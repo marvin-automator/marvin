@@ -1,15 +1,19 @@
 package config
 
-import "github.com/bigblind/marvin/config/domain"
+import (
+	"github.com/bigblind/marvin/config/domain"
+	"github.com/stretchr/testify/mock"
+)
 
 type MockConfigStore struct {
-	Config domain.Config
-	Error  error
+	mock.Mock
+}
+
+func NewMockConfigStore() MockConfigStore {
+	return MockConfigStore{mock.Mock{}}
 }
 
 func (m MockConfigStore) GetConfig() (domain.Config, error) {
-	if m.Error != nil {
-		return domain.Config{}, m.Error
-	}
-	return m.Config, nil
+	args := m.Called()
+	return args.Get(0).(domain.Config), args.Error(1)
 }
