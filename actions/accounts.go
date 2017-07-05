@@ -76,3 +76,19 @@ func (c CreateAccount) Execute(email, password string) (Account, error) {
 type ICreateAccount interface {
 	Execute(email, password string) (Account, error)
 }
+
+type DeleteAccount struct {
+	AccountStore domain.AccountStore
+}
+
+func (d DeleteAccount) ByID(aid string) error {
+	return d.AccountStore.DeleteAccount(aid)
+}
+
+func (d DeleteAccount) ByEmail(email string) error {
+	act, err := d.AccountStore.GetAccountByEmail(email)
+	if err != nil {
+		return err
+	}
+	return d.AccountStore.DeleteAccount(act.ID)
+}

@@ -85,3 +85,25 @@ func TestCreateAccount(t *testing.T) {
 	require.Equal(t, "foo@example.com", a.Email)
 	ma.AssertExpectations(t)
 }
+
+func TestDeleteAccountByID(t *testing.T) {
+	ma := mocks.NewMockAccountStore()
+	expectedError := errors.New("This was expected.")
+	ma.On("DeleteAccount", "042").Return(expectedError)
+
+	action := DeleteAccount{ma}
+	err := action.ByID("042")
+	require.EqualError(t, err, expectedError.Error())
+}
+
+func TestDeleteAccountByEmail(t *testing.T) {
+	ma := mocks.NewMockAccountStore()
+	act := domain.Account{"042", "test@example.com", []byte("nothashed")}
+	expectedError := errors.New("This was expected.")
+	ma.On("GetAccountByEmail", "test@example.com").Return(act, nil)
+	ma.On("DeleteAccount", "042").Return(expectedError)
+
+	action := DeleteAccount{ma}
+	err := action.ByEmail("test@example.com")
+	require.EqualError(t, err, expectedError.Error())
+}
