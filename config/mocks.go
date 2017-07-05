@@ -1,6 +1,6 @@
-package mocks
+package config
 
-import "github.com/bigblind/marvin/domain"
+import "github.com/bigblind/marvin/config/domain"
 
 type MockConfigStore struct {
 	Config domain.Config

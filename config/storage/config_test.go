@@ -1,13 +1,15 @@
 package storage
 
 import (
-	"github.com/bigblind/marvin/domain"
+	"github.com/bigblind/marvin/config/domain"
+	"github.com/bigblind/marvin/storage"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func TestGetConfigNoSaved(t *testing.T) {
-	WithTestDB(t, func(s Store) {
+	storage.WithTestDB(t, func(dbs storage.Store) {
+		s := NewConfigStore(dbs)
 		c, err := s.GetConfig()
 		require.NoError(t, err)
 
@@ -16,7 +18,8 @@ func TestGetConfigNoSaved(t *testing.T) {
 }
 
 func TestSaveAndGetConfig(t *testing.T) {
-	WithTestDB(t, func(s Store) {
+	storage.WithTestDB(t, func(dbs storage.Store) {
+		s := NewConfigStore(dbs)
 		c1 := domain.DefaultConfig
 		c1.AccountsEnabled = true
 

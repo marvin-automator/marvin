@@ -3,7 +3,7 @@ package interactors
 import (
 	"errors"
 	"github.com/bigblind/marvin/accounts/domain"
-	olddomain "github.com/bigblind/marvin/domain"
+	olddomain "github.com/bigblind/marvin/config/domain"
 )
 
 // Returned when trying to log in when accounts are disabled

@@ -44,7 +44,6 @@ func DeleteDBFile() {
 // store. There can only be one writable store open at a time, but multiple read-only stores.
 type Store struct {
 	Tx *bolt.Tx
-	tx *bolt.Tx //todo: remove this when config has been refactored into its own package
 }
 
 func newStore(wrt bool) (s Store, err error) {
@@ -53,7 +52,6 @@ func newStore(wrt bool) (s Store, err error) {
 	if err != nil {
 		s = Store{}
 	}
-	s.tx = s.Tx //todo: remove this when config is refactored into its own package.
 
 	return
 }
@@ -72,12 +70,12 @@ func NewReadOnlyStore() (Store, error) {
 
 // Closes the store. Always call either this or RollBack when you're done.
 func (s Store) Close() {
-	s.tx.Commit()
+	s.Tx.Commit()
 }
 
 // roll back any changes made to the store, and close it.
 func (s Store) RollBack() {
-	s.tx.Rollback()
+	s.Tx.Rollback()
 }
 
 // Convert an array of bytes to a struct
