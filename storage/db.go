@@ -89,3 +89,7 @@ func (s Store) DecodeBytes(d interface{}, b []byte) error {
 func (s Store) EncodeBytes(d interface{}) ([]byte, error) {
 	return dataToBytes(d)
 }
+
+func (s Store) Writable() bool {
+	return s.Tx.Writable()
+}
