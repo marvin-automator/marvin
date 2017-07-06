@@ -1,4 +1,4 @@
-package handlers
+package main
 
 import (
 	"github.com/gobuffalo/buffalo"
@@ -8,6 +8,11 @@ import (
 
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/packr"
+	"github.com/bigblind/marvin/accounts"
+
+	accounthandlers "github.com/bigblind/marvin/accounts/handlers"
+	"github.com/bigblind/marvin/handlers"
+	"context"
 )
 
 // ENV is used to help switch settings based on where the
@@ -24,6 +29,7 @@ func App() *buffalo.App {
 		app = buffalo.Automatic(buffalo.Options{
 			Env:         ENV,
 			SessionName: "marvin_session",
+			Context: context.Background(),
 		})
 
 		if ENV == "development" {
@@ -40,12 +46,22 @@ func App() *buffalo.App {
 		if T, err = i18n.New(packr.NewBox("../locales"), "en-US"); err != nil {
 			app.Stop(err)
 		}
+
 		app.Use(T.Middleware())
 
-		app.GET("/", HomeHandler)
+		app.Redirect(302, "/", "/dashboard")
+		app.GET("/login", bf(accounthandlers.LoginPage))
+
+		g := app.Group("/app")
+		g.Use(accounts.Middleware)
+
 
 		app.ServeFiles("/assets", packr.NewBox("../public/assets"))
 	}
 
 	return app
+}
+
+func bf(h handlers.Handler) buffalo.Handler {
+	return h.ToBuffalo()
 }
