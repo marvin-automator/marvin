@@ -1,0 +1,14 @@
+<html>
+<head>
+    <%= partial("partials/head.html") %>
+</head>
+<body>
+
+<div class="container">
+    <%= partial("partials/flash.html") %>
+    <%= yield %>
+</div>
+
+<%= partial("partials/after_body.html") %>
+</body>
+</html>
