@@ -50,7 +50,7 @@ func (l Login) Execute(email, password string) (Account, error) {
 	return Account{act.ID, act.Email}, nil
 }
 
-func(l Login) IsRequired(aid string) (bool, error) {
+func(l Login) IsRequired() (bool, error) {
 	c, err := l.ConfigStore.GetConfig();
 	if err != nil {
 		return true, err
@@ -58,6 +58,25 @@ func(l Login) IsRequired(aid string) (bool, error) {
 	return c.AccountsEnabled, nil
 }
 
+func(l Login) GetAccountByID(aid string) (a Account, err error) {
+	da, err := l.AccountStore.GetAccountByID(aid)
+	if err == nil {
+		a = Account{da.ID,da.Email}
+	}
+	return
+}
+
+func(l Login) GetDefaultAccount() (a Account, err error) {
+	da, err := l.GetDefaultAccount()
+	if err == nil {
+		a = Account{da.ID,da.Email}
+	}
+	return
+}
+
 type ILogin interface {
 	Execute(email, password string) (bool, error)
+	IsRequired() (bool, error)
+	GetAccountByID(aid string) (Account, error)
+	GetDefaultAccount() (Account, error)
 }
