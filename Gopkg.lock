@@ -8,12 +8,6 @@
   version = "v1.0.0"
 
 [[projects]]
-  name = "github.com/ajg/form"
-  packages = ["."]
-  revision = "cc2954064ec9ea8d93917f0f87456e11d7b881ad"
-  version = "v1.5"
-
-[[projects]]
   name = "github.com/boltdb/bolt"
   packages = ["."]
   revision = "583e8937c61f1af6513608ccc75c97b6abdf4ff9"
@@ -81,12 +75,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/gobuffalo/suite"
-  packages = ["."]
-  revision = "f9e2b82967a3cb7dc69c10bb4156dc80f9a4e77e"
-
-[[projects]]
-  branch = "master"
   name = "github.com/gobuffalo/tags"
   packages = [".","form","form/bootstrap"]
   revision = "307f20dcdf202535fa7006ffc67086ca4f721c37"
@@ -147,12 +135,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/markbates/hmax"
-  packages = ["."]
-  revision = "800e180dcd16937a4cc134c6aa8c8407e62ce880"
-
-[[projects]]
-  branch = "master"
   name = "github.com/markbates/inflect"
   packages = ["."]
   revision = "6cacb66d100482ef7cc366289ccb156020e57e76"
@@ -160,8 +142,8 @@
 [[projects]]
   name = "github.com/markbates/pop"
   packages = [".","columns","fizz","fizz/translators","nulls"]
-  revision = "32203da8db3ecf03e61da904c3efea1b40dfe207"
-  version = "v3.23.3"
+  revision = "0735f68aca6671ca60c023649401b25d9db866c0"
+  version = "v3.25.1"
 
 [[projects]]
   name = "github.com/markbates/refresh"
@@ -173,13 +155,7 @@
   branch = "master"
   name = "github.com/markbates/validate"
   packages = [".","validators"]
-  revision = "bde2d788701fe1dc1361e209bf3adfa3dbfbce6e"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/markbates/willie"
-  packages = ["."]
-  revision = "d2cdc733fedaffa28ae6584ba16f16832c10f15e"
+  revision = "a493a25ad6300ad101d9f490fe31f48bfd808ba9"
 
 [[projects]]
   branch = "master"
@@ -332,8 +308,14 @@
   revision = "bd320f5d308e1a3c4314c678d8227a0d72574ae7"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/stretchr/objx"
+  packages = ["."]
+  revision = "1a9d0bb9f541897e62256577b352fdbc1fb4fd94"
+
+[[projects]]
   name = "github.com/stretchr/testify"
-  packages = ["assert","require","suite"]
+  packages = ["assert","mock","require"]
   revision = "69483b4bd14f5845b5a1e55bca19e954e827f1d0"
   version = "v1.1.4"
 
@@ -359,19 +341,19 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["bcrypt","blowfish"]
-  revision = "5ef0053f77724838734b6945dd364d3847e5de1d"
+  revision = "b286ef4198388fdb0e4ae62be12820df5da9b4c2"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context","html","html/atom"]
-  revision = "1f9224279e98554b6a6432d4dd998a739f8b2b7c"
+  revision = "054b33e6527139ad5b1ec2f6232c3b175bd9a30c"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "d18155cb60f6162f5e706d7f26e4e50a3d4da857"
+  revision = "6faef541c73732f438fb660a212750a9ba9f9362"
 
 [[projects]]
   branch = "v2"
@@ -382,6 +364,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "149616e7e56303552d875e65c7a7f189332981bed6fb6634b703ae0ebbab5b54"
+  inputs-digest = "dd23efbf260ee3fabcc82ce46fa4de9be3519d6e9dbd72b41897538834ab681a"
   solver-name = "gps-cdcl"
   solver-version = 1
