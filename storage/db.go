@@ -93,3 +93,19 @@ func (s Store) EncodeBytes(d interface{}) ([]byte, error) {
 func (s Store) Writable() bool {
 	return s.Tx.Writable()
 }
+
+func (s Store) CreateBucketIfNotExists(name string) (*bolt.Bucket, error) {
+	var err error
+	if s.Tx.Writable() {
+		return s.Tx.CreateBucketIfNotExists([]byte(name))
+	}
+	b := s.Tx.Bucket([]byte(name))
+	if b == nil {
+		err = s.Tx.DB().Update(func(tx *bolt.Tx) error {
+			_, err := tx.CreateBucket([]byte(name))
+			return err
+		})
+		b = s.Tx.Bucket([]byte(name))
+	}
+	return b, err
+}

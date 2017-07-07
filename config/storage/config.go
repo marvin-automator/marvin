@@ -46,5 +46,5 @@ func (s ConfigStore) SaveConfig(c domain.Config) (e error) {
 }
 
 func (s ConfigStore) getOrCreateConfigBucket() (*bolt.Bucket, error) {
-	return s.Tx.CreateBucketIfNotExists([]byte("config"))
+	return s.CreateBucketIfNotExists("config")
 }

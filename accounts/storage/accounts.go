@@ -101,5 +101,5 @@ func (s AccountStore) DeleteAccount(aid string) error {
 }
 
 func (s AccountStore) getOrCreateAccountsBucket() (*bolt.Bucket, error) {
-	return s.Tx.CreateBucketIfNotExists([]byte("accounts"))
+	return s.CreateBucketIfNotExists("accounts")
 }
