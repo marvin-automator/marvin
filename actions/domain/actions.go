@@ -9,9 +9,9 @@ type ActionProvider interface {
 }
 
 type ActionSet interface {
-	getMeta() ActionSetMeta
-	getAvailableActions() []ActionMeta
-	getAction(key string) Action
+	Meta() ActionSetMeta
+	ActionList() []ActionMeta
+	Action(key string) Action
 }
 
 type ActionSetMeta struct {
@@ -25,10 +25,10 @@ type ActionMeta struct {
 }
 
 type Action interface {
-	GetMeta() ActionMeta
-	HandleSetup(data string, c ActionContext) error
-	GetInputSchema(c ActionContext) gojsonschema.Schema
-	GetOutputSchema(c ActionContext) gojsonschema.Schema
+	Meta() ActionMeta
+	Setup(data string, c ActionContext) error
+	InputSchema(c ActionContext) gojsonschema.Schema
+	OutputSchema(c ActionContext) gojsonschema.Schema
 	Execute(input string, c ActionContext) error
 }
 
