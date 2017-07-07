@@ -35,6 +35,7 @@ func App() *buffalo.App {
 		if ENV == "development" {
 			app.Use(middleware.ParameterLogger)
 		}
+
 		if ENV != "test" {
 			// Protect against CSRF attacks. https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
 			// Remove to disable this.
@@ -51,6 +52,7 @@ func App() *buffalo.App {
 
 		app.Redirect(302, "/", "/dashboard")
 		app.GET("/login", bf(accounthandlers.LoginPage))
+		app.POST("/login", bf(accounthandlers.ProcessLogin))
 
 		g := app.Group("/app")
 		g.Use(accounts.Middleware)

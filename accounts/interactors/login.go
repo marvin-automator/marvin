@@ -11,7 +11,7 @@ import (
 var ErrAccountsDisabled = errors.New("Can not log in when accounts are disabled.")
 
 // Returned when the password doesn't match the account's password, or when the account isn't found
-var ErrLoginFailed = errors.New("Incorrect email/password combination.")
+var ErrLoginFailed = errors.New("Incorrect email or password")
 
 type Login struct {
 	AccountStore domain.AccountStore

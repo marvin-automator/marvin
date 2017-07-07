@@ -4,11 +4,16 @@ import (
 	"github.com/gobuffalo/buffalo/render"
 	"github.com/gobuffalo/packr"
 	"github.com/gobuffalo/plush"
+	"github.com/tonnerre/golang-pretty"
 )
 
 var r *render.Engine
 // bare renderer
 var br *render.Engine
+
+func DebugHelper(x string, help plush.HelperContext) string {
+	return pretty.Sprintf("%# v", help)
+}
 
 func init() {
 	r = render.New(render.Options{
@@ -34,6 +39,7 @@ func init() {
 		// Add template helpers here:
 		Helpers: render.Helpers{
 			"form": plush.FormHelper,
+			"showContext": DebugHelper,
 		},
 	})
 }
