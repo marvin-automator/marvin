@@ -5,7 +5,6 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = {
   entry: [
     "./assets/js/application.js",
-    "./assets/css/application.scss",
     "./node_modules/jquery-ujs/src/rails.js"
   ],
   output: {
@@ -23,7 +22,6 @@ module.exports = {
       to: ""
     }], {
       ignore: [
-        "css/*",
         "js/*",
       ]
     })

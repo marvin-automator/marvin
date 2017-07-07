@@ -58,7 +58,7 @@ func App() *buffalo.App {
 		g.Use(accounts.Middleware)
 
 
-		app.ServeFiles("/assets", packr.NewBox("../public/assets"))
+		app.ServeFiles("/assets", packr.NewBox("./public/assets"))
 	}
 
 	return app
