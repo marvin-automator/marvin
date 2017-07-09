@@ -2,7 +2,7 @@ package domain
 
 import (
 	"github.com/bigblind/marvin/handlers"
-	"github.com/xeipuuv/gojsonschema"
+	"time"
 )
 
 // ActionProvider provides a list of related actions.
