@@ -5,12 +5,12 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/bigblind/marvin/handlers"
+	"github.com/bigblind/marvin/app"
 	. "github.com/markbates/grift/grift"
 )
 
 var _ = Add("routes", func(c *Context) error {
-	a := handlers.App()
+	a := app.App()
 	routes := a.Routes()
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.Debug)
 	fmt.Fprintln(w, "METHOD\t PATH\t NAME\t HANDLER")
