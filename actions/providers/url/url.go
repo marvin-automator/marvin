@@ -1,27 +1,26 @@
 package url
 
 import (
-	"github.com/bigblind/marvin/actions/domain"
-	"reflect"
+	"bytes"
 	"encoding/json"
+	"github.com/bigblind/marvin/actions/domain"
+	"io"
+	"log"
+	"net/http"
+	"reflect"
 	"regexp"
 	"strings"
-	"log"
-	"io"
-	"net/http"
-	"bytes"
 )
-
 
 func init() {
 	p := domain.NewProvider("url", "URL", "Actions triggering and triggered-by HTTP requests.")
 	p.Add(CallURL{domain.ActionMeta{
 		ProviderMeta: domain.ProviderMeta{
-			Name: "Send HTTP Request",
+			Name:        "Send HTTP Request",
 			Description: "Send an HTTP request to the given url.",
-			Key: "sendRequest",
+			Key:         "sendRequest",
 		},
-		IsTrigger: false,
+		IsTrigger:       false,
 		RequiresTestRun: true,
 	}})
 }
@@ -31,11 +30,11 @@ type CallURL struct {
 }
 
 type URLInput struct {
-	Url string
-	Body string
-	Method string `enum:"GET|PUT|POST|PATCH|DELETE"`
-	Headers []struct{
-		Name string
+	Url     string
+	Body    string
+	Method  string `enum:"GET|PUT|POST|PATCH|DELETE"`
+	Headers []struct {
+		Name  string
 		Value string
 	}
 }
@@ -150,10 +149,10 @@ func handleMap(m map[string]interface{}) interface{} {
 		vf := ensureValidFieldName(k)
 		// Create a struct field
 		f := reflect.StructField{
-			Name: vf,
-			PkgPath: "",
-			Type: reflect.TypeOf(v),
-			Tag: reflect.StructTag("json:\""+ k + "\""),
+			Name:      vf,
+			PkgPath:   "",
+			Type:      reflect.TypeOf(v),
+			Tag:       reflect.StructTag("json:\"" + k + "\""),
 			Anonymous: false,
 		}
 		fs = append(fs, f)

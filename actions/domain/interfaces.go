@@ -79,13 +79,13 @@ type Trigger interface {
 }
 
 // Gives you access to data and functionality that can be useful when executing an action
-type ActionContext interface{
+type ActionContext interface {
 	// InvocationStore is a Store that stores data for the duration of the invocation of this action.
 	// The data is automatically deleted when you call Done
 	InvocationStore() Store
 	// The InstanceStore is used to store data that's
 	// specific to the current instance of the action.
-    // This should be used to store the configuration settings
+	// This should be used to store the configuration settings
 	// for this particular step in a chore.
 	InstanceStore() Store
 	// GlobalStore is a Store that provides data that can be reused in any invocation of the action

@@ -6,13 +6,13 @@ import (
 	"github.com/gobuffalo/buffalo/middleware/csrf"
 	"github.com/gobuffalo/buffalo/middleware/i18n"
 
+	accountmiddleware "github.com/bigblind/marvin/accounts/middleware"
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/packr"
-	accountmiddleware "github.com/bigblind/marvin/accounts/middleware"
 
+	"context"
 	accounthandlers "github.com/bigblind/marvin/accounts/handlers"
 	"github.com/bigblind/marvin/handlers"
-	"context"
 )
 
 // ENV is used to help switch settings based on where the
@@ -29,7 +29,7 @@ func App() *buffalo.App {
 		app = buffalo.Automatic(buffalo.Options{
 			Env:         ENV,
 			SessionName: "marvin_session",
-			Context: context.Background(),
+			Context:     context.Background(),
 		})
 
 		if ENV == "development" {
@@ -56,7 +56,6 @@ func App() *buffalo.App {
 
 		g := app.Group("/app")
 		g.Use(accountmiddleware.Middleware)
-
 
 		app.ServeFiles("/assets", packr.NewBox("./public/assets"))
 	}

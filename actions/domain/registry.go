@@ -6,7 +6,7 @@ var Registry = new(registry)
 
 type registry struct {
 	providers map[string]ActionProvider
-	mut sync.Mutex
+	mut       sync.Mutex
 }
 
 func (r *registry) Register(p ActionProvider) {
@@ -26,6 +26,6 @@ func (r *registry) GetProviders() []ProviderMeta {
 	return l
 }
 
-func(r *registry) Provider(key string) ActionProvider {
+func (r *registry) Provider(key string) ActionProvider {
 	return r.providers[key]
 }

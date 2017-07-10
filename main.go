@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/bigblind/marvin/app"
+	"github.com/bigblind/marvin/storage"
 	"github.com/gobuffalo/envy"
 	"log"
-	"github.com/bigblind/marvin/storage"
-	"github.com/bigblind/marvin/app"
 )
 
 func main() {

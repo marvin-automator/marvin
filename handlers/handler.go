@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"github.com/gobuffalo/buffalo"
 	"github.com/bigblind/marvin/storage"
+	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/buffalo/render"
 )
 

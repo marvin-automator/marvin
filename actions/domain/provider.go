@@ -1,18 +1,18 @@
 package domain
 
 type baseProvider struct {
-	key string
-	name string
+	key         string
+	name        string
 	description string
 
-	metas []ActionMeta
+	metas   []ActionMeta
 	actions map[string]Action
 }
 
 func NewProvider(key, name, description string) baseProvider {
 	b := baseProvider{
-		key:key,
-		name: name,
+		key:         key,
+		name:        name,
 		description: description,
 	}
 
@@ -33,8 +33,7 @@ func (b baseProvider) Action(key string) Action {
 	return b.actions[key]
 }
 
-func(b baseProvider) Add(a Action) {
+func (b baseProvider) Add(a Action) {
 	b.actions[a.Meta().Key] = a
 	b.metas = append(b.metas, a.Meta())
 }
-

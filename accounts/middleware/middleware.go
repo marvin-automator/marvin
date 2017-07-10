@@ -1,18 +1,19 @@
 package middleware
 
 import (
-	"github.com/gobuffalo/buffalo"
-	"github.com/bigblind/marvin/handlers"
-	"github.com/bigblind/marvin/storage"
+	"github.com/bigblind/marvin/accounts/domain"
+	"github.com/bigblind/marvin/accounts/interactors"
 	accountsstorage "github.com/bigblind/marvin/accounts/storage"
 	configstorage "github.com/bigblind/marvin/config/storage"
-	"github.com/bigblind/marvin/accounts/interactors"
-	"github.com/bigblind/marvin/accounts/domain"
+	"github.com/bigblind/marvin/handlers"
+	"github.com/bigblind/marvin/storage"
+	"github.com/gobuffalo/buffalo"
 	"github.com/pkg/errors"
 )
 
 // The key in the session where the uid of the currently logged-in user is stored.
 var uidKey = "accounts_uid"
+
 // Error used to check if the user needs to be redirected to the login page
 var errNeedsLogin = errors.New("errNeedsLogin to login...")
 

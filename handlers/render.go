@@ -8,6 +8,7 @@ import (
 )
 
 var r *render.Engine
+
 // bare renderer
 var br *render.Engine
 
@@ -38,7 +39,7 @@ func init() {
 
 		// Add template helpers here:
 		Helpers: render.Helpers{
-			"form": plush.FormHelper,
+			"form":        plush.FormHelper,
 			"showContext": DebugHelper,
 		},
 	})
