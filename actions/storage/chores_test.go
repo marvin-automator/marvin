@@ -1,25 +1,25 @@
 package storage
 
 import (
-	"testing"
-	"github.com/bigblind/marvin/storage"
 	"github.com/bigblind/marvin/actions/domain"
-	"time"
-	"github.com/stretchr/testify/require"
+	"github.com/bigblind/marvin/storage"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"testing"
+	"time"
 )
 
 func newTestChore(id string) domain.Chore {
 	return domain.Chore{
-		ID: id,
-		Name: "Test Chore",
+		ID:      id,
+		Name:    "Test Chore",
 		Created: time.Now(),
 
 		Actions: []domain.ActionInstance{
 			domain.ActionInstance{
-				ID: "1",
+				ID:             "1",
 				ActionProvider: "testProvider",
-				Action: "testAction",
+				Action:         "testAction",
 			},
 		},
 	}
@@ -50,7 +50,6 @@ func TestGetAccountChores(t *testing.T) {
 		err = s.SaveChore("account_1", c3)
 		require.NoError(t, err)
 
-
 		cs, err := s.GetAccountChores("account_1")
 		require.NoError(t, err)
 
@@ -62,4 +61,45 @@ func TestGetAccountChores(t *testing.T) {
 	})
 }
 
+func TestDeleteChore(t *testing.T) {
+	storage.WithTestDB(t, func(dbs storage.Store) {
+		s := NewChoreStore(dbs)
+		c1 := newTestChore("chore_1")
+		c2 := newTestChore("chore_2")
+		err := s.SaveChore("account_1", c1)
+		err = s.SaveChore("account_1", c2)
+		require.NoError(t, err)
 
+		err = s.DeleteChore("account_1", "chore_1")
+		require.NoError(t, err)
+
+		// c1 should have been deleted
+		_, err = s.GetChore("account_1", "chore_1")
+		require.EqualError(t, err, domain.ChoreNotFoundError.Error())
+
+		// c2 should still be intact.
+		c22, err := s.GetChore("account_1", "chore_2")
+		require.NoError(t, err)
+		require.Equal(t, c2, c22)
+	})
+}
+
+func TestDeleteAccountChores(t *testing.T) {
+	storage.WithTestDB(t, func(dbs storage.Store) {
+		s := NewChoreStore(dbs)
+		c1 := newTestChore("chore_1")
+		c2 := newTestChore("chore_2")
+		err := s.SaveChore("account_1", c1)
+		err = s.SaveChore("account_1", c2)
+		require.NoError(t, err)
+
+		err = s.DeleteAccountChores("account_1")
+		require.NoError(t, err)
+
+		// c1 and c2 should have been deleted
+		_, err = s.GetChore("account_1", "chore_1")
+		require.EqualError(t, err, domain.ChoreNotFoundError.Error())
+		_, err = s.GetChore("account_1", "chore_2")
+		require.EqualError(t, err, domain.ChoreNotFoundError.Error())
+	})
+}

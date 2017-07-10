@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"github.com/bigblind/marvin/storage"
 	"github.com/bigblind/marvin/actions/domain"
+	"github.com/bigblind/marvin/storage"
 	"github.com/boltdb/bolt"
 )
 
@@ -35,6 +35,10 @@ func (c ChoreStore) GetChore(aid, cid string) (ch domain.Chore, err error) {
 	b, err := c.getOrCreateAccountChoresBucket(aid)
 	if err == nil {
 		cb := b.Get([]byte(cid))
+		if cb == nil {
+			err = domain.ChoreNotFoundError
+			return
+		}
 		err = c.store.DecodeBytes(&ch, cb)
 	}
 	return

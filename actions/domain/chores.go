@@ -1,19 +1,24 @@
 package domain
 
-import "time"
+import (
+	"errors"
+	"time"
+)
+
+var ChoreNotFoundError = errors.New("Chore not found")
 
 // An ActionInstance is an instance of an action in a Chore.
 type ActionInstance struct {
-	ID string
+	ID             string
 	ActionProvider string
-	Action string
-	InputTemplate string
+	Action         string
+	InputTemplate  string
 }
 
 // A chore is a workflow specified as a list of actions.
 type Chore struct {
-	ID string
-	Name string
+	ID      string
+	Name    string
 	Actions []ActionInstance
 	Created time.Time
 }
