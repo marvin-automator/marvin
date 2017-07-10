@@ -20,7 +20,7 @@ func (r *registry) Register(p ActionProvider) {
 func (r *registry) GetProviders() []ProviderMeta {
 	l := make([]ProviderMeta, len(r.providers))
 	for _, p := range r.providers {
-		l = append(l, p)
+		l = append(l, p.Meta())
 	}
 
 	return l

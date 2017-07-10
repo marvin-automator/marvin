@@ -2,7 +2,6 @@ package url
 
 import (
 	"github.com/bigblind/marvin/actions/domain"
-	"github.com/xeipuuv/gojsonschema"
 	"reflect"
 	"encoding/json"
 	"regexp"
@@ -51,7 +50,7 @@ func (a CallURL) InputType(c domain.ActionContext) interface{} {
 
 func (a CallURL) Execute(input interface{}, c domain.ActionContext) error {
 	var bodyr io.Reader
-	inp := URLInput(input)
+	inp := input.(URLInput)
 	resp, err := a.MakeRequest(inp)
 	if err != nil {
 		return err
@@ -74,6 +73,7 @@ func (a CallURL) Execute(input interface{}, c domain.ActionContext) error {
 	//todo: handle slices as the root element of r, and turn them into multiple outputs.
 
 	c.Output(r)
+	return nil
 }
 
 func (a CallURL) OutputType(c domain.ActionContext) interface{} {
@@ -98,7 +98,7 @@ func (a CallURL) MakeRequest(u URLInput) (io.Reader, error) {
 	}
 
 	c := http.Client{}
-	resp, err := c.Do(&r)
+	resp, err := c.Do(req)
 	return resp.Body, nil
 }
 
@@ -153,7 +153,7 @@ func handleMap(m map[string]interface{}) interface{} {
 			Name: vf,
 			PkgPath: "",
 			Type: reflect.TypeOf(v),
-			Tag: "json:\""+ k + "\"",
+			Tag: reflect.StructTag("json:\""+ k + "\""),
 			Anonymous: false,
 		}
 		fs = append(fs, f)

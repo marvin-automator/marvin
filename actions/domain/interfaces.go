@@ -2,13 +2,12 @@ package domain
 
 import (
 	"github.com/bigblind/marvin/handlers"
-	"time"
 )
 
 // ActionProvider provides a list of related actions.
 type ActionProvider interface {
 	// Meta returns metadata about this provider
-	Meta() ActionSetMeta
+	Meta() ProviderMeta
 
 	// ActionList provides a list of the available actions.
 	ActionList() []ActionMeta
