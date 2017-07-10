@@ -1,4 +1,4 @@
-package accounts
+package middleware
 
 import (
 	"github.com/gobuffalo/buffalo"
