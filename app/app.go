@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"github.com/gobuffalo/buffalo"
@@ -8,7 +8,7 @@ import (
 
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/packr"
-	"github.com/bigblind/marvin/accounts"
+	accountmiddleware "github.com/bigblind/marvin/accounts/middleware"
 
 	accounthandlers "github.com/bigblind/marvin/accounts/handlers"
 	"github.com/bigblind/marvin/handlers"
@@ -55,7 +55,7 @@ func App() *buffalo.App {
 		app.POST("/login", bf(accounthandlers.ProcessLogin))
 
 		g := app.Group("/app")
-		g.Use(accounts.Middleware)
+		g.Use(accountmiddleware.Middleware)
 
 
 		app.ServeFiles("/assets", packr.NewBox("./public/assets"))
