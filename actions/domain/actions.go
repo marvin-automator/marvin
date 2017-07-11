@@ -9,11 +9,23 @@ type ActionProvider interface {
 	// Meta returns metadata about this provider
 	Meta() ProviderMeta
 
-	// ActionList provides a list of the available actions.
-	ActionList() []ActionMeta
+	// Groups returns a list of action groups.
+	// See the Group type for more info.
+	Groups() []Group
+
 
 	// The action method gives access to the interface for actually configuring and running actions.
 	Action(key string) Action
+}
+
+//// Most action providers will return a single group with the same name as the provider,
+// but groups provide a way to subcaterogize them. Groups show up as separate providers in the
+// action selection list, but share the global data store, so they can share accounts, etc.
+type Group interface{
+	// Actions returns ActionMetas of actions that are available in this group
+	Actions() []ActionMeta
+	// Name returns a human-readable name for the group
+	Name() string
 }
 
 // Metadata about a set of actions
