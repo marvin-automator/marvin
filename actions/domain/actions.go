@@ -26,9 +26,12 @@ type ProviderMeta struct {
 
 // Metadata about a specific action
 type ActionMeta struct {
-	ProviderMeta
-	// The key is used to retrieve the actual action object.
+	// The key should uniquely identify the action within the provider
 	Key string
+	Name string
+	Description string
+
+	// The key is used to retrieve the actual action object.
 	// Whether this action is a trigger
 	IsTrigger bool
 	// Whether this action needs to do a test run to get the output schema
@@ -40,6 +43,15 @@ type ActionMeta struct {
 // to get their Meta() method.
 func (a ActionMeta) Meta() ActionMeta {
 	return a
+}
+
+// Embed an ActionMeta in your action. Then, you can call this method on a pointer to the action to easily set the meta information.
+func (a *ActionMeta) SetMeta(key, name, description string, isTrigger, requiresTestRun bool) {
+	a.Key = key
+	a.Name = name
+	a.Description = description
+	a.IsTrigger = isTrigger
+	a.RequiresTestRun = requiresTestRun
 }
 
 // An action encapsulates how to perform a certain task

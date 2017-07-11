@@ -14,15 +14,9 @@ import (
 
 func init() {
 	p := domain.NewProvider("url", "URL", "Actions triggering and triggered-by HTTP requests.")
-	p.Add(CallURL{domain.ActionMeta{
-		ProviderMeta: domain.ProviderMeta{
-			Name:        "Send HTTP Request",
-			Description: "Send an HTTP request to the given url.",
-			Key:         "sendRequest",
-		},
-		IsTrigger:       false,
-		RequiresTestRun: true,
-	}})
+	a := CallURL{}
+	(&a).SetMeta("call_url", "Send a HTTP request", "Send an HtTP (web) request to a URL", false, true)
+	p.Add(a)
 }
 
 type CallURL struct {
