@@ -6,14 +6,17 @@ import (
 	"github.com/boltdb/bolt"
 )
 
+// An implementation of the ConfigStore interface
 type ConfigStore struct {
 	storage.Store
 }
 
+// NewConfigStore creates a new ConfigStore
 func NewConfigStore(s storage.Store) ConfigStore {
 	return ConfigStore{s}
 }
 
+// GetConfig returns the current Config object
 func (s ConfigStore) GetConfig() (c domain.Config, err error) {
 	c = domain.DefaultConfig
 
@@ -30,6 +33,7 @@ func (s ConfigStore) GetConfig() (c domain.Config, err error) {
 	return
 }
 
+// SaveConfig sets the given config object to be the current one.
 func (s ConfigStore) SaveConfig(c domain.Config) (e error) {
 	bucket, err := s.getOrCreateConfigBucket()
 	if err != nil {

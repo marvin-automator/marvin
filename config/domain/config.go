@@ -8,10 +8,12 @@ type Config struct {
 	AccountsEnabled bool
 }
 
+// DefaultConfig stores the default values for all our configuration options
 var DefaultConfig = Config{
 	AccountsEnabled: true,
 }
 
+// The ConfigStore interface can handle persisting a config object.
 type ConfigStore interface {
 	GetConfig() (Config, error)
 }

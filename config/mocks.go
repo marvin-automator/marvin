@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+// Mock ConfigStore implementation used in tests
 type MockConfigStore struct {
 	mock.Mock
 }

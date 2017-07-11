@@ -12,6 +12,7 @@ var r *render.Engine
 // bare renderer
 var br *render.Engine
 
+// A helper that prints the current context
 func DebugHelper(x string, help plush.HelperContext) string {
 	return pretty.Sprintf("%# v", help)
 }

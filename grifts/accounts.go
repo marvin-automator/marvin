@@ -9,6 +9,12 @@ import (
 	"strings"
 )
 
+func init() {
+	Desc("accounts:create", "Create a new account.\n $ marvin run accounts:create <email> <password>")
+	Desc("accounts:delete", "Delete an account.\n $ marvin run accounts:delete <id_or_email>")
+}
+
+// Grift to create a new account.
 var _ = Add("accounts:create", func(c *Context) error {
 	globalstorage.Setup()
 	defer globalstorage.CloseDB()
@@ -31,6 +37,8 @@ var _ = Add("accounts:create", func(c *Context) error {
 	return nil
 })
 
+
+// Grift to delete an account
 var _ = Add("accounts:delete", func(c *Context) error {
 	globalstorage.Setup()
 	defer globalstorage.CloseDB()

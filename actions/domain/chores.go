@@ -23,6 +23,7 @@ type Chore struct {
 	Created time.Time
 }
 
+// ChoreStore is an interface for persisting chores.
 type ChoreStore interface {
 	SaveChore(aid string, c Chore) error
 	GetChore(aid, cid string) (Chore, error)
