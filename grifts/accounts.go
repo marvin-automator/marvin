@@ -37,7 +37,6 @@ var _ = Add("accounts:create", func(c *Context) error {
 	return nil
 })
 
-
 // Grift to delete an account
 var _ = Add("accounts:delete", func(c *Context) error {
 	globalstorage.Setup()

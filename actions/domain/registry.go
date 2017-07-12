@@ -3,13 +3,14 @@ package domain
 import "sync"
 
 // The Registry maps provider keys to provider instances
-var Registry = new(registry)
+var Registry ProviderRegistry = new(registry)
 
 type registry struct {
 	providers map[string]ActionProvider
 	mut       sync.Mutex
 }
 
+// ProviderRegistry is the interface implemented by Registry
 type ProviderRegistry interface {
 	// Register registers a new ActionProvider
 	Register(p ActionProvider)

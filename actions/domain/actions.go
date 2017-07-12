@@ -13,7 +13,6 @@ type ActionProvider interface {
 	// See the Group type for more info.
 	Groups() []Group
 
-
 	// The action method gives access to the interface for actually configuring and running actions.
 	Action(key string) Action
 }
@@ -21,7 +20,7 @@ type ActionProvider interface {
 //// Most action providers will return a single group with the same name as the provider,
 // but groups provide a way to subcaterogize them. Groups show up as separate providers in the
 // action selection list, but share the global data store, so they can share accounts, etc.
-type Group interface{
+type Group interface {
 	// Actions returns ActionMetas of actions that are available in this group
 	Actions() []ActionMeta
 	// Name returns a human-readable name for the group
@@ -39,8 +38,8 @@ type ProviderMeta struct {
 // Metadata about a specific action
 type ActionMeta struct {
 	// The key should uniquely identify the action within the provider
-	Key string
-	Name string
+	Key         string
+	Name        string
 	Description string
 
 	// The key is used to retrieve the actual action object.

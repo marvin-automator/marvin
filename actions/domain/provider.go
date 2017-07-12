@@ -6,9 +6,9 @@ type BasicProvider struct {
 	name        string
 	description string
 
-	groups  []Group
+	groups       []Group
 	defaultGroup *BasicGroup
-	actions map[string]Action
+	actions      map[string]Action
 }
 
 // Create a new ActionProvider
@@ -63,8 +63,8 @@ func (b *BasicProvider) NewGroup(name string) *BasicGroup {
 // Don't create one directly, call BasicProvider.NewGroup instead.
 type BasicGroup struct {
 	provider *BasicProvider
-	name string
-	metas []ActionMeta
+	name     string
+	metas    []ActionMeta
 }
 
 // Name returns a human-readable name for the group.
@@ -82,4 +82,3 @@ func (b *BasicGroup) Add(a Action) {
 	b.metas = append(b.metas, a.Meta())
 	b.provider.actions[a.Meta().Key] = a
 }
-
