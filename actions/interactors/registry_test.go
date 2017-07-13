@@ -27,7 +27,7 @@ func makeActionMeta(name, description, key string, flags bool) domain.ActionMeta
 
 func TestGetActionGroups(t *testing.T) {
 	// Set up a registry and 2 providers
-	mr := actions.NewMockRegistr()
+	mr := actions.NewMockRegistry()
 	mp1 := actions.NewMockProvider()
 	mp2 := actions.NewMockProvider()
 

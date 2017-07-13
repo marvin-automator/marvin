@@ -19,12 +19,14 @@ func init() {
 	p.Add(a)
 }
 
+// CallURL Is an Action that sends a HTTP request
 type CallURL struct {
 	domain.ActionMeta
 }
 
-type URLInput struct {
-	Url     string
+// urlInput is a struct that'll receive input data for the action.
+type urlInput struct {
+	URL     string
 	Body    string
 	Method  string `enum:"GET|PUT|POST|PATCH|DELETE"`
 	Headers []struct {
@@ -33,32 +35,44 @@ type URLInput struct {
 	}
 }
 
+// Setup takes setup data from the frontend.
+// In this case, we don't need any other data than ourn input, so do nothing.
 func (a CallURL) Setup(data string, c domain.ActionContext) error {
 	return nil
 }
 
+// InputType returns the type that input json will be deserialized into.
 func (a CallURL) InputType(c domain.ActionContext) interface{} {
-	return URLInput{}
+	return urlInput{}
 }
 
+// Execute actually executes the action
 func (a CallURL) Execute(input interface{}, c domain.ActionContext) error {
 	var bodyr io.Reader
-	inp := input.(URLInput)
-	resp, err := a.MakeRequest(inp)
+	inp := input.(urlInput)
+	resp, err := a.makeRequest(inp)
 	if err != nil {
 		return err
 	}
 	if c.IsTestCall() {
 		buf := bytes.NewBuffer([]byte{})
-		buf.ReadFrom(resp)
+		_, err = buf.ReadFrom(resp)
+		if err != nil {
+			return err
+		}
+
 		bodys := buf.String()
-		c.InstanceStore().Put("outputSchema", bodys)
+		err = c.InstanceStore().Put("outputSchema", bodys)
+		if err != nil {
+			return err
+		}
+
 		bodyr = strings.NewReader(bodys)
 	} else {
 		bodyr = resp
 	}
 
-	r, err := arbitraryJsonToTypet(bodyr)
+	r, err := arbitraryJSONToTypet(bodyr)
 	if err != nil {
 		return err
 	}
@@ -69,19 +83,21 @@ func (a CallURL) Execute(input interface{}, c domain.ActionContext) error {
 	return nil
 }
 
+// OutputType returns an instance of the type that output from this action will have
 func (a CallURL) OutputType(c domain.ActionContext) interface{} {
 	json, _ := c.InstanceStore().Get("outputSchema")
-	resp, _ := arbitraryJsonToTypet(strings.NewReader(json.(string)))
+	resp, _ := arbitraryJSONToTypet(strings.NewReader(json.(string)))
 	return resp
 }
 
-func (a CallURL) MakeRequest(u URLInput) (io.Reader, error) {
+// makeRequest actually makes the HTTP request
+func (a CallURL) makeRequest(u urlInput) (io.Reader, error) {
 	var body *strings.Reader
 	if u.Method != "GET" && u.Method != "DELETE" {
 		body = strings.NewReader(u.Body)
 	}
 
-	req, err := http.NewRequest(u.Method, u.Url, body)
+	req, err := http.NewRequest(u.Method, u.URL, body)
 	if err != nil {
 		return nil, err
 	}
@@ -92,10 +108,10 @@ func (a CallURL) MakeRequest(u URLInput) (io.Reader, error) {
 
 	c := http.Client{}
 	resp, err := c.Do(req)
-	return resp.Body, nil
+	return resp.Body, err
 }
 
-func arbitraryJsonToTypet(r io.Reader) (interface{}, error) {
+func arbitraryJSONToTypet(r io.Reader) (interface{}, error) {
 	var i interface{}
 	d := json.NewDecoder(r)
 	err := d.Decode(i)
@@ -166,7 +182,7 @@ func handleMap(m map[string]interface{}) interface{} {
 
 func ensureValidFieldName(k string) string {
 	// This regexp matches anything that's not a unicode letter or digit
-	r := regexp.MustCompile("\\P{L}|\\D")
+	r := regexp.MustCompile(`\P{L}|\D`)
 	// Anything in the key that's not a letter or digit, becomes a space, splitting the string into words
 	k = r.ReplaceAllString(k, "")
 	// We uppercase the first letter of each word, so it looks kind of like a Go identifier (but with spaces)
@@ -181,9 +197,8 @@ func handleValue(i interface{}) interface{} {
 	case float64:
 		if t == float64(int64(t)) {
 			return int64(t)
-		} else {
-			return t
 		}
+		return t
 	case bool, string, nil:
 		return t
 	default:

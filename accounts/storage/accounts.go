@@ -7,16 +7,19 @@ import (
 	"github.com/boltdb/bolt"
 )
 
-var accountFound = errors.New("Account found")
+var accountFound = errors.New("account found") // nolint
 
+// AccountStore is an implementation of the AccountStore interface that uses the storage package
 type AccountStore struct {
 	storage.Store
 }
 
+// NewAccountStore returns a new AccountStore
 func NewAccountStore(s storage.Store) AccountStore {
 	return AccountStore{s}
 }
 
+// SaveAccount saves an account to the store
 func (s AccountStore) SaveAccount(acct domain.Account) error {
 	bucket, err := s.getOrCreateAccountsBucket()
 	if err != nil {
@@ -31,6 +34,7 @@ func (s AccountStore) SaveAccount(acct domain.Account) error {
 	return bucket.Put([]byte(acct.ID), ab)
 }
 
+// GetAccountByID returns the account with the given ID. If no such account exists, domain.ErrAccountNotFound is returned as the error.
 func (s AccountStore) GetAccountByID(aid string) (domain.Account, error) {
 	bucket, err := s.getOrCreateAccountsBucket()
 	if err != nil {
@@ -47,6 +51,7 @@ func (s AccountStore) GetAccountByID(aid string) (domain.Account, error) {
 	return act, s.DecodeBytes(&act, ab)
 }
 
+// GetAccountByEmail returns the account with the given email adress. If no such account exists, domain.ErrAccountNotFound is returned as the error.
 func (s AccountStore) GetAccountByEmail(email string) (domain.Account, error) {
 	bucket, err := s.getOrCreateAccountsBucket()
 	if err != nil {
@@ -74,6 +79,7 @@ func (s AccountStore) GetAccountByEmail(email string) (domain.Account, error) {
 	return act, nil
 }
 
+// GetDefaultAccount returns the default account instance.
 func (s AccountStore) GetDefaultAccount() (act domain.Account, err error) {
 	act, err = s.GetAccountByID("default")
 	if err == nil {
@@ -91,6 +97,7 @@ func (s AccountStore) GetDefaultAccount() (act domain.Account, err error) {
 	return
 }
 
+// DeleteAccount deletes the account with the given ID.
 func (s AccountStore) DeleteAccount(aid string) error {
 	b, err := s.getOrCreateAccountsBucket()
 	if err != nil {

@@ -12,7 +12,6 @@ import (
 func TestCreateAccount(t *testing.T) {
 	ma := accounts.NewMockAccountStore()
 	ma.On("SaveAccount", mock.AnythingOfType("Account")).Return(nil)
-
 	ca := CreateAccount{ma}
 	a, err := ca.Execute("foo@example.com", "foo")
 	require.NoError(t, err)
@@ -23,7 +22,7 @@ func TestCreateAccount(t *testing.T) {
 
 func TestDeleteAccountByID(t *testing.T) {
 	ma := accounts.NewMockAccountStore()
-	expectedError := errors.New("This was expected.")
+	expectedError := errors.New("this was expected")
 	ma.On("DeleteAccount", "042").Return(expectedError)
 
 	action := DeleteAccount{ma}
@@ -34,7 +33,7 @@ func TestDeleteAccountByID(t *testing.T) {
 func TestDeleteAccountByEmail(t *testing.T) {
 	ma := accounts.NewMockAccountStore()
 	act := domain.Account{"042", "test@example.com", []byte("nothashed")}
-	expectedError := errors.New("This was expected.")
+	expectedError := errors.New("this was expected")
 	ma.On("GetAccountByEmail", "test@example.com").Return(act, nil)
 	ma.On("DeleteAccount", "042").Return(expectedError)
 

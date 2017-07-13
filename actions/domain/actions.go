@@ -17,7 +17,8 @@ type ActionProvider interface {
 	Action(key string) Action
 }
 
-//// Most action providers will return a single group with the same name as the provider,
+// Group groups related actions within a provider together. Most action providers will return a
+// single group with the same name as the provider,
 // but groups provide a way to subcaterogize them. Groups show up as separate providers in the
 // action selection list, but share the global data store, so they can share accounts, etc.
 type Group interface {
@@ -27,7 +28,7 @@ type Group interface {
 	Name() string
 }
 
-// Metadata about a set of actions
+// ProviderMeta stores metadata about a set of actions
 type ProviderMeta struct {
 	Name        string
 	Description string
@@ -35,7 +36,7 @@ type ProviderMeta struct {
 	Key string
 }
 
-// Metadata about a specific action
+// ActionMeta stores metadata about a specific action
 type ActionMeta struct {
 	// The key should uniquely identify the action within the provider
 	Key         string
@@ -49,14 +50,14 @@ type ActionMeta struct {
 	RequiresTestRun bool
 }
 
-// Returns itself. This is so that action
+// Meta returns itself. This is so that action
 // implementations can just embed this as a struct
 // to get their Meta() method.
 func (a ActionMeta) Meta() ActionMeta {
 	return a
 }
 
-// Embed an ActionMeta in your action. Then, you can call this method on a pointer to the action to easily set the meta information.
+// SetMeta here is used as follows: Embed an ActionMeta in your action. Then, you can call this method on a pointer to the action to easily set the meta information.
 func (a *ActionMeta) SetMeta(key, name, description string, isTrigger, requiresTestRun bool) {
 	a.Key = key
 	a.Name = name
@@ -65,7 +66,7 @@ func (a *ActionMeta) SetMeta(key, name, description string, isTrigger, requiresT
 	a.RequiresTestRun = requiresTestRun
 }
 
-// An action encapsulates how to perform a certain task
+// An Action encapsulates how to perform a certain task
 type Action interface {
 	// Meta returns metadata about the action
 	Meta() ActionMeta
@@ -89,7 +90,7 @@ type Action interface {
 	OutputType(c ActionContext) interface{}
 }
 
-// A trigger is an action that starts
+// A Trigger is an action that starts
 type Trigger interface {
 	Action
 	// Called when marvin is started, for triggers that
@@ -101,7 +102,7 @@ type Trigger interface {
 	Callback(state string) handlers.Handler
 }
 
-// Gives you access to data and functionality that can be useful when executing an action
+// ActionContext gives an action access to data and functionality that can be useful when executing an action
 type ActionContext interface {
 	// InvocationStore is a Store that stores data for the duration of the invocation of this action.
 	// The data is automatically deleted when you call Done

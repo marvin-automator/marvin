@@ -15,8 +15,10 @@ import (
 var uidKey = "accounts_uid"
 
 // Error used to check if the user needs to be redirected to the login page
-var errNeedsLogin = errors.New("errNeedsLogin to login...")
+var errNeedsLogin = errors.New("errNeedsLogin to login")
 
+// Middleware checks whether the user is logged in, and redirects them to login if necessary.
+// It stores the current account in the context.
 //todo: make this more testable by passing in some kind of factories for account and config stores.
 func Middleware(next buffalo.Handler) buffalo.Handler {
 	var h handlers.Handler

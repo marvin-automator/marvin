@@ -19,6 +19,7 @@ import (
 // application is being run. Default is "development".
 var ENV = envy.Get("GO_ENV", "development")
 var app *buffalo.App
+// T is a translator.
 var T *i18n.Translator
 
 // App is where all routes and middleware for buffalo
@@ -45,7 +46,10 @@ func App() *buffalo.App {
 		// Setup and use translations:
 		var err error
 		if T, err = i18n.New(packr.NewBox("../locales"), "en-US"); err != nil {
-			app.Stop(err)
+			err = app.Stop(err)
+			if err != nil {
+				panic(err)
+			}
 		}
 
 		app.Use(T.Middleware())

@@ -14,6 +14,7 @@ type Group struct {
 	actions  []domain.ActionMeta
 }
 
+// NewRegistryInteractor returns a new instance of the Registry interactors
 func NewRegistryInteractor() Registry {
 	return Registry{domain.Registry}
 }

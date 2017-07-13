@@ -6,7 +6,7 @@ import (
 	"text/tabwriter"
 
 	"github.com/bigblind/marvin/app"
-	. "github.com/markbates/grift/grift"
+	. "github.com/markbates/grift/grift" // nolint
 )
 
 var _ = Add("routes", func(c *Context) error {
@@ -18,6 +18,6 @@ var _ = Add("routes", func(c *Context) error {
 	for _, r := range routes {
 		fmt.Fprintf(w, "%s\t %s\t %s\t %s\n", r.Method, r.Path, r.PathName, r.HandlerName)
 	}
-	w.Flush()
-	return nil
+	err := w.Flush()
+	return err
 })

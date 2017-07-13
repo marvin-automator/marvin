@@ -21,6 +21,7 @@ func TestSuccessfulLogin(t *testing.T) {
 
 	login := Login{ma, mc}
 	res, err := login.Execute("test@example.com", "pwd")
+	require.NoError(t, err)
 	require.Equal(t, exp, res)
 }
 

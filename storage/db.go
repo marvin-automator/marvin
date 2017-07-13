@@ -38,13 +38,23 @@ func SetupInFile(fname string) {
 
 // CloseDB closes the database.
 func CloseDB() {
-	db.Close()
+	err := db.Close()
+	if err != nil {
+		panic(err)
+	}
 }
 
 // DeleteDBFile deletes the file associated with the currently configured database.
 func DeleteDBFile() {
-	db.Close()
-	os.Remove(db.Path())
+	path := db.Path()
+	err := db.Close()
+	if err != nil {
+		panic(err)
+	}
+	err = os.Remove(path)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // A Store is the way you access stored data. When you know you're not going to need to write data, open a read-only
@@ -64,35 +74,41 @@ func newStore(wrt bool) (s Store, err error) {
 	return
 }
 
-// Creates a new Writable store
+// NewWritableStore creates a new Writable store
 // Note that changes you make are only saved to disk when you close it,
 // and that changes will only be visible to stores created after this one is closed.
 func NewWritableStore() (Store, error) {
 	return newStore(true)
 }
 
-// Creates a new read-only store
+// NewReadOnlyStore creates a new read-only store
 func NewReadOnlyStore() (Store, error) {
 	return newStore(false)
 }
 
-// Closes the store. Always call either this or RollBack when you're done.
+// Close closes the store. Always call either this or RollBack when you're done.
 func (s Store) Close() {
-	s.Tx.Commit()
+	err := s.Tx.Commit()
+	if err != nil {
+		panic(err)
+	}
 }
 
-// roll back any changes made to the store, and close it.
+// RollBack rolls back any changes made to the store, and close it.
 func (s Store) RollBack() {
-	s.Tx.Rollback()
+	err := s.Tx.Rollback()
+	if err != nil {
+		panic(err)
+	}
 }
 
-// Convert an array of bytes to a struct
+// DecodeBytes converts an array of bytes to a struct
 // This should only be used by domain-specific Store implementations
 func (s Store) DecodeBytes(d interface{}, b []byte) error {
 	return bytesToData(d, b)
 }
 
-// Converts a struct that gets passd in to bytes
+// EncodeBytes converts a struct that gets passd in to bytes
 // This should only be used by domain-specific Store implementations
 func (s Store) EncodeBytes(d interface{}) ([]byte, error) {
 	return dataToBytes(d)
@@ -103,7 +119,7 @@ func (s Store) Writable() bool {
 	return s.Tx.Writable()
 }
 
-// Creates a bucket if it doesn't exist. This function opens a temporary writable store if the store
+// CreateBucketIfNotExists creates a bucket if it doesn't exist. This function opens a temporary writable store if the store
 // on which the method is called is read-only.
 func (s Store) CreateBucketIfNotExists(name string) (*bolt.Bucket, error) {
 	var err error
@@ -113,8 +129,8 @@ func (s Store) CreateBucketIfNotExists(name string) (*bolt.Bucket, error) {
 	b := s.Tx.Bucket([]byte(name))
 	if b == nil {
 		err = s.Tx.DB().Update(func(tx *bolt.Tx) error {
-			_, err := tx.CreateBucket([]byte(name))
-			return err
+			_, err2 := tx.CreateBucket([]byte(name))
+			return err2
 		})
 		b = s.Tx.Bucket([]byte(name))
 	}

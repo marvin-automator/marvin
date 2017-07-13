@@ -6,7 +6,7 @@ import (
 	"github.com/boltdb/bolt"
 )
 
-// An implementation of the ConfigStore interface
+// ConfigStore is an implementation of the ConfigStore interface that uses the storage package as a backend.
 type ConfigStore struct {
 	storage.Store
 }
@@ -34,19 +34,18 @@ func (s ConfigStore) GetConfig() (c domain.Config, err error) {
 }
 
 // SaveConfig sets the given config object to be the current one.
-func (s ConfigStore) SaveConfig(c domain.Config) (e error) {
+func (s ConfigStore) SaveConfig(c domain.Config) error {
 	bucket, err := s.getOrCreateConfigBucket()
 	if err != nil {
-		return
+		return err
 	}
 
 	b, err := s.EncodeBytes(c)
 	if err != nil {
-		return
+		return err
 	}
 
-	err = bucket.Put([]byte("config"), b)
-	return
+	return bucket.Put([]byte("config"), b)
 }
 
 func (s ConfigStore) getOrCreateConfigBucket() (*bolt.Bucket, error) {

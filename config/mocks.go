@@ -5,15 +5,18 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-// Mock ConfigStore implementation used in tests
+// MockConfigStore implementation used in tests
 type MockConfigStore struct {
-	mock.Mock
+	*mock.Mock
 }
 
+// NewMockConfigStore returns a new MockConfigStore instance
 func NewMockConfigStore() MockConfigStore {
-	return MockConfigStore{mock.Mock{}}
+	m := mock.Mock{}
+	return MockConfigStore{&m}
 }
 
+// GetConfig returns the current Config instance.
 func (m MockConfigStore) GetConfig() (domain.Config, error) {
 	args := m.Called()
 	return args.Get(0).(domain.Config), args.Error(1)

@@ -11,7 +11,7 @@ type BasicProvider struct {
 	actions      map[string]Action
 }
 
-// Create a new ActionProvider
+// NewProvider creates a new BasicProvider
 func NewProvider(key, name, description string) *BasicProvider {
 	b := BasicProvider{
 		key:         key,
@@ -29,6 +29,7 @@ func (b *BasicProvider) Meta() ProviderMeta {
 	return ProviderMeta{b.name, b.description, b.key}
 }
 
+// Groups returns all the groups of this provider.
 func (b *BasicProvider) Groups() []Group {
 	return b.groups
 }
@@ -52,7 +53,7 @@ func (b *BasicProvider) getOrCreateDefaultGroup() *BasicGroup {
 	return b.defaultGroup
 }
 
-// NewGroup returns a Group instance that is tie
+// NewGroup returns a Group instance that is tied to this provider
 func (b *BasicProvider) NewGroup(name string) *BasicGroup {
 	g := &BasicGroup{b, name, make([]ActionMeta, 0)}
 	b.groups = append(b.groups, g)

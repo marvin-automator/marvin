@@ -5,13 +5,19 @@ import (
 	"github.com/bigblind/marvin/accounts/interactors"
 	"github.com/bigblind/marvin/accounts/storage"
 	globalstorage "github.com/bigblind/marvin/storage"
-	. "github.com/markbates/grift/grift"
+	. "github.com/markbates/grift/grift" // nolint
 	"strings"
 )
 
 func init() {
-	Desc("accounts:create", "Create a new account.\n $ marvin run accounts:create <email> <password>")
-	Desc("accounts:delete", "Delete an account.\n $ marvin run accounts:delete <id_or_email>")
+	err1 := Desc("accounts:create", "Create a new account.\n $ marvin run accounts:create <email> <password>")
+	err2 := Desc("accounts:delete", "Delete an account.\n $ marvin run accounts:delete <id_or_email>")
+	if err1 != nil {
+		panic(err1)
+	}
+	if err2 != nil {
+		panic(err2)
+	}
 }
 
 // Grift to create a new account.

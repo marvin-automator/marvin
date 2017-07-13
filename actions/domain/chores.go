@@ -5,7 +5,8 @@ import (
 	"time"
 )
 
-var ChoreNotFoundError = errors.New("Chore not found")
+// ErrChoreNotFound is returned by methods that should return a chore when the requested chore cannot be found.
+var ErrChoreNotFound = errors.New("chore not found")
 
 // An ActionInstance is an instance of an action in a Chore.
 type ActionInstance struct {
@@ -15,7 +16,7 @@ type ActionInstance struct {
 	InputTemplate  string
 }
 
-// A chore is a workflow specified as a list of actions.
+// A Chore is a workflow specified as a list of actions.
 type Chore struct {
 	ID      string
 	Name    string

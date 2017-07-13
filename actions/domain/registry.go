@@ -2,7 +2,7 @@ package domain
 
 import "sync"
 
-// The Registry maps provider keys to provider instances
+// Registry maps provider keys to provider instances
 var Registry ProviderRegistry = new(registry)
 
 type registry struct {

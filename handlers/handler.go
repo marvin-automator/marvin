@@ -11,7 +11,7 @@ type Context struct {
 	buffalo.Context
 }
 
-// Executes the given function with a writable Store instance.
+// WithWritableStore executes the given function with a writable Store instance.
 // The store is automatically closed when the function returns.
 // If the function returns an error, any changes made to the store are rolled back.
 func (c *Context) WithWritableStore(f func(storage.Store) error) error {
@@ -54,10 +54,10 @@ func (c Context) BareRenderer() *render.Engine {
 	return br
 }
 
-// A request handler that takes our custom context
+// Handler is a request handler that takes our custom context
 type Handler func(Context) error
 
-// Turns returns a Buffalo handler that calls this one
+// ToBuffalo turns returns a Buffalo handler that calls this one
 func (h Handler) ToBuffalo() buffalo.Handler {
 	return func(bc buffalo.Context) error {
 		c := Context{bc}

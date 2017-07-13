@@ -46,7 +46,9 @@ func TestGetAccountChores(t *testing.T) {
 		c2 := newTestChore("chore_2")
 		c3 := newTestChore("chore_3")
 		err := s.SaveChore("account_1", c1)
+		require.NoError(t, err)
 		err = s.SaveChore("account_1", c2)
+		require.NoError(t,err)
 		err = s.SaveChore("account_1", c3)
 		require.NoError(t, err)
 
@@ -67,6 +69,7 @@ func TestDeleteChore(t *testing.T) {
 		c1 := newTestChore("chore_1")
 		c2 := newTestChore("chore_2")
 		err := s.SaveChore("account_1", c1)
+		require.NoError(t, err)
 		err = s.SaveChore("account_1", c2)
 		require.NoError(t, err)
 
@@ -75,7 +78,7 @@ func TestDeleteChore(t *testing.T) {
 
 		// c1 should have been deleted
 		_, err = s.GetChore("account_1", "chore_1")
-		require.EqualError(t, err, domain.ChoreNotFoundError.Error())
+		require.EqualError(t, err, domain.ErrChoreNotFound.Error())
 
 		// c2 should still be intact.
 		c22, err := s.GetChore("account_1", "chore_2")
@@ -90,6 +93,7 @@ func TestDeleteAccountChores(t *testing.T) {
 		c1 := newTestChore("chore_1")
 		c2 := newTestChore("chore_2")
 		err := s.SaveChore("account_1", c1)
+		require.NoError(t, err)
 		err = s.SaveChore("account_1", c2)
 		require.NoError(t, err)
 
@@ -98,8 +102,8 @@ func TestDeleteAccountChores(t *testing.T) {
 
 		// c1 and c2 should have been deleted
 		_, err = s.GetChore("account_1", "chore_1")
-		require.EqualError(t, err, domain.ChoreNotFoundError.Error())
+		require.EqualError(t, err, domain.ErrChoreNotFound.Error())
 		_, err = s.GetChore("account_1", "chore_2")
-		require.EqualError(t, err, domain.ChoreNotFoundError.Error())
+		require.EqualError(t, err, domain.ErrChoreNotFound.Error())
 	})
 }
