@@ -15,6 +15,12 @@ type ActionProvider interface {
 
 	// The action method gives access to the interface for actually configuring and running actions.
 	Action(key string) Action
+
+	// GlobalConfigType should return an instance of a struct type, that'll
+	// hold global configuration data. This should be used for configuration data
+	// that's not account-specific, like API client secrets.
+	// If no global configuration is needed, return nil.
+	GlobalConfigType() interface{}
 }
 
 // Group groups related actions within a provider together. Most action providers will return a
@@ -89,11 +95,6 @@ type Action interface {
 	Execute(input interface{}, c ActionContext) error
 	// The struct type of the data that this action will output.
 	OutputType(c ActionContext) interface{}
-	// GlobalConfigType should return an instance of a struct type, that'll
-	// hold global configuration data. This should be used for configuration data
-	// that's not account-specific, like API client secrets.
-	// If no global configuration is needed, return nil.
-	GlobalConfigType() interface{}
 	// Callback gets called when a callback URL is invoked
 	// It receives the state that was passed to GetCallbackURL,
 	// and should return a handler to handle the request.
