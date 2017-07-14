@@ -95,10 +95,14 @@ type Action interface {
 	Execute(input interface{}, c ActionContext) error
 	// The struct type of the data that this action will output.
 	OutputType(c ActionContext) interface{}
+}
+
+// CallbackReceiver should be implemented by actions that want to receive requests from callback URLs.
+type CallbackReceiver interface {
 	// Callback gets called when a callback URL is invoked
 	// It receives the state that was passed to GetCallbackURL,
 	// and should return a handler to handle the request.
-	Callback(state string) handlers.Handler
+	Callback(state string, c ActionContext) handlers.Handler
 }
 
 // A Trigger is an action that starts
