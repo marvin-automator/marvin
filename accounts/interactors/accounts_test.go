@@ -12,6 +12,7 @@ import (
 func TestCreateAccount(t *testing.T) {
 	ma := accounts.NewMockAccountStore()
 	ma.On("SaveAccount", mock.AnythingOfType("Account")).Return(nil)
+
 	ca := CreateAccount{ma}
 	a, err := ca.Execute("foo@example.com", "foo")
 	require.NoError(t, err)

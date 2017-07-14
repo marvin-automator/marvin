@@ -19,6 +19,7 @@ import (
 // application is being run. Default is "development".
 var ENV = envy.Get("GO_ENV", "development")
 var app *buffalo.App
+
 // T is a translator.
 var T *i18n.Translator
 

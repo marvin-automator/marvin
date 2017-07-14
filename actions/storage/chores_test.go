@@ -48,7 +48,7 @@ func TestGetAccountChores(t *testing.T) {
 		err := s.SaveChore("account_1", c1)
 		require.NoError(t, err)
 		err = s.SaveChore("account_1", c2)
-		require.NoError(t,err)
+		require.NoError(t, err)
 		err = s.SaveChore("account_1", c3)
 		require.NoError(t, err)
 
