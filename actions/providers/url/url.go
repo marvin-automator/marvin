@@ -46,6 +46,12 @@ func (a CallURL) InputType(c domain.ActionContext) interface{} {
 	return urlInput{}
 }
 
+// GlobaConfigType returns the type used to store global configuration.
+// CallURL doesn't need any global config.
+func (a CallURL) GlobalConfigType() interface{} {
+	return nil
+}
+
 // Execute actually executes the action
 func (a CallURL) Execute(input interface{}, c domain.ActionContext) error {
 	var bodyr io.Reader

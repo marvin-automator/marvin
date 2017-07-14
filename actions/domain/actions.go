@@ -69,9 +69,10 @@ func (a *ActionMeta) SetMeta(key, name, description string, isTrigger, requiresT
 // An Action encapsulates how to perform a certain task
 type Action interface {
 	// Meta returns metadata about the action
+	// To avoid having to implement this, embed an instance of ActionMeta
 	Meta() ActionMeta
 
-	// Called with any data from the front end that is needed to set up the action.
+	// Called with any data from the front end that is needed to set up the action instance.
 	// The data is passed as raw JSON.
 	Setup(data string, c ActionContext) error
 
@@ -88,6 +89,15 @@ type Action interface {
 	Execute(input interface{}, c ActionContext) error
 	// The struct type of the data that this action will output.
 	OutputType(c ActionContext) interface{}
+	// GlobalConfigType should return an instance of a struct type, that'll
+	// hold global configuration data. This should be used for configuration data
+	// that's not account-specific, like API client secrets.
+	// If no global configuration is needed, return nil.
+	GlobalConfigType() interface{}
+	// Callback gets called when a callback URL is invoked
+	// It receives the state that was passed to GetCallbackURL,
+	// and should return a handler to handle the request.
+	Callback(state string) handlers.Handler
 }
 
 // A Trigger is an action that starts
@@ -96,10 +106,6 @@ type Trigger interface {
 	// Called when marvin is started, for triggers that
 	// need to run continuously.
 	Start(c ActionContext) error
-	// Callback gets called when a callback URL is invoked
-	// It receives the state that was passed to GetCallbackURL,
-	// and should return a handler to handle the request.
-	Callback(state string) handlers.Handler
 }
 
 // ActionContext gives an action access to data and functionality that can be useful when executing an action
@@ -110,12 +116,12 @@ type ActionContext interface {
 	// The InstanceStore is used to store data that's
 	// specific to the current instance of the action.
 	// This should be used to store the configuration settings
-	// for this particular step in a chore.
+	// for this particular step in a chore. It can also be used to accumulate/change data across invocations.
 	InstanceStore() Store
-	// GlobalStore is a Store that provides data that can be reused in any invocation of the action
-	// It's the action's responsibility to keep this store clean.
+	// AccountGlobalStore is a Store that provides data that can be reused in any invocation of the action
+	// within the current user's account. It's the action's responsibility to keep this store clean.
 	// The user can clear this store as well.
-	GlobalStore() Store
+	AccountGlobalStore() Store
 	// Returns a callbackURL that can be used to receive information from other services on the internet
 	// The URL is tied to the current instance of the action.
 	GetCallbackURL(state string) string
@@ -127,6 +133,11 @@ type ActionContext interface {
 	// You can call this as many times as you like to provide multiple outputs.
 	// In this case, the next step will be called multiple times.
 	Output(interface{})
+	// An action should call Done() when it is done sending outputs.
+	// A trigger should never call Done, as it should keep sending outputs until the chore is deleted
+	Done()
+	// Call Error to report an error outside of action functions that can return an error.
+	Error()
 }
 
 // Store is an interface for storing data.
@@ -137,4 +148,8 @@ type Store interface {
 	Put(key string, value interface{}) error
 	// Delete the ivalue associated with this key from the store.
 	Delete(key string) error
+	// GlobalConfig returns the global config object. It should be convertible to the type
+	// returned from Action.GlobalConfigType(), unless that returned nil, in which case this
+	// function returns nil.
+	GlobalConfig() interface{}
 }
