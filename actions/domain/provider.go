@@ -9,6 +9,7 @@ type BasicProvider struct {
 	groups       []Group
 	defaultGroup *BasicGroup
 	actions      map[string]Action
+	globalConfigType interface{}
 }
 
 // NewProvider creates a new BasicProvider
@@ -58,6 +59,19 @@ func (b *BasicProvider) NewGroup(name string) *BasicGroup {
 	g := &BasicGroup{b, name, make([]ActionMeta, 0)}
 	b.groups = append(b.groups, g)
 	return g
+}
+
+// GlobalConfigType returns a struct of the shape that'll hold global configuration
+// options for this provider, like API keys. Returns nil if no global configuration
+// is necessary.
+func (b *BasicProvider) GlobalConfigType() interface{} {
+	return b.globalConfigType
+}
+
+// Set the global configuration struct returned by GlobalConfigurationType. This is nil by default,
+// indicating that no global configuration is necessary.
+func (b *BasicProvider) SetGlobalConfigType(c interface{}) {
+	b.globalConfigType = c
 }
 
 // BasicGroup is a basic implementation of a group.
