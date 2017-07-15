@@ -109,7 +109,7 @@ type CallbackReceiver interface {
 type Trigger interface {
 	Action
 	// Called when marvin is started, for triggers that
-	// need to run continuously.
+	// need to run continuously. It'll be called once per instance.
 	Start(c ActionContext) error
 }
 
