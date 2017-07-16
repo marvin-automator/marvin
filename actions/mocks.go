@@ -30,7 +30,7 @@ func (m *MockProvider) Groups() []domain.Group {
 }
 
 // Action is the mocked implementation of Provider.Action
-func (m *MockProvider) Action(key string) domain.Action {
+func (m *MockProvider) Action(key string) domain.BaseAction {
 	args := m.Called(key)
 	return args.Get(0).(domain.Action)
 }
