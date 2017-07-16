@@ -14,7 +14,7 @@ type ActionProvider interface {
 	Groups() []Group
 
 	// The action method gives access to the interface for actually configuring and running actions.
-	Action(key string) Action
+	Action(key string) BaseAction
 
 	// GlobalConfigType should return an instance of a struct type, that'll
 	// hold global configuration data. This should be used for configuration data
@@ -72,8 +72,8 @@ func (a *ActionMeta) SetMeta(key, name, description string, isTrigger, requiresT
 	a.RequiresTestRun = requiresTestRun
 }
 
-// An Action encapsulates how to perform a certain task
-type Action interface {
+// BaseAction is the interface that Trigger and Action have in common
+type BaseAction interface {
 	// Meta returns metadata about the action
 	// To avoid having to implement this, embed an instance of ActionMeta
 	Meta() ActionMeta
@@ -81,20 +81,34 @@ type Action interface {
 	// Called with any data from the front end that is needed to set up the action instance.
 	// The data is passed as raw JSON.
 	Setup(data string, c ActionContext) error
+	// The struct type of the data that this action will output.
+	OutputType(c ActionContext) interface{}
+}
+
+// A trigger is an action that starts off a chore.
+type Trigger interface {
+	BaseAction
+
+	// Start starts off the trigger
+	Start(c ActionContext)
+}
+
+// An Action encapsulates how to perform a certain task
+type Action interface {
+	BaseAction
+
+	// Actually run the action
+	// If RequiresTestRun is true on the Meta,
+	// Execute will also be executed for test calls.
+	// The Context has an IsTestCall method that returns
+	// true in these calls, and false in normal calls.
+	Execute(input interface{}, c ActionContext) error
 
 	// Should return a struct of the type that this action expects
 	// as input.
 	// Note that this method is not called on Trigger actions, as
 	// they don't get input.
 	InputType(c ActionContext) interface{}
-	// Actually run the action
-	// If RequiresTestRun is true on the Meta, the
-	// first call to this method will be a test call.
-	// The Context has an IsTestCall method that returns
-	// true in this call, and false in every other call.
-	Execute(input interface{}, c ActionContext) error
-	// The struct type of the data that this action will output.
-	OutputType(c ActionContext) interface{}
 }
 
 // CallbackReceiver should be implemented by actions that want to receive requests from callback URLs.
@@ -103,14 +117,6 @@ type CallbackReceiver interface {
 	// It receives the state that was passed to GetCallbackURL,
 	// and should return a handler to handle the request.
 	Callback(state string, c ActionContext) handlers.Handler
-}
-
-// A Trigger is an action that starts
-type Trigger interface {
-	Action
-	// Called when marvin is started, for triggers that
-	// need to run continuously. It'll be called once per instance.
-	Start(c ActionContext) error
 }
 
 // ActionContext gives an action access to data and functionality that can be useful when executing an action

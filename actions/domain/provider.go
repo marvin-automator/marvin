@@ -8,7 +8,7 @@ type BasicProvider struct {
 
 	groups       []Group
 	defaultGroup *BasicGroup
-	actions      map[string]Action
+	actions      map[string]BaseAction
 	globalConfigType interface{}
 }
 
@@ -36,12 +36,12 @@ func (b *BasicProvider) Groups() []Group {
 }
 
 // Action returns the action with the given key
-func (b *BasicProvider) Action(key string) Action {
+func (b *BasicProvider) Action(key string) BaseAction {
 	return b.actions[key]
 }
 
 // Add adds an action to the provider
-func (b *BasicProvider) Add(a Action) {
+func (b *BasicProvider) Add(a BaseAction) {
 	g := b.getOrCreateDefaultGroup()
 	g.Add(a)
 }
@@ -93,7 +93,7 @@ func (b *BasicGroup) Actions() []ActionMeta {
 }
 
 // Add adds an action to this group.
-func (b *BasicGroup) Add(a Action) {
+func (b *BasicGroup) Add(a BaseAction) {
 	b.metas = append(b.metas, a.Meta())
 	b.provider.actions[a.Meta().Key] = a
 }
