@@ -75,4 +75,14 @@ func (e *Executor) actionToTrigger(a domain.BaseAction) (domain.Trigger, error) 
 	return nil, fmt.Errorf("Action %v is first of a chore, but doesn't implement the Trigger interface.", a.Meta().Key)
 }
 
+// StopAllActions shuts down all the currently running actions.
+func (e *Executor) StopAllActions() {
+	cancelAllActions()
+}
+
+// CancelChore cancels any actions runing for the chore with the given chore ID.
+func (e *Executor) CancelChore(cid string) {
+	getChoreContext(cid).cancel()
+}
+
 
