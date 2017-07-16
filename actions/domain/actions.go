@@ -2,6 +2,7 @@ package domain
 
 import (
 	"github.com/bigblind/marvin/handlers"
+	"github.com/bigblind/marvin/app/domain"
 )
 
 // ActionProvider provides a list of related actions.
@@ -147,8 +148,8 @@ type ActionContext interface {
 	// An action should call Done() when it is done sending outputs.
 	// A trigger should never call Done, as it should keep sending outputs until the chore is deleted
 	Done()
-	// Call Error to report an error outside of action functions that can return an error.
-	Error()
+	// Logger returns a Logger instance actions can use to log messages that help users understand what's going on.
+	Logger() domain.Logger
 }
 
 // Store is an interface for storing data.

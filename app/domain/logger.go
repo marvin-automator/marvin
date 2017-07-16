@@ -1,4 +1,4 @@
-package interactors
+package domain
 
 import "github.com/gobuffalo/buffalo"
 

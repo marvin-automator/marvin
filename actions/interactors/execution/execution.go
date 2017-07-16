@@ -5,12 +5,12 @@ import (
 	accountsdomain "github.com/bigblind/marvin/accounts/domain"
 	"fmt"
 	"context"
-	"github.com/bigblind/marvin/app/interactors"
+	"github.com/bigblind/marvin/app/domain"
 )
 
 // SetupExecutionEnvironment should be called by the main function to set up some global variables that will be used
 // when executing actions.
-func SetupExecutionEnvironment(c context.Context, l interactors.Logger) {
+func SetupExecutionEnvironment(c context.Context, l domain.Logger) {
 	globalActionContext, cancelAllActions = context.WithCancel(c)
 	globalActionLogger = l
 }
@@ -60,6 +60,7 @@ func (e *Executor) startChore(c domain.Chore) error {
 	}
 
 	ctx := newActionContext(c, act, inst)
+	ctx.logger.Infof("Starting Chore %v", c.ID)
 	go t.Start(ctx)
 	return nil
 }
@@ -84,5 +85,7 @@ func (e *Executor) StopAllActions() {
 func (e *Executor) CancelChore(cid string) {
 	getChoreContext(cid).cancel()
 }
+
+
 
 

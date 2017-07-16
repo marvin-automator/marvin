@@ -3,20 +3,20 @@ package execution
 import (
 	"github.com/bigblind/marvin/actions/domain"
 	"context"
-	"github.com/bigblind/marvin/app/interactors"
+	appdomain "github.com/bigblind/marvin/app/domain"
 )
 
 var (
 	globalActionContext context.Context
-	cancelAllActions context.CancelFunc
-	choreContexts = map[string]choreContext{}
-	globalActionLogger interactors.Logger
+	cancelAllActions    context.CancelFunc
+	choreContexts        = map[string]choreContext{}
+	globalActionLogger  appdomain.Logger
 )
 
 type choreContext struct {
 	context.Context
 	cancel context.CancelFunc
-	logger interactors.Logger
+	logger appdomain.Logger
 }
 
 func getChoreContext(cid string) choreContext {
@@ -25,18 +25,26 @@ func getChoreContext(cid string) choreContext {
 	}
 
 	ctx, cancel := context.WithCancel(globalActionContext)
-	return choreContext{
+
+	cc := choreContext{
 		Context: ctx,
 		cancel: cancel,
 		logger: globalActionLogger.WithField("chore", cid),
 	}
+
+	go func() {
+		<- ctx.Done()
+		cc.logger.Info("Stopping chore %v", cid)
+	}()
+
+	return cc
 }
 
 type actionContext struct {
-	context context.Context
-	Cancel context.CancelFunc
+	context    context.Context
+	Cancel     context.CancelFunc
 	isTestCall bool
-	logger interactors.Logger
+	logger     appdomain.Logger
 }
 
 // newActionContext creates a new ActionContext. ch should be the chore this action is executing in.
@@ -98,7 +106,7 @@ func (a *actionContext) Done() {
 }
 
 // The action should call Error to log en error, in cases where it isn't possible or appropriate to return an error.
-func (a *actionContext) Error() {
-	// Currently, this is a noop, but later, I want to add a mechanism for collecting these.
+func (a *actionContext) Logger() appdomain.Logger {
+	return a.logger
 }
 
