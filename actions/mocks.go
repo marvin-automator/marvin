@@ -35,6 +35,12 @@ func (m *MockProvider) Action(key string) domain.Action {
 	return args.Get(0).(domain.Action)
 }
 
+// GlobalConfigType is the mocked implementation of Provider.GlobalConfigType
+func (m *MockProvider) GlobalConfigType() interface{} {
+	args := m.Called()
+	return args.Get(0)
+}
+
 // MockRegistry is a Registry implementation used in tests
 type MockRegistry struct {
 	*mock.Mock
