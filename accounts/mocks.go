@@ -40,3 +40,10 @@ func (a *MockAccountStore) DeleteAccount(aid string) error {
 	vals := a.Called(aid)
 	return vals.Error(0)
 }
+
+
+// EachAccount mocks the EachAcount method of the AccountStore interface
+func(a *MockAccountStore) EachAccount(f func(domain.Account) error) error {
+	args := a.Called(f)
+	return args.Error(0)
+}

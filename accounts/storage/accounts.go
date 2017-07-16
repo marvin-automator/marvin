@@ -107,6 +107,25 @@ func (s AccountStore) DeleteAccount(aid string) error {
 	return b.Delete([]byte(aid))
 }
 
+// EachAccount executes f with each account in the system. If the database encounters an error,
+// it is returned. If f returns an error, iteration is stopped and the error is returned.
+func (s AccountStore) EachAccount(f func(a domain.Account) error) error {
+	b, err := s.getOrCreateAccountsBucket()
+	if err != nil {
+		return err
+	}
+
+	return b.ForEach(func(_, v []byte) error {
+		act := domain.Account{}
+		err := s.DecodeBytes(&act, v)
+		if err != nil {
+			return err
+		}
+
+		return f(act)
+	})
+}
+
 func (s AccountStore) getOrCreateAccountsBucket() (*bolt.Bucket, error) {
 	return s.CreateBucketIfNotExists("accounts")
 }

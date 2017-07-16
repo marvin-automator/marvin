@@ -75,3 +75,30 @@ func TestDeleteAccount(t *testing.T) {
 		require.EqualError(t, err, domain.ErrAccountNotFound.Error())
 	})
 }
+
+func TestEachAccount(t *testing.T) {
+	storage.WithTestDB(t, func(dbs storage.Store) {
+		s := NewAccountStore(dbs)
+		//insert some accounts
+		acs := map[string]domain.Account{}
+		acs["042"] = domain.Account{"042", "foo@example.com", []byte("nothashed")}
+		acs["043"] = domain.Account{"043", "bar@example.com", []byte("nothashed")}
+		acs["044"] = domain.Account{"044", "baz@example.com", []byte("nothashed")}
+		err := s.SaveAccount(acs["042"])
+		require.NoError(t, err)
+		err = s.SaveAccount(acs["043"])
+		require.NoError(t, err)
+		err = s.SaveAccount(acs["044"])
+		require.NoError(t, err)
+
+		err = s.EachAccount(func(a domain.Account) error {
+			delete(acs, a.ID)
+			return nil
+		})
+
+		// It shouldn't have returned an error
+		require.NoError(t, err)
+		// It should have been called with all the accounts, removing all of them from the map
+		require.Equal(t, 0, len(acs))
+	})
+}

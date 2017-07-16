@@ -51,5 +51,6 @@ type AccountStore interface {
 	SaveAccount(account Account) error
 	GetAccountByID(aid string) (Account, error)
 	GetAccountByEmail(email string) (Account, error)
+	EachAccount(func(a Account) error) error
 	DeleteAccount(id string) error
 }
