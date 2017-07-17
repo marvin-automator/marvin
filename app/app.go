@@ -12,6 +12,7 @@ import (
 
 	"context"
 	accounthandlers "github.com/bigblind/marvin/accounts/handlers"
+	actionhandlers "github.com/bigblind/marvin/actions/handlers"
 	"github.com/bigblind/marvin/handlers"
 )
 
@@ -33,6 +34,9 @@ func App() *buffalo.App {
 			SessionName: "marvin_session",
 			Context:     context.Background(),
 		})
+
+		// Automatically save sessions
+		app.Use(middleware.SessionSaver)
 
 		if ENV == "development" {
 			app.Use(middleware.ParameterLogger)
@@ -62,12 +66,17 @@ func App() *buffalo.App {
 		g := app.Group("/app")
 		g.Use(accountmiddleware.Middleware)
 
+		// API
+		//  Chores
+		g.GET("/chores", bf(actionhandlers.AccountChores))
+
 		app.ServeFiles("/assets", packr.NewBox("./public/assets"))
 	}
 
 	return app
 }
 
+// bf turns a marvin handler into a buffalo handler
 func bf(h handlers.Handler) buffalo.Handler {
 	return h.ToBuffalo()
 }
