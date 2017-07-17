@@ -56,3 +56,17 @@ type IDeleteAccount interface {
 	ByID(aid string) error
 	ByEmail(email string) error
 }
+
+// GetAccount is an interactor for getting accounts
+type GetAccount struct {
+	accountStore domain.AccountStore
+}
+
+// ByID returns the account with the given ID.
+func (g GetAccount) ByID(aid string) (Account, error) {
+	a, err := g.accountStore.GetAccountByID(aid)
+	if err != nil {
+		return Account{}, err
+	}
+	return Account{a.ID, a.Email}, nil
+}
