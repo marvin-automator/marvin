@@ -88,9 +88,16 @@ func NewReadOnlyStore() (Store, error) {
 
 // Close closes the store. Always call either this or RollBack when you're done.
 func (s Store) Close() {
-	err := s.Tx.Commit()
-	if err != nil {
-		panic(err)
+	if s.Writable() {
+		err := s.Tx.Commit()
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		err := s.Tx.Rollback()
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
