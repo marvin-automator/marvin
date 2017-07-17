@@ -1,6 +1,8 @@
 package interactors
 
-import "github.com/bigblind/marvin/actions/domain"
+import (
+	"github.com/bigblind/marvin/actions/domain"
+)
 
 // The Registry interactor gives access to the available actions.
 type Registry struct {
@@ -9,9 +11,9 @@ type Registry struct {
 
 // Group represents a group of actions.
 type Group struct {
-	Name     string
-	Provider string
-	actions  []domain.ActionMeta
+	Name     string `json:"name"`
+	Provider string `json:"provider"`
+	Actions  []domain.ActionMeta `json:"actions"`
 }
 
 // NewRegistryInteractor returns a new instance of the Registry interactors
