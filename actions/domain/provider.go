@@ -18,6 +18,7 @@ func NewProvider(key, name, description string) *BasicProvider {
 		key:         key,
 		name:        name,
 		description: description,
+		actions: map[string]BaseAction{},
 	}
 
 	Registry.Register(&b)

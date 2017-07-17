@@ -3,7 +3,14 @@ package domain
 import "sync"
 
 // Registry maps provider keys to provider instances
-var Registry ProviderRegistry = new(registry)
+var Registry ProviderRegistry = newRegistry()
+
+func newRegistry() *registry {
+	r := registry{
+		providers: map[string]ActionProvider{},
+	}
+	return &r
+}
 
 type registry struct {
 	providers map[string]ActionProvider
@@ -30,7 +37,7 @@ func (r *registry) Register(p ActionProvider) {
 
 // Providers returns a slice of available providers
 func (r *registry) Providers() []ProviderMeta {
-	l := make([]ProviderMeta, len(r.providers))
+	l := make([]ProviderMeta, 0)
 	for _, p := range r.providers {
 		l = append(l, p.Meta())
 	}
