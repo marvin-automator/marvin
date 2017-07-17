@@ -2,11 +2,13 @@ package interactors
 
 import "github.com/bigblind/marvin/actions/domain"
 
-type Chores struct {
+// GetChores is an interactor for retrieving chores
+type GetChores struct {
 	ChoreStore domain.ChoreStore
 }
 
-func (c Chores) GetForAccount(aid string) ([]domain.Chore, error) {
+// ForAccount returns the chores owned by account with ID aid.
+func (c GetChores) ForAccount(aid string) ([]domain.Chore, error) {
 	cs, err := c.ChoreStore.GetAccountChores(aid)
 	if cs == nil {
 		cs = []domain.Chore{}
