@@ -5,12 +5,12 @@ import (
 	accountsdomain "github.com/bigblind/marvin/accounts/domain"
 	"fmt"
 	"context"
-	"github.com/bigblind/marvin/app/domain"
+	appdomain "github.com/bigblind/marvin/app/domain"
 )
 
 // SetupExecutionEnvironment should be called by the main function to set up some global variables that will be used
 // when executing actions.
-func SetupExecutionEnvironment(c context.Context, l domain.Logger) {
+func SetupExecutionEnvironment(c context.Context, l appdomain.Logger) {
 	globalActionContext, cancelAllActions = context.WithCancel(c)
 	globalActionLogger = l
 }
