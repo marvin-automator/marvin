@@ -7,6 +7,9 @@ import (
 	"log"
 	"github.com/bigblind/marvin/actions/interactors/execution"
 	"github.com/bigblind/marvin/app/domain"
+
+	// import the built-in providers so they get registered
+	_ "github.com/bigblind/marvin/actions/providers"
 )
 
 func main() {
