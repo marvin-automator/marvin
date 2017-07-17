@@ -8,11 +8,12 @@ import (
 	"github.com/bigblind/marvin/accounts"
 )
 
+// The AccountChores handler responds with the current account's chores in JSON.
 func AccountChores(c handlers.Context) error {
 	return c.WithReadableStore(func(s storage.Store) error {
 		cs := actionstorage.NewChoreStore(s)
-		in := interactors.Chores{cs}
-		chores, err := in.GetForAccount(accounts.CurrentAccount(c).ID)
+		in := interactors.GetChores{cs}
+		chores, err := in.ForAccount(accounts.CurrentAccount(c).ID)
 
 		if err != nil {
 			return c.Error(500, err)

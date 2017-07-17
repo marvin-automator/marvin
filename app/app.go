@@ -69,6 +69,8 @@ func App() *buffalo.App {
 		// API
 		//  Chores
 		g.GET("/chores", bf(actionhandlers.AccountChores))
+		//  Actions
+		g.GET("/actions", bf(actionhandlers.ActionGroups))
 
 		app.ServeFiles("/assets", packr.NewBox("./public/assets"))
 	}
