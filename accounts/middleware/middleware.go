@@ -12,7 +12,7 @@ import (
 )
 
 // The key in the session where the uid of the currently logged-in user is stored.
-var uidKey = "accounts_uid"
+var uidKey = "login_uid"
 
 // Error used to check if the user needs to be redirected to the login page
 var errNeedsLogin = errors.New("errNeedsLogin to login")
@@ -27,6 +27,7 @@ func Middleware(next buffalo.Handler) buffalo.Handler {
 
 		// Get the id of the currently logged-in account, if any.
 		uid := c.Session().Get(uidKey)
+		c.Logger().Debugf("UID in session: %v", uid)
 
 		err := c.WithReadableStore(func(s storage.Store) error {
 			// Set up the necessary stores and interactor
@@ -42,6 +43,7 @@ func Middleware(next buffalo.Handler) buffalo.Handler {
 
 			// If accounts are not enabled, use the default account
 			if !req {
+				c.Logger().Debug("Login not required")
 				account, err = i.GetDefaultAccount()
 				if err != nil {
 					return err
@@ -58,6 +60,7 @@ func Middleware(next buffalo.Handler) buffalo.Handler {
 				// If there's no user with this ID...
 				if err == domain.ErrAccountNotFound {
 					// ... Make them log in again
+					c.Logger().Debug("No user with ID %v", uid)
 					return errNeedsLogin
 					//Any other error should be returned as normal
 				} else if err != nil {
@@ -66,6 +69,7 @@ func Middleware(next buffalo.Handler) buffalo.Handler {
 			}
 
 			// Save the account in the context and session.
+			c.Logger().Debug("Account found, store it in the session")
 			c.Set("account", account)
 			c.Session().Set(uidKey, account.ID)
 			return nil
