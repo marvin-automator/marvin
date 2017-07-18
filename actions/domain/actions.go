@@ -3,6 +3,7 @@ package domain
 import (
 	"github.com/bigblind/marvin/handlers"
 	"github.com/bigblind/marvin/app/domain"
+	iddomain "github.com/bigblind/marvin/identityproviders/domain"
 )
 
 // ActionProvider provides a list of related actions.
@@ -35,12 +36,33 @@ type Group interface {
 	Name() string
 }
 
+type IdentityProtocol uint8
+
+const (
+	None IdentityProtocol = iota
+	OAuth1 IdentityProtocol = iota
+	OAuth2 IdentityProtocol = iota
+)
+
 // ProviderMeta stores metadata about a set of actions
 type ProviderMeta struct {
 	Name        string
 	Description string
 	// The key should uniquely identify the provider
-	Key string
+	Key         string
+	// The protocol that should be used for getting identities to use with the actions for this provider.
+	// Use None if you don't need a 3rd-party identity.
+	//
+	// If your provider does require 3rd-party identities, your GlobalConfigType must have the following fields:
+	// ClientID string // Some providers call this a consumer ID, App ID, or other name.
+	// ClientSecret string // Some  providers may call this the Consumer Secret or App Secret
+	ReequiresIdentityProtocol IdentityProtocol
+	// If 3rd-party identities are required, AuthorizationEndpoint is the authorization endpoint of the provider
+	AuthorizationEndpoint string
+	// If 3rd-party identities are required, TokenEndpoint is the URL where a token can be obtained
+	TokenEndpoint string
+	// If 3rd-party identities are required, and uses Oauth 1.0, RequestTokenEndpoint is the URL where a request token can be obtained.
+	RequestTokenEndpoint string
 }
 
 // ActionMeta stores metadata about a specific action
@@ -55,6 +77,8 @@ type ActionMeta struct {
 	IsTrigger bool
 	// Whether this action needs to do a test run to get the output schema
 	RequiresTestRun bool
+	// Whether this action requires a 3rd-party identity
+	RequiresIdentity bool
 }
 
 // Meta returns itself. This is so that action
@@ -65,12 +89,13 @@ func (a ActionMeta) Meta() ActionMeta {
 }
 
 // SetMeta here is used as follows: Embed an ActionMeta in your action. Then, you can call this method on a pointer to the action to easily set the meta information.
-func (a *ActionMeta) SetMeta(key, name, description string, isTrigger, requiresTestRun bool) {
+func (a *ActionMeta) SetMeta(key, name, description string, isTrigger, requiresTestRun bool, requiresIdentity bool) {
 	a.Key = key
 	a.Name = name
 	a.Description = description
 	a.IsTrigger = isTrigger
 	a.RequiresTestRun = requiresTestRun
+	a.RequiresIdentity = requiresIdentity
 }
 
 // BaseAction is the interface that Trigger and Action have in common
@@ -134,6 +159,8 @@ type ActionContext interface {
 	// within the current user's account. It's the action's responsibility to keep this store clean.
 	// The user can clear this store as well.
 	AccountGlobalStore() Store
+	// Identity Returns the 3rd-party identity to use for this action.
+	Identity() iddomain.Identity
 	// Returns a callbackURL that can be used to receive information from other services on the internet
 	// The URL is tied to the current instance of the action.
 	GetCallbackURL(state string) string

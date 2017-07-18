@@ -15,7 +15,7 @@ import (
 func init() {
 	p := domain.NewProvider("url", "URL", "Actions triggering and triggered-by HTTP requests.")
 	a := CallURL{}
-	(&a).SetMeta("call_url", "Send a HTTP request", "Send an HtTP (web) request to a URL", false, true)
+	(&a).SetMeta("call_url", "Send a HTTP request", "Send an HtTP (web) request to a URL", false, true, false)
 	p.Add(a)
 }
 
