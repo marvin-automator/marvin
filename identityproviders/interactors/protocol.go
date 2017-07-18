@@ -3,7 +3,6 @@ package interactors
 import (
 	"net/http"
 	"context"
-	"github.com/bigblind/marvin/identityproviders/domain"
 )
 
 type IdentityProtocol int
@@ -58,9 +57,9 @@ type ProtocolConfig struct {
 type Protocol interface {
 	// AuthorizationURL returns the URL that users should be redirected to to obtain authorization.
 	// Scopes will be a comma-separated list of scopes
-	AuthorizationURL(conf ProtocolConfig, c context.Context) (string, error)
+	AuthorizationURL(conf ProtocolConfig, state string, c context.Context) (string, error)
 	// GetToken obtains a token from the authentication provider, given the request sent to the callback URL
-	GetToken(req http.Request, conf ProtocolConfig, c context.Context) (string, error)
+	GetToken(req http.Request, state string, conf ProtocolConfig, c context.Context) (string, error)
 	// GetHTTPClient returns a HTTP client where requests made using it carry authentication information for the provider
-	GetHTTPClient(token string, conf ProtocolConfig) (http.Client, error)
+	GetHTTPClient(token string, conf ProtocolConfig) (*http.Client, error)
 }
