@@ -4,6 +4,7 @@ import (
 	"github.com/bigblind/marvin/handlers"
 	"github.com/bigblind/marvin/app/domain"
 	iddomain "github.com/bigblind/marvin/identityproviders/domain"
+	"net/http"
 )
 
 // ActionProvider provides a list of related actions.
@@ -103,10 +104,6 @@ type BaseAction interface {
 	// Meta returns metadata about the action
 	// To avoid having to implement this, embed an instance of ActionMeta
 	Meta() ActionMeta
-
-	// Called with any data from the front end that is needed to set up the action instance.
-	// The data is passed as raw JSON.
-	Setup(data string, c ActionContext) error
 	// The struct type of the data that this action will output.
 	OutputType(c ActionContext) interface{}
 }
@@ -139,10 +136,20 @@ type Action interface {
 
 // CallbackReceiver should be implemented by actions that want to receive requests from callback URLs.
 type CallbackReceiver interface {
-	// Callback gets called when a callback URL is invoked
-	// It receives the state that was passed to GetCallbackURL,
-	// and should return a handler to handle the request.
-	Callback(state string, c ActionContext) handlers.Handler
+	// Callback gets called when a callback URL is invoked. It receives the path, relative to its callback URL.
+	Callback(req *http.Request, rw ActionResponseWriter, path string, c ActionContext)
+}
+
+// ActionResponseWriter is a http.ResponseWriter-derived interface
+// that actions use to respond to callback URLs
+type ActionResponseWriter interface{
+	http.ResponseWriter
+	// Send a json response with the given code. i will be marshalled into JSON.
+	JSON(code int, i interface{})
+	// Send an HTML response
+	HTML(code int, content string)
+	// Send a plaintext response
+	Text(code int, content string)
 }
 
 // ActionContext gives an action access to data and functionality that can be useful when executing an action
@@ -162,8 +169,10 @@ type ActionContext interface {
 	// Identity Returns the 3rd-party identity to use for this action.
 	Identity() iddomain.Identity
 	// Returns a callbackURL that can be used to receive information from other services on the internet
-	// The URL is tied to the current instance of the action.
-	GetCallbackURL(state string) string
+	// The URL is tied to the current invocation of the action. The domain and start of the path are fixed, buy
+	// you can provide your own path suffix to route things inside your action. The path suffix must always start with a /,
+	// or be the empty string.
+	GetCallbackURL(path string) string
 	// Whether this call is a test call.
 	// This will only return true in the first call to Execute() for instances of actions
 	// where RequiresTestCall is true.

@@ -35,12 +35,6 @@ type urlInput struct {
 	}
 }
 
-// Setup takes setup data from the frontend.
-// In this case, we don't need any other data than ourn input, so do nothing.
-func (a CallURL) Setup(data string, c domain.ActionContext) error {
-	return nil
-}
-
 // InputType returns the type that input json will be deserialized into.
 func (a CallURL) InputType(c domain.ActionContext) interface{} {
 	return urlInput{}
