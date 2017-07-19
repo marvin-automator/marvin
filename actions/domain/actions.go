@@ -73,6 +73,14 @@ type ActionMeta struct {
 	Name        string
 	Description string
 
+	// SetupStepPath, should either be an empty string if your action doesn't need a setup step, or a path that your
+	// action can handle via the callback URL. The response from this path will be included in an iframe during the
+	// action setup process. To indicate that the setup step is complete, call the following function in JavaScript:
+	//
+	//   window.top.postMessage("*", "done");
+	//
+	SetupStepPath string
+
 	// The key is used to retrieve the actual action object.
 	// Whether this action is a trigger
 	IsTrigger bool
