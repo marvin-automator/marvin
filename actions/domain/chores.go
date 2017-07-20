@@ -10,18 +10,19 @@ var ErrChoreNotFound = errors.New("chore not found")
 
 // An ActionInstance is an instance of an action in a Chore.
 type ActionInstance struct {
-	ID             string
-	ActionProvider string
-	Action         string
-	InputTemplate  string
+	ID             string `json:"id"`
+	ActionProvider string `json:"action_provider"`
+	Action         string `json:"action"`
+	InputTemplate  string `json:"input_template"`
+	Identity	   string `json:"identity"`
 }
 
 // A Chore is a workflow specified as a list of actions.
 type Chore struct {
-	ID      string
-	Name    string
-	Actions []ActionInstance
-	Created time.Time
+	ID      string			 `json:"id"`
+	Name    string           `json:"name"`
+	Actions []ActionInstance `json:"actions"`
+	Created time.Time        `json:""`
 }
 
 // ChoreStore is an interface for persisting chores.
