@@ -4,6 +4,8 @@ import (
 	"github.com/bigblind/marvin/actions/domain"
 	"context"
 	appdomain "github.com/bigblind/marvin/app/domain"
+	identdomain "github.com/bigblind/marvin/identityproviders/domain"
+	"net/http"
 )
 
 var (
@@ -80,7 +82,7 @@ func (a *actionContext) AccountGlobalStore() domain.Store {
 }
 
 // GetCallbackURL returns a url that actions can use to receive information from other (web) applications
-func (a *actionContext) GetCallbackURL(state string) string {
+func (a *actionContext) GetCallbackURL(path string) string {
 	panic("implement me")
 }
 
@@ -110,3 +112,6 @@ func (a *actionContext) Logger() appdomain.Logger {
 	return a.logger
 }
 
+func (a *actionContext) HTTPClient() http.Client{
+
+}
