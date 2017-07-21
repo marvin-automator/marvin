@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 )
 
+// PushTrigger is a trigger action that gets triggered when commits get pushed to a Github repository.
 type PushTrigger struct {
 	domain.ActionMeta
 }
@@ -19,6 +20,7 @@ func newPushTrigger() PushTrigger {
 	return pt
 }
 
+// PushOutput is the type that is output by this action.
 type PushOutput struct {
 	Ref string `json:"ref" description:"The full Git ref that was pushed. Example: 'refs/heads/master'.",json:"ref"`
 	Head string `json:"head" description:"The SHA of the most recent commit on ref after the push."`
@@ -30,15 +32,18 @@ type PushOutput struct {
 	Pusher   CommitAuthor `json:"pusher" description:"The Git author who pushed the changes."`
 }
 
+// OutputType returns a struct of the type that this action will output.
 func (p PushTrigger) OutputType(c domain.ActionContext) interface{} {
 	return PushOutput{}
 }
 
+// Start initializes the trigger
 func (p PushTrigger) Start(c domain.ActionContext) {
 	v := uuid.NewV4().String()
 	c.InstanceStore().Put("verifier", v)
 }
 
+// Callback gets called when the trigger receives a URL request to a URL it registered.
 func (p PushTrigger) Callback(req *http.Request, rw domain.ActionResponseWriter, path string, c domain.ActionContext) {
 	switch path {
 	case "/setup":

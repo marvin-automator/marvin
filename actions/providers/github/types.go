@@ -1,10 +1,12 @@
 package github
 
+// Resource represents GitHub API Resource
 type Resource struct {
 	URL string `json:"html_url" description:"The URL to visit to view the resource"`
 	APIEndpoint string `json:"url" description:"The API endpoint URL that represents this resource"`
 }
 
+// a CommitAuthor is an identity in Git
 type CommitAuthor struct {
 	Name string   `json:"name"`
 	Email string  `json:"email"`
@@ -18,6 +20,7 @@ type Commit struct {
 	IsDistinct bool `json:"distinct" description:"Whether this commit is distinct from any that were pushed before."`
 }
 
+// Repository is a GitHub repository
 type Repository struct {
 	Resource
 	ID string `json:"id" description:"Github's ID for the repository'"`
@@ -28,10 +31,10 @@ type Repository struct {
 	IsFork bool `json:"fork" description:"Whether the repository is a fork."`
 }
 
+// Use"r is a GitHub user.
 type User struct {
 	Resource
 	Username string `json:"login" description:"The user's public username'"`
 	ID string `json:"id" description:"GitHub's ID for the user"`
 	AvatarURL string `json:"avatar_url" description:"The URL to the user's avatar image.'"`
-
 }

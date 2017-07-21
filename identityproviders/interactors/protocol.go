@@ -22,7 +22,7 @@ func RegisterImplementation(p IdentityProtocol, impl Protocol) {
 
 func GetProtocol(p IdentityProtocol) Protocol {
 	return implementations[p]
-}
+}	
 
 // Endpoint represents a set of URLs offered by an identity
 // provider to handle the autorization protocol.
