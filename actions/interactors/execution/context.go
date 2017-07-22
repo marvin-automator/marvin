@@ -71,7 +71,7 @@ func newActionContext(ex Executor, ch domain.Chore, ac domain.BaseAction, inst d
 
 		chore: ch,
 		instance: inst,
-		actionMeta: ac.Meta()
+		actionMeta: ac.Meta(),
 
 	}
 	return &a

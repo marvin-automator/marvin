@@ -1,5 +1,12 @@
 package interactors
 
+import (
+	"net/http"
+	"github.com/bigblind/marvin/identityproviders/domain"
+	actiondomain "github.com/bigblind/marvin/actions/domain"
+	appdomain "github.com/bigblind/marvin/app/domain"
+)
+
 // IdentityProvider provides identities for actions.
 type IdentityProvider struct {
 	Provider      actiondomain.ActionProvider

@@ -3,9 +3,6 @@ package interactors
 import (
 	"net/http"
 	"context"
-	"github.com/bigblind/marvin/identityproviders/domain"
-	actiondomain "github.com/bigblind/marvin/actions/domain"
-	appdomain "github.com/bigblind/marvin/app/domain"
 )
 
 type IdentityProtocol int
