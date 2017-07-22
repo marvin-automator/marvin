@@ -162,18 +162,18 @@ type ActionResponseWriter interface{
 
 // ActionContext gives an action access to data and functionality that can be useful when executing an action
 type ActionContext interface {
-	// InvocationStore is a Store that stores data for the duration of the invocation of this action.
+	// InvocationStore is a KVStore that stores data for the duration of the invocation of this action.
 	// The data is automatically deleted when you call Done
-	InvocationStore() Store
+	InvocationStore() KVStore
 	// The InstanceStore is used to store data that's
 	// specific to the current instance of the action.
 	// This should be used to store the configuration settings
 	// for this particular step in a chore. It can also be used to accumulate/change data across invocations.
-	InstanceStore() Store
-	// AccountGlobalStore is a Store that provides data that can be reused in any invocation of the action
+	InstanceStore() KVStore
+	// AccountGlobalStore is a KVStore that provides data that can be reused in any invocation of the action
 	// within the current user's account. It's the action's responsibility to keep this store clean.
 	// The user can clear this store as well.
-	AccountGlobalStore() Store
+	AccountGlobalStore() KVStore
 	// HTTPClient returns a http.Client that'll make authenticated requests with the identity, selected for this action.
 	// If the action doesn't require a 3rd-party identity, this just returns an unmodified http.Client.
 	HTTPClient() http.Client
@@ -201,8 +201,8 @@ type ActionContext interface {
 	Logger() domain.Logger
 }
 
-// Store is an interface for storing data.
-type Store interface {
+// KVStore is an interface for storing data in actions.
+type KVStore interface {
 	// Get data from the store. Returns nil if the key isn't there.
 	Get(key string) (interface{}, error)
 	// Put the value into the store

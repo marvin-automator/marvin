@@ -78,18 +78,18 @@ func newActionContext(ex Executor, ch domain.Chore, ac domain.BaseAction, inst d
 }
 
 // InvocationStore returns a store valid for the duration of this invocation
-func (a *actionContext) InvocationStore() domain.Store {
+func (a *actionContext) InvocationStore() domain.KVStore {
 	panic("implement me")
 }
 
 // InstanceStore returns a store with data that is specific to this instance.
-func (a *actionContext) InstanceStore() domain.Store {
+func (a *actionContext) InstanceStore() domain.KVStore {
 	panic("implement me")
 }
 
 // AccountGlobalStore stores data that's accessible to all actions in this provider,
 // Data is partitioned by account.
-func (a *actionContext) AccountGlobalStore() domain.Store {
+func (a *actionContext) AccountGlobalStore() domain.KVStore {
 	panic("implement me")
 }
 
