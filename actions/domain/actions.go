@@ -209,4 +209,8 @@ type KVStore interface {
 	Put(key string, value interface{}) error
 	// Delete the ivalue associated with this key from the store.
 	Delete(key string) error
+	// Close needs to be called to free up resources on the database.
+	// Stores are automatically closed when the action that requested them finishes,
+	// but in triggers, it's important to close the store when as soon as possible
+	Close()
 }
