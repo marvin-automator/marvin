@@ -149,7 +149,7 @@ func (s Store) CreateBucketIfNotExists(name string) (*bolt.Bucket, error) {
 // is encountered down the path, that doesn't yet exist, it is created, and any further buckets in the path are created.
 // This function opens a temporary writable store if the store on which the method is called is read-only.
 // Returns the final bucket in the path.
-func (s Store) CreateBucketHierarchy(path []string) (*bolt.Bucket, error) {
+func (s Store) CreateBucketHierarchy(path... string) (*bolt.Bucket, error) {
 	var err error
 	if s.Tx.Writable() {
 		return s.createBucketHierarchy(path, s.Tx)
