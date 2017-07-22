@@ -19,12 +19,13 @@ type Identity struct {
 type IdentityFetcher interface{
 	// Given an http.Client that will automatically authorize requests,
 	// FetchIdentity should fetch the identity associated with the credentials.
-	FetchIdentity(c http.Client) Identity
+	FetchIdentity(c *http.Client) Identity
 }
 
 // An IdentityStore persists 3rd party identities
 type IdentityStore interface {
 	SaveIdentity(account, provider string, id Identity) error
+	GetIdentity(account, provider, id string) (Identity, error)
 	GetAccountIdentitiesForProvider(account, provider string) []Identity
 	DeleteIdentity(account, provider string, i Identity) error
 }

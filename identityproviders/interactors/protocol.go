@@ -3,6 +3,9 @@ package interactors
 import (
 	"net/http"
 	"context"
+	"github.com/bigblind/marvin/identityproviders/domain"
+	actiondomain "github.com/bigblind/marvin/actions/domain"
+	appdomain "github.com/bigblind/marvin/app/domain"
 )
 
 type IdentityProtocol int
@@ -22,7 +25,7 @@ func RegisterImplementation(p IdentityProtocol, impl Protocol) {
 
 func GetProtocol(p IdentityProtocol) Protocol {
 	return implementations[p]
-}	
+}
 
 // Endpoint represents a set of URLs offered by an identity
 // provider to handle the autorization protocol.
