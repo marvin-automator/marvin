@@ -22,7 +22,8 @@ type Chore struct {
 	ID      string			 `json:"id"`
 	Name    string           `json:"name"`
 	Actions []ActionInstance `json:"actions"`
-	Created time.Time        `json:""`
+	Created time.Time        `json:"created_at"`
+	Owner	string			 `json:"owner"`
 }
 
 // ChoreStore is an interface for persisting chores.
