@@ -62,6 +62,8 @@ type ProviderMeta struct {
 	TokenEndpoint string
 	// If 3rd-party identities are required, and uses Oauth 1.0, RequestTokenEndpoint is the URL where a request token can be obtained.
 	RequestTokenEndpoint string
+	// The scopes to require for a 3rd-party identity
+	Scopes []string
 }
 
 // ActionMeta stores metadata about a specific action
