@@ -4,8 +4,9 @@ import (
 	"github.com/bigblind/marvin/actions/domain"
 	"context"
 	appdomain "github.com/bigblind/marvin/app/domain"
-	identdomain "github.com/bigblind/marvin/identityproviders/domain"
 	"net/http"
+	idinteractors "github.com/bigblind/marvin/identityproviders/interactors"
+	"reflect"
 )
 
 var (
@@ -43,17 +44,23 @@ func getChoreContext(cid string) choreContext {
 }
 
 type actionContext struct {
+	exec	   Executor
 	context    context.Context
 	Cancel     context.CancelFunc
 	isTestCall bool
 	logger     appdomain.Logger
+
+	chore 	   domain.Chore
+	instance   domain.ActionInstance
+	actionMeta domain.ActionMeta
 }
 
 // newActionContext creates a new ActionContext. ch should be the chore this action is executing in.
-func newActionContext(ch domain.Chore, ac domain.BaseAction, inst domain.ActionInstance) *actionContext {
+func newActionContext(ex Executor, ch domain.Chore, ac domain.BaseAction, inst domain.ActionInstance) *actionContext {
 	cc := getChoreContext(ch.ID)
 	ctx, cancel := context.WithCancel(cc)
 	a := actionContext{
+		exec: ex,
 		context: ctx,
 		Cancel: cancel,
 		isTestCall: false,
@@ -61,6 +68,11 @@ func newActionContext(ch domain.Chore, ac domain.BaseAction, inst domain.ActionI
 			"action": ac.Meta().Key,
 			"action_instance": inst.ID,
 		}),
+
+		chore: ch,
+		instance: inst,
+		actionMeta: ac.Meta()
+
 	}
 	return &a
 }
@@ -117,6 +129,20 @@ func (a *actionContext) Logger() appdomain.Logger {
 	return a.logger
 }
 
-func (a *actionContext) HTTPClient() http.Client{
+// HTTPClient returns a http.Client that, if the action requires an identity, and everything is configured correctly,
+// will automatically make requests with the correct credentials.
+// In any other case, this returns http.DefaultClient.
+func (a *actionContext) HTTPClient() *http.Client{
+	ip := idinteractors.IdentityProvider{
+		Provider: a.exec.registry.Provider(a.instance.ActionProvider),
+		IdentityStore: a.exec.identityStore,
+		Logger: a.logger,
+	}
 
+	gc := a.GlobalConfig()
+	gcv := reflect.ValueOf(gc)
+	cid := gcv.FieldByName("ClientID").String()
+	csec := gcv.FieldByName("ClientSecret").String()
+
+	return ip.GetHTTPClient(cid, csec)
 }

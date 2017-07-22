@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"context"
 	appdomain "github.com/bigblind/marvin/app/domain"
+	iddomain "github.com/bigblind/marvin/identityproviders/domain"
 )
 
 // SetupExecutionEnvironment should be called by the main function to set up some global variables that will be used
@@ -19,6 +20,7 @@ func SetupExecutionEnvironment(c context.Context, l appdomain.Logger) {
 type Executor struct {
 	accountStore accountsdomain.AccountStore
 	choreStore domain.ChoreStore
+	identityStore iddomain.IdentityStore
 	registry domain.ProviderRegistry
 }
 
@@ -59,7 +61,7 @@ func (e *Executor) startChore(c domain.Chore) error {
 		return err
 	}
 
-	ctx := newActionContext(c, act, inst)
+	ctx := newActionContext(e, c, act, inst)
 	ctx.logger.Infof("Starting Chore %v", c.ID)
 	go t.Start(ctx)
 	return nil
