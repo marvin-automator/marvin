@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"errors"
 )
 
 var db *bolt.DB
@@ -142,4 +143,52 @@ func (s Store) CreateBucketIfNotExists(name string) (*bolt.Bucket, error) {
 		b = s.Tx.Bucket([]byte(name))
 	}
 	return b, err
+}
+
+// CreateBucketHierarchy creates a hierarchy of buckets, starting at the root bucket. Once a child bucket
+// is encountered down the path, that doesn't yet exist, it is created, and any further buckets in the path are created.
+// This function opens a temporary writable store if the store on which the method is called is read-only.
+// Returns the final bucket in the path.
+func (s Store) CreateBucketHierarchy(path []string) (*bolt.Bucket, error) {
+	var err error
+	if s.Tx.Writable() {
+		return s.createBucketHierarchy(path, s.Tx)
+	}
+	err = s.Tx.DB().Update(func(tx *bolt.Tx) error {
+		_, err2 := s.createBucketHierarchy(path, tx)
+		return err2
+	})
+	b, err = s.getBucketFromPath(path)
+	return b, err
+}
+
+func (s Store) createBucketHierarchy(path []string, tx *bolt.Tx) (*bolt.Bucket, error) {
+	var current *bolt.Bucket
+	var err error
+	for i, n := range path {
+		if i == 0 {
+			current, err = tx.CreateBucketIfNotExists([]byte(n))
+		} else {
+			current, err = current.CreateBucketIfNotExists([]byte(n))
+		}
+		if err != nil {
+			return current, err
+		}
+	}
+	return current, nil
+}
+
+func (s Store) getBucketFromPath(path []string, tx *bolt.Tx) (*bolt.Bucket, error) {
+	var current *bolt.Bucket
+	for i, n := range path {
+		if i == 0 {
+			current = tx.Bucket([]byte(n))
+		} else {
+			current = current.Bucket([]byte(n))
+		}
+		if current == nil {
+			return current, errors.New("Bucket not found " + n)
+		}
+	}
+	return current, nil
 }
