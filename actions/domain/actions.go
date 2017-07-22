@@ -186,6 +186,10 @@ type ActionContext interface {
 	// This will only return true in the first call to Execute() for instances of actions
 	// where RequiresTestCall is true.
 	IsTestCall() bool
+	// GlobalConfig returns the global config object. It should be convertible to the type
+	// returned from Action.GlobalConfigType(), unless that returned nil, in which case this
+	// function returns nil.
+	GlobalConfig() interface{}
 	// An action should call Output() to pass output on to the next action.
 	// You can call this as many times as you like to provide multiple outputs.
 	// In this case, the next step will be called multiple times.
@@ -205,8 +209,4 @@ type Store interface {
 	Put(key string, value interface{}) error
 	// Delete the ivalue associated with this key from the store.
 	Delete(key string) error
-	// GlobalConfig returns the global config object. It should be convertible to the type
-	// returned from Action.GlobalConfigType(), unless that returned nil, in which case this
-	// function returns nil.
-	GlobalConfig() interface{}
 }

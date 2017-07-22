@@ -96,6 +96,11 @@ func (a *actionContext) MarkTestCall() {
 	a.isTestCall = true
 }
 
+// GlobalConfig returns the global configuration object. This object can only be changed on the settingss page, so changes to the object will not be persisted.
+func (a *actionContext) GlobalConfig() interface{} {
+	panic("implement me")
+}
+
 // Output should be called by the action when it wants to send output to the next action
 func (a *actionContext) Output(interface{}) {
 	panic("implement me")
