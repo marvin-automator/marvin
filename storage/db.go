@@ -158,7 +158,7 @@ func (s Store) CreateBucketHierarchy(path... string) (*bolt.Bucket, error) {
 		_, err2 := s.createBucketHierarchy(path, tx)
 		return err2
 	})
-	b, err = s.getBucketFromPath(path)
+	b, err := s.getBucketFromPath(path, s.Tx)
 	return b, err
 }
 
