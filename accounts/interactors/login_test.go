@@ -2,19 +2,19 @@ package interactors
 
 import (
 	"errors"
-	"github.com/bigblind/marvin/accounts"
 	"github.com/bigblind/marvin/accounts/domain"
 	"github.com/bigblind/marvin/config"
 	configdomain "github.com/bigblind/marvin/config/domain"
 	"github.com/stretchr/testify/require"
 	"testing"
+	"github.com/bigblind/marvin/accounts/mocks"
 )
 
 func TestSuccessfulLogin(t *testing.T) {
 	acc, err := domain.NewAccount("test@example.com", "pwd")
 	require.NoError(t, err)
 	exp := Account{acc.ID, "test@example.com"}
-	ma := accounts.NewMockAccountStore()
+	ma := mocks.NewMockAccountStore()
 	ma.On("GetAccountByEmail", "test@example.com").Return(acc, nil)
 	mc := config.NewMockConfigStore()
 	mc.On("GetConfig").Return(configdomain.DefaultConfig, nil)
@@ -27,7 +27,7 @@ func TestSuccessfulLogin(t *testing.T) {
 
 func TestWrongPassword(t *testing.T) {
 	acc, err := domain.NewAccount("test@example.com", "pwd")
-	ma := accounts.NewMockAccountStore()
+	ma := mocks.NewMockAccountStore()
 	ma.On("GetAccountByEmail", "test@example.com").Return(acc, nil)
 	mc := config.NewMockConfigStore()
 	mc.On("GetConfig").Return(configdomain.DefaultConfig, nil)
@@ -39,7 +39,7 @@ func TestWrongPassword(t *testing.T) {
 }
 
 func TestAccountNotFoundReturnsFailedLogin(t *testing.T) {
-	ma := accounts.NewMockAccountStore()
+	ma := mocks.NewMockAccountStore()
 	ma.On("GetAccountByEmail", "test@example.com").Return(domain.Account{}, domain.ErrAccountNotFound)
 	mc := config.NewMockConfigStore()
 	mc.On("GetConfig").Return(configdomain.DefaultConfig, nil)
@@ -50,7 +50,7 @@ func TestAccountNotFoundReturnsFailedLogin(t *testing.T) {
 }
 
 func TestConfigStoreError(t *testing.T) {
-	ma := accounts.NewMockAccountStore()
+	ma := mocks.NewMockAccountStore()
 	configError := errors.New("something went wrong")
 	mc := config.NewMockConfigStore()
 	mc.On("GetConfig").Return(configdomain.DefaultConfig, configError)
@@ -62,7 +62,7 @@ func TestConfigStoreError(t *testing.T) {
 
 func TestAccountStoreError(t *testing.T) {
 	accountError := errors.New("something went wrong")
-	ma := accounts.NewMockAccountStore()
+	ma := mocks.NewMockAccountStore()
 	ma.On("GetAccountByEmail", "test@example.com").Return(domain.Account{}, accountError)
 	mc := config.NewMockConfigStore()
 	mc.On("GetConfig").Return(configdomain.DefaultConfig, nil)
@@ -73,7 +73,7 @@ func TestAccountStoreError(t *testing.T) {
 }
 
 func TestAccountsDisabled(t *testing.T) {
-	ma := accounts.NewMockAccountStore()
+	ma := mocks.NewMockAccountStore()
 	mc := config.NewMockConfigStore()
 	mc.On("GetConfig").Return(configdomain.Config{AccountsEnabled: false}, nil)
 

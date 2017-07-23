@@ -1,4 +1,4 @@
-package accounts
+package mocks
 
 import (
 	"github.com/bigblind/marvin/accounts/domain"

@@ -2,7 +2,7 @@ package interactors
 
 import (
 	"errors"
-	"github.com/bigblind/marvin/accounts"
+	"github.com/bigblind/marvin/accounts/mocks"
 	"github.com/bigblind/marvin/accounts/domain"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -10,7 +10,7 @@ import (
 )
 
 func TestCreateAccount(t *testing.T) {
-	ma := accounts.NewMockAccountStore()
+	ma := mocks.NewMockAccountStore()
 	ma.On("SaveAccount", mock.AnythingOfType("Account")).Return(nil)
 
 	ca := CreateAccount{ma}
@@ -22,7 +22,7 @@ func TestCreateAccount(t *testing.T) {
 }
 
 func TestDeleteAccountByID(t *testing.T) {
-	ma := accounts.NewMockAccountStore()
+	ma := mocks.NewMockAccountStore()
 	expectedError := errors.New("this was expected")
 	ma.On("DeleteAccount", "042").Return(expectedError)
 
@@ -32,7 +32,7 @@ func TestDeleteAccountByID(t *testing.T) {
 }
 
 func TestDeleteAccountByEmail(t *testing.T) {
-	ma := accounts.NewMockAccountStore()
+	ma := mocks.NewMockAccountStore()
 	act := domain.Account{"042", "test@example.com", []byte("nothashed")}
 	expectedError := errors.New("this was expected")
 	ma.On("GetAccountByEmail", "test@example.com").Return(act, nil)
