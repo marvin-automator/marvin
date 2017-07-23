@@ -41,13 +41,13 @@ func (o OAuth2) GetHTTPClient(token string, conf interactors.ProtocolConfig) (*h
 	oconf := makeOAuth2Config(conf)
 	t, err := tokenFromString(token)
 	if err != nil {
-		return http.Client{}, err
+		return http.DefaultClient, err
 	}
-	return oconf.Client(c, t), nil
+	return oconf.Client(context.TODO(), t), nil
 }
 
-func makeOAuth2Config(config interactors.ProtocolConfig) oauth2.Config {
-	return oauth2.Config{
+func makeOAuth2Config(config interactors.ProtocolConfig) *oauth2.Config {
+	o := oauth2.Config{
 		ClientID: config.Consumer,
 		ClientSecret: config.Secret,
 		Endpoint: oauth2.Endpoint{
@@ -57,6 +57,7 @@ func makeOAuth2Config(config interactors.ProtocolConfig) oauth2.Config {
 		RedirectURL: config.CallbackURL,
 		Scopes: config.Scopes,
 	}
+	return &o
 }
 
 func stringifyToken(t *oauth2.Token) string {

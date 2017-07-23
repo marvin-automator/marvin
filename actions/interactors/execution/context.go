@@ -44,7 +44,7 @@ func getChoreContext(cid string) choreContext {
 }
 
 type actionContext struct {
-	exec	   Executor
+	exec	   *Executor
 	context    context.Context
 	Cancel     context.CancelFunc
 	isTestCall bool
@@ -56,7 +56,7 @@ type actionContext struct {
 }
 
 // newActionContext creates a new ActionContext. ch should be the chore this action is executing in.
-func newActionContext(ex Executor, ch domain.Chore, ac domain.BaseAction, inst domain.ActionInstance) *actionContext {
+func newActionContext(ex *Executor, ch domain.Chore, ac domain.BaseAction, inst domain.ActionInstance) *actionContext {
 	cc := getChoreContext(ch.ID)
 	ctx, cancel := context.WithCancel(cc)
 	a := actionContext{
@@ -144,5 +144,5 @@ func (a *actionContext) HTTPClient() *http.Client{
 	cid := gcv.FieldByName("ClientID").String()
 	csec := gcv.FieldByName("ClientSecret").String()
 
-	return ip.GetHTTPClient(cid, csec)
+	return ip.GetHTTPClient(cid, csec, a.chore.Owner, a.instance.Identity)
 }
