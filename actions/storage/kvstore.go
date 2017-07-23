@@ -4,8 +4,8 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/bigblind/marvin/storage"
 	"github.com/bigblind/marvin/actions/domain"
-	"reflect"
 	"github.com/bigblind/marvin/actions/interactors"
+	"encoding/gob"
 )
 
 type kvStore struct {
@@ -15,18 +15,15 @@ type kvStore struct {
 
 // Get the value associated with a key
 func (kv kvStore) Get(key string) (interface{}, error) {
-	v := reflect.Value{}
+	var v interface{}
 	err := kv.store.DecodeBytes(&v, kv.bucket.Get([]byte(key)))
-	if err != nil {
-		return nil, err
-	}
-	return v.Interface(), nil
+	return v, err
 }
 
 // Associate a value with the given key
 func (kv kvStore) Put(key string, value interface{}) error {
-	val := reflect.ValueOf(value)
-	vb, err := kv.store.EncodeBytes(val)
+	gob.Register(value)
+	vb, err := kv.store.EncodeBytes(&value)
 	if err != nil {
 		return err
 	}

@@ -176,7 +176,7 @@ type ActionContext interface {
 	AccountGlobalStore() KVStore
 	// HTTPClient returns a http.Client that'll make authenticated requests with the identity, selected for this action.
 	// If the action doesn't require a 3rd-party identity, this just returns an unmodified http.Client.
-	HTTPClient() http.Client
+	HTTPClient() *http.Client
 	// Returns a callbackURL that can be used to receive information from other services on the internet
 	// The URL is tied to the current invocation of the action. The domain and start of the path are fixed, buy
 	// you can provide your own path suffix to route things inside your action. The path suffix must always start with a /,

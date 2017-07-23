@@ -20,7 +20,11 @@ func NewMockProvider() *MockProvider {
 // Meta is the mocked implementation of Provider.Meta
 func (m *MockProvider) Meta() domain.ProviderMeta {
 	args := m.Called()
-	return domain.ProviderMeta{args.String(0), args.String(1), args.String(2)}
+	return domain.ProviderMeta{
+		Name: args.String(0),
+		Key: args.String(1),
+		Description: args.String(2),
+	}
 }
 
 // Groups is the mocked implementation of Provider.Groups
