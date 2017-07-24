@@ -6,6 +6,12 @@ import (
 	"net/http"
 	"fmt"
 	"encoding/json"
+	"encoding/hex"
+	"crypto/sha512"
+	"crypto/hmac"
+	"crypto/sha1"
+	"bytes"
+	"bufio"
 )
 
 // PushTrigger is a trigger action that gets triggered when commits get pushed to a Github repository.
@@ -39,8 +45,7 @@ func (p PushTrigger) OutputType(c domain.ActionContext) interface{} {
 
 // Start initializes the trigger
 func (p PushTrigger) Start(c domain.ActionContext) {
-	v := uuid.NewV4().String()
-	c.InstanceStore().Put("verifier", v)
+	// We don't need any setup
 }
 
 // Callback gets called when the trigger receives a URL request to a URL it registered.
@@ -58,15 +63,23 @@ func (p PushTrigger) Callback(req *http.Request, rw domain.ActionResponseWriter,
 }
 
 func (p PushTrigger) handlePush(req *http.Request, rw domain.ActionResponseWriter, c domain.ActionContext) {
-	d := json.NewDecoder(req.Body)
+	bodybuf := bytes.NewBuffer([]byte{})
+	bodybuf.ReadFrom(req.Body)
+	mac := req.Header.Get("HTTP_X_HUB_SIGNATURE")
+	if !p.checkVerifier(bodybuf.Bytes(), mac, c) {
+		rw.Text(400,"Incorrect hmac")
+	}
+	bodybuf.Reset()
+	d := json.NewDecoder(bodybuf)
 	out := PushOutput{}
 	d.Decode(&out)
 	c.Output(out)
 }
 
 func (p PushTrigger) handleSetup(req *http.Request, rw domain.ActionResponseWriter, c domain.ActionContext) {
-	verifier, err := c.InstanceStore().Get("verifier")
+	verifier, err := p.makeVerifier(c)
 	if err != nil {
+		c.Logger().Error(err)
 		rw.Text(500, "Something went wrong:\n" + err.Error())
 		return
 	}
@@ -92,6 +105,23 @@ func (p PushTrigger) handleSetup(req *http.Request, rw domain.ActionResponseWrit
 func (p PushTrigger) handleUnknownPath(rw domain.ActionResponseWriter, path string) {
 	rw.Text(404, "Unknown path: " + path)
 }
+
+func (p PushTrigger) makeVerifier(c domain.ActionContext) (string, error) {
+	verifier := uuid.NewV4().String()
+	err := c.InstanceStore().Put("verifier", verifier)
+	return verifier, err
+}
+
+func (p PushTrigger) checkVerifier(body []byte, mac []byte, c domain.ActionContext) bool {
+	ver, err := c.InstanceStore().Get("verifier")
+	if err != nil {
+		return false
+	}
+	h := hmac.New(sha1.New, []byte(ver.(string)))
+	expected := h.Sum(nil)
+	return hmac.Equal(expected, mac)
+}
+
 
 
 
