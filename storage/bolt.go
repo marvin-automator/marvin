@@ -96,6 +96,12 @@ func (bs *boltStore) getBoltBucketFromPath(path []string) (*bolt.Bucket, error) 
 	return current, nil
 }
 
+func (bs *boltStore) Close() error {
+	if bs.tx.Writable() {
+		return bs.tx.Commit()
+	}
+	return bs.tx.Rollback()
+}
 
 type BoltBucket struct {
 	store boltStore

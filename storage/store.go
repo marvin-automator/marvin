@@ -14,6 +14,9 @@ type Store interface {
 
 	// GetBucketFromPath traverses the tree of buckets. If a bucket along the path doesn't exist, NotFoundError is returned.
 	GetBucketFromPath(path ...string) (Bucket, error)
+
+	// Close frees up the resources that the store uses.
+	Close() error
 }
 
 type Bucket interface {
