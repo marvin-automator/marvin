@@ -13,7 +13,7 @@ type boltStore struct {
 
 // NewStore creates a new Store
 func NewStore() Store {
-	return boltStore{nil, 0}
+	return &boltStore{nil, 0}
 }
 
 func (bs *boltStore) beginWrite() error {
@@ -40,8 +40,8 @@ func (bs *boltStore) endWrite() error {
 	return err
 }
 
-func (bs *boltStore) newBucket(path []string) boltBucket {
-	return boltBucket{bs, path}
+func (bs *boltStore) newBucket(path []string) *boltBucket {
+	return &boltBucket{bs, path}
 }
 
 func (bs *boltStore) Bucket(name string) (Bucket, error) {
@@ -50,7 +50,7 @@ func (bs *boltStore) Bucket(name string) (Bucket, error) {
 	bs.endWrite()
 
 	if err != nil {
-		return boltBucket{}, err
+		return &boltBucket{}, err
 	}
 	return bs.newBucket([]string{name}), nil
 }
@@ -123,7 +123,7 @@ func (bb *boltBucket) bolt() (*bolt.Bucket, error) {
 func (bb *boltBucket) Bucket(name string) (Bucket, error) {
 	b, err := bb.bolt()
 	if err != nil {
-		return boltBucket{}, err
+		return &boltBucket{}, err
 	}
 
 	_, err = b.CreateBucketIfNotExists([]byte(name))

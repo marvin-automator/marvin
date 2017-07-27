@@ -8,7 +8,7 @@ import (
 )
 
 func TestSaveAndGetAccount(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewAccountStore(dbs)
 		a1 := domain.Account{"042", "foo@example.com", []byte("nothashed")}
 		err := s.SaveAccount(a1)
@@ -22,7 +22,7 @@ func TestSaveAndGetAccount(t *testing.T) {
 }
 
 func TestGetAccountByEmailExists(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewAccountStore(dbs)
 		a1 := domain.Account{"042", "foo@example.com", []byte("nothashed")}
 		err := s.SaveAccount(a1)
@@ -37,7 +37,7 @@ func TestGetAccountByEmailExists(t *testing.T) {
 }
 
 func TestGetAccountByEmailDoesNotExist(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewAccountStore(dbs)
 		a1 := domain.Account{"042", "foo@example.com", []byte("nothashed")}
 		err := s.SaveAccount(a1)
@@ -49,7 +49,7 @@ func TestGetAccountByEmailDoesNotExist(t *testing.T) {
 }
 
 func TestGetDefaultAccount(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewAccountStore(dbs)
 		act, err := s.GetDefaultAccount()
 		require.NoError(t, err)
@@ -59,7 +59,7 @@ func TestGetDefaultAccount(t *testing.T) {
 }
 
 func TestDeleteAccount(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewAccountStore(dbs)
 		// Insert an account
 		act := domain.Account{"042", "foo@example.com", []byte("nothashed")}
@@ -77,7 +77,7 @@ func TestDeleteAccount(t *testing.T) {
 }
 
 func TestEachAccount(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewAccountStore(dbs)
 		//insert some accounts
 		acs := map[string]domain.Account{}

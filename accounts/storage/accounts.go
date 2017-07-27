@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/bigblind/marvin/accounts/domain"
 	"github.com/bigblind/marvin/storage"
-	"github.com/boltdb/bolt"
 )
 
 var accountFound = errors.New("account found") // nolint
@@ -21,46 +20,37 @@ func NewAccountStore(s storage.Store) AccountStore {
 
 // SaveAccount saves an account to the store
 func (s AccountStore) SaveAccount(acct domain.Account) error {
-	bucket, err := s.getOrCreateAccountsBucket()
+	bucket, err := s.accountsBucket()
 	if err != nil {
 		return err
 	}
 
-	ab, err := s.EncodeBytes(acct)
-	if err != nil {
-		return err
-	}
-
-	return bucket.Put([]byte(acct.ID), ab)
+	return bucket.Put(acct.ID, acct)
 }
 
 // GetAccountByID returns the account with the given ID. If no such account exists, domain.ErrAccountNotFound is returned as the error.
 func (s AccountStore) GetAccountByID(aid string) (domain.Account, error) {
-	bucket, err := s.getOrCreateAccountsBucket()
+	bucket, err := s.accountsBucket()
 	if err != nil {
 		return domain.Account{}, err
 	}
 
 	act := domain.Account{}
-	ab := bucket.Get([]byte(aid))
+	err = bucket.Get(aid, &act)
 
-	if ab == nil {
-		return act, domain.ErrAccountNotFound
-	}
-
-	return act, s.DecodeBytes(&act, ab)
+	return act, err
 }
 
 // GetAccountByEmail returns the account with the given email adress. If no such account exists, domain.ErrAccountNotFound is returned as the error.
 func (s AccountStore) GetAccountByEmail(email string) (domain.Account, error) {
-	bucket, err := s.getOrCreateAccountsBucket()
+	bucket, err := s.accountsBucket()
 	if err != nil {
 		return domain.Account{}, err
 	}
 
 	act := domain.Account{}
-	err = bucket.ForEach(func(_, ab []byte) error {
-		err = s.DecodeBytes(&act, ab)
+	err = bucket.Each(func(aid string) error {
+		err = bucket.Get(aid, &act)
 		if err == nil && act.Email == email {
 			// Returning an error stops the iteration.
 			// ForEach then returns the same error.
@@ -99,25 +89,25 @@ func (s AccountStore) GetDefaultAccount() (act domain.Account, err error) {
 
 // DeleteAccount deletes the account with the given ID.
 func (s AccountStore) DeleteAccount(aid string) error {
-	b, err := s.getOrCreateAccountsBucket()
+	b, err := s.accountsBucket()
 	if err != nil {
 		return err
 	}
 
-	return b.Delete([]byte(aid))
+	return b.Delete(aid)
 }
 
 // EachAccount executes f with each account in the system. If the database encounters an error,
 // it is returned. If f returns an error, iteration is stopped and the error is returned.
 func (s AccountStore) EachAccount(f func(a domain.Account) error) error {
-	b, err := s.getOrCreateAccountsBucket()
+	b, err := s.accountsBucket()
 	if err != nil {
 		return err
 	}
 
-	return b.ForEach(func(_, v []byte) error {
+	return b.Each(func(aid string) error {
 		act := domain.Account{}
-		err := s.DecodeBytes(&act, v)
+		err := b.Get(aid, &act)
 		if err != nil {
 			return err
 		}
@@ -126,6 +116,6 @@ func (s AccountStore) EachAccount(f func(a domain.Account) error) error {
 	})
 }
 
-func (s AccountStore) getOrCreateAccountsBucket() (*bolt.Bucket, error) {
-	return s.CreateBucketIfNotExists("accounts")
+func (s AccountStore) accountsBucket() (storage.Bucket, error) {
+	return s.Bucket("accounts")
 }
