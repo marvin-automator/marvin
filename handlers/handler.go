@@ -9,39 +9,11 @@ import (
 // Context is a marvin-specific context object.
 type Context struct {
 	buffalo.Context
+	store storage.Store
 }
 
-// WithWritableStore executes the given function with a writable Store instance.
-// The store is automatically closed when the function returns.
-// If the function returns an error, any changes made to the store are rolled back.
-func (c *Context) WithWritableStore(f func(storage.Store) error) error {
-	s, err := storage.NewWritableStore()
-	if err != nil {
-		return err
-	}
-
-	err = f(s)
-	if err != nil {
-		s.RollBack()
-	} else {
-		s.Close()
-	}
-
-	return err
-}
-
-// WithReadableStore executes the given function with a store in read-only mode.
-// If the f returns an error, that same error is returned.
-func (c Context) WithReadableStore(f func(storage.Store) error) error {
-	s, err := storage.NewReadOnlyStore()
-	if err != nil {
-		return err
-	}
-
-	err = f(s)
-	s.Close()
-
-	return err
+func (c Context) Store() storage.Store {
+	return c.store
 }
 
 // Renderer returns a buffalo rendering engine, configured to use the main application layout file
@@ -59,8 +31,14 @@ type Handler func(Context) error
 
 // ToBuffalo turns returns a Buffalo handler that calls this one
 func (h Handler) ToBuffalo() buffalo.Handler {
+	s := storage.NewStore()
 	return func(bc buffalo.Context) error {
-		c := Context{bc}
+		defer func() {
+			<- bc.Done() // When the context is done with; close the store.
+			s.Close()
+		}()
+
+		c := Context{bc, s}
 		return h(c)
 	}
 }
