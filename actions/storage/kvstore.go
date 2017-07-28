@@ -77,7 +77,7 @@ func gobEncode(value interface{}) ([]byte, error) {
 	gob.Register(value)
 	buf := bytes.NewBuffer([]byte{})
 	enc := gob.NewEncoder(buf)
-	err := enc.Encode(value)
+	err := enc.Encode(&value)
 	return buf.Bytes(), err
 }
 
