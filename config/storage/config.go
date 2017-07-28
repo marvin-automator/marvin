@@ -16,16 +16,19 @@ func NewConfigStore(s storage.Store) ConfigStore {
 }
 
 // GetConfig returns the current Config object
-func (s ConfigStore) GetConfig() (c domain.Config, err error) {
-	c = domain.DefaultConfig
+func (s ConfigStore) GetConfig() (domain.Config, error) {
+	c := domain.DefaultConfig
 
 	bucket, err := s.configBucket()
 	if err != nil {
-		return
+		return c, err
 	}
 
 	err = bucket.Get("config", &c)
-	return
+	if err != nil && err != storage.NotFoundError {
+		return c, err
+	}
+	return c, nil
 }
 
 // SaveConfig sets the given config object to be the current one.
