@@ -13,31 +13,44 @@ type boltStore struct {
 
 // NewStore creates a new Store
 func NewStore() Store {
-	return &boltStore{nil, 0}
+	tx, err := db.Begin(false)
+	if err != nil {
+		panic(err)
+	}
+	return &boltStore{tx, 0}
 }
 
-func (bs *boltStore) beginWrite() error {
+func (bs *boltStore) beginWrite() {
 	var err error
 	if bs.writers == 0 {
-		bs.tx.Rollback()
+		err = bs.tx.Rollback()
+		if err != nil {
+			panic(err)
+		}
+
 		bs.tx, err = db.Begin(true)
+		if err != nil {
+			panic(err)
+		}
 	}
 	bs.writers += 1
-	return err
 }
 
-func (bs *boltStore) endWrite() error {
+func (bs *boltStore) endWrite() {
 	var err error
 	bs.writers -= 1
 
-	if bs.writers == 1 {
+	if bs.writers == 0 {
 		err = bs.tx.Commit()
 		if err != nil {
-			return err
+			panic(err)
 		}
+
 		bs.tx, err = db.Begin(false)
+		if err != nil {
+			panic(err)
+		}
 	}
-	return err
 }
 
 func (bs *boltStore) newBucket(path []string) *boltBucket {
@@ -113,7 +126,7 @@ type boltBucket struct {
 	path []string
 }
 
-// bult returns the bolt Bucket corresponding to this bucket
+// bolt returns the bolt Bucket corresponding to this bucket
 func (bb *boltBucket) bolt() (*bolt.Bucket, error) {
 	return bb.bs.getBoltBucketFromPath(bb.path)
 }
@@ -121,6 +134,8 @@ func (bb *boltBucket) bolt() (*bolt.Bucket, error) {
 // Bucket gets the child bucket with the given bucket, creating it
 // if it doesn't exist.
 func (bb *boltBucket) Bucket(name string) (Bucket, error) {
+	bb.bs.beginWrite()
+	defer bb.bs.endWrite()
 	b, err := bb.bolt()
 	if err != nil {
 		return &boltBucket{}, err
@@ -148,10 +163,18 @@ func (bb *boltBucket) Get(key string, value interface{}) error {
 		return err
 	}
 
-	return bb.bs.DecodeBytes(value, b.Get([]byte(key)))
+	bytes := b.Get([]byte(key))
+	if bytes == nil {
+		return NotFoundError
+	}
+
+	return bb.bs.DecodeBytes(value, bytes)
 }
 
 func (bb *boltBucket) Put(key string, value interface{}) error {
+	bb.bs.beginWrite()
+	defer bb.bs.endWrite()
+
 	b, err := bb.bolt()
 	if err != nil {
 		return err
@@ -180,6 +203,8 @@ func (bb *boltBucket) Each(f func(key string) error) error {
 }
 
 func (bb *boltBucket) Delete(key string) error {
+	bb.bs.beginWrite()
+	defer bb.bs.endWrite()
 	b, err := bb.bolt()
 	if err != nil {
 		return err
