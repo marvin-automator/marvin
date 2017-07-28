@@ -9,7 +9,7 @@ import (
 )
 
 func TestKVStoreStoreGetSetSameStore(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewKVStoreStore(dbs)
 
 		kv, err := s.GetKVStore("bucket", "id")
@@ -51,7 +51,7 @@ func makeTestData() testData {
 }
 
 func TestKVStoreStoreGetSetSameStoreCustomValue(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewKVStoreStore(dbs)
 		value := makeTestData()
 

@@ -26,7 +26,7 @@ func newTestChore(id string) domain.Chore {
 }
 
 func TestSaveAndGetChore(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewChoreStore(dbs)
 		c := newTestChore("chore_1")
 		err := s.SaveChore("account_1", c)
@@ -40,7 +40,7 @@ func TestSaveAndGetChore(t *testing.T) {
 }
 
 func TestGetAccountChores(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewChoreStore(dbs)
 		c1 := newTestChore("chore_1")
 		c2 := newTestChore("chore_2")
@@ -64,7 +64,7 @@ func TestGetAccountChores(t *testing.T) {
 }
 
 func TestDeleteChore(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewChoreStore(dbs)
 		c1 := newTestChore("chore_1")
 		c2 := newTestChore("chore_2")
@@ -88,7 +88,7 @@ func TestDeleteChore(t *testing.T) {
 }
 
 func TestDeleteAccountChores(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewChoreStore(dbs)
 		c1 := newTestChore("chore_1")
 		c2 := newTestChore("chore_2")

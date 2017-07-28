@@ -3,7 +3,6 @@ package storage
 import (
 	"github.com/bigblind/marvin/actions/domain"
 	"github.com/bigblind/marvin/storage"
-	"github.com/boltdb/bolt"
 )
 
 // ChoreStore is an implementation of the domain.ChoreStore interface, using the storage package
@@ -18,64 +17,63 @@ func NewChoreStore(s storage.Store) ChoreStore {
 
 // SaveChore saves a Chore to the database, under the account with the ID aid.
 func (c ChoreStore) SaveChore(aid string, ch domain.Chore) error {
-	b, err := c.getOrCreateAccountChoresBucket(aid)
+	b, err := c.accountChoresBucket(aid)
 	if err != nil {
 		return err
 	}
 
-	cb, err := c.store.EncodeBytes(ch)
-	if err != nil {
-		return err
-	}
-
-	err = b.Put([]byte(ch.ID), cb)
+	err = b.Put(ch.ID, ch)
 	return err
 }
 
 // GetChore returns a chore with id cid, owned by account with ID aid.
-func (c ChoreStore) GetChore(aid, cid string) (ch domain.Chore, err error) {
-	b, err := c.getOrCreateAccountChoresBucket(aid)
-	if err == nil {
-		cb := b.Get([]byte(cid))
-		if cb == nil {
-			err = domain.ErrChoreNotFound
-			return
-		}
-		err = c.store.DecodeBytes(&ch, cb)
+func (c ChoreStore) GetChore(aid, cid string) (domain.Chore, error) {
+	b, err := c.accountChoresBucket(aid)
+
+	ch := domain.Chore{}
+	err = b.Get(cid, &ch)
+	if err == storage.NotFoundError {
+		return ch, domain.ErrChoreNotFound
 	}
-	return
+
+	return ch, err
 }
 
 // GetAccountChores returns all the chores from account with ID aid
-func (c ChoreStore) GetAccountChores(aid string) (cs []domain.Chore, err error) {
-	b, err := c.getOrCreateAccountChoresBucket(aid)
-	if err == nil {
-		err = b.ForEach(func(k, v []byte) error {
-			ch := domain.Chore{}
-			err = c.store.DecodeBytes(&ch, v)
-			if err == nil {
-				cs = append(cs, ch)
-			}
-			return err
-		})
+func (c ChoreStore) GetAccountChores(aid string) ([]domain.Chore, error) {
+	b, err := c.accountChoresBucket(aid)
+
+	if err != nil{
+		return []domain.Chore{}, err
 	}
-	return
+
+	cs := make([]domain.Chore, 0)
+	err = b.Each(func(k string) error {
+		ch := domain.Chore{}
+		err := b.Get(k, &ch)
+		if err == nil {
+			cs = append(cs, ch)
+		}
+		return err
+	})
+
+	return cs, err
 }
 
 // DeleteChore deletes a Chore owned by account aid, with ID cid
 func (c ChoreStore) DeleteChore(aid, cid string) (err error) {
-	b, err := c.getOrCreateAccountChoresBucket(aid)
+	b, err := c.accountChoresBucket(aid)
 	if err == nil {
-		err = b.Delete([]byte(cid))
+		err = b.Delete(cid)
 	}
 	return
 }
 
 // DeleteAccountChores deletes all chores from account ID aid
 func (c ChoreStore) DeleteAccountChores(aid string) error {
-	return c.store.Tx.DeleteBucket([]byte("chores_" + aid))
+	return c.store.DeleteBucket("chores_" + aid)
 }
 
-func (c ChoreStore) getOrCreateAccountChoresBucket(aid string) (*bolt.Bucket, error) {
-	return c.store.CreateBucketIfNotExists("chores_" + aid)
+func (c ChoreStore) accountChoresBucket(aid string) (storage.Bucket, error) {
+	return c.store.Bucket("chores_" + aid)
 }
