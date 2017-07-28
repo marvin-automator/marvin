@@ -8,7 +8,7 @@ import (
 )
 
 func TestGetConfigNoSaved(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewConfigStore(dbs)
 		c, err := s.GetConfig()
 		require.NoError(t, err)
@@ -18,7 +18,7 @@ func TestGetConfigNoSaved(t *testing.T) {
 }
 
 func TestSaveAndGetConfig(t *testing.T) {
-	storage.WithTestDB(t, func(dbs storage.Store) {
+	storage.WithTestDB(func(dbs storage.Store) {
 		s := NewConfigStore(dbs)
 		c1 := domain.DefaultConfig
 		c1.AccountsEnabled = true

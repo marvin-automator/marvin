@@ -3,7 +3,6 @@ package storage
 import (
 	"github.com/bigblind/marvin/config/domain"
 	"github.com/bigblind/marvin/storage"
-	"github.com/boltdb/bolt"
 )
 
 // ConfigStore is an implementation of the ConfigStore interface that uses the storage package as a backend.
@@ -20,34 +19,25 @@ func NewConfigStore(s storage.Store) ConfigStore {
 func (s ConfigStore) GetConfig() (c domain.Config, err error) {
 	c = domain.DefaultConfig
 
-	bucket, err := s.getOrCreateConfigBucket()
+	bucket, err := s.configBucket()
 	if err != nil {
 		return
 	}
 
-	b := bucket.Get([]byte("config"))
-	if b != nil {
-		err = s.DecodeBytes(&c, b)
-	}
-
+	err = bucket.Get("config", &c)
 	return
 }
 
 // SaveConfig sets the given config object to be the current one.
 func (s ConfigStore) SaveConfig(c domain.Config) error {
-	bucket, err := s.getOrCreateConfigBucket()
+	bucket, err := s.configBucket()
 	if err != nil {
 		return err
 	}
 
-	b, err := s.EncodeBytes(c)
-	if err != nil {
-		return err
-	}
-
-	return bucket.Put([]byte("config"), b)
+	return bucket.Put("config", c)
 }
 
-func (s ConfigStore) getOrCreateConfigBucket() (*bolt.Bucket, error) {
-	return s.CreateBucketIfNotExists("config")
+func (s ConfigStore) configBucket() (storage.Bucket, error) {
+	return s.Bucket("config")
 }
