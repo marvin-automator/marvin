@@ -6,12 +6,10 @@ import (
 	"net/http"
 	"fmt"
 	"encoding/json"
-	"encoding/hex"
-	"crypto/sha512"
 	"crypto/hmac"
 	"crypto/sha1"
 	"bytes"
-	"bufio"
+	"encoding/hex"
 )
 
 // PushTrigger is a trigger action that gets triggered when commits get pushed to a Github repository.
@@ -65,7 +63,10 @@ func (p PushTrigger) Callback(req *http.Request, rw domain.ActionResponseWriter,
 func (p PushTrigger) handlePush(req *http.Request, rw domain.ActionResponseWriter, c domain.ActionContext) {
 	bodybuf := bytes.NewBuffer([]byte{})
 	bodybuf.ReadFrom(req.Body)
-	mac := req.Header.Get("HTTP_X_HUB_SIGNATURE")
+	mac, err := hex.DecodeString(req.Header.Get("HTTP_X_HUB_SIGNATURE"))
+	if err != nil {
+		rw.Text(500, err.Error())
+	}
 	if !p.checkVerifier(bodybuf.Bytes(), mac, c) {
 		rw.Text(400,"Incorrect hmac")
 	}
