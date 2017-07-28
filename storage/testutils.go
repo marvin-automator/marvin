@@ -4,8 +4,8 @@ package storage
 // When that function returns, the test database is removed.
 func WithTestDB(f func(Store)) {
 	SetupTestDB()
+	defer DeleteDBFile()
 	s := NewStore()
+	defer s.Close()
 	f(s)
-	s.Close()
-	DeleteDBFile()
 }
