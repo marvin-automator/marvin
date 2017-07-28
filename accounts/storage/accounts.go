@@ -37,6 +37,9 @@ func (s AccountStore) GetAccountByID(aid string) (domain.Account, error) {
 
 	act := domain.Account{}
 	err = bucket.Get(aid, &act)
+	if err == storage.NotFoundError {
+		return domain.Account{}, domain.ErrAccountNotFound
+	}
 
 	return act, err
 }
