@@ -25,13 +25,9 @@ var _ = Add("accounts:create", func(c *Context) error {
 	globalstorage.Setup()
 	defer globalstorage.CloseDB()
 
-	dbs, err := globalstorage.NewWritableStore()
+	dbs := globalstorage.NewStore()
 	defer dbs.Close()
 	s := storage.NewAccountStore(dbs)
-
-	if err != nil {
-		panic(err)
-	}
 
 	action := interactors.CreateAccount{s}
 	acc, err := action.Execute(c.Args[0], c.Args[1])
@@ -45,16 +41,14 @@ var _ = Add("accounts:create", func(c *Context) error {
 
 // Grift to delete an account
 var _ = Add("accounts:delete", func(c *Context) error {
+	var err error
+
 	globalstorage.Setup()
 	defer globalstorage.CloseDB()
 
-	dbs, err := globalstorage.NewWritableStore()
+	dbs := globalstorage.NewStore()
 	defer dbs.Close()
 	s := storage.NewAccountStore(dbs)
-
-	if err != nil {
-		panic(err)
-	}
 
 	action := interactors.DeleteAccount{s}
 	arg := c.Args[0]
