@@ -116,9 +116,23 @@ func (bs *boltStore) Close() error {
 	return bs.tx.Rollback()
 }
 
-type BoltBucket struct {
-	store boltStore
-	path []string
+func (bs *boltStore) CreateBucketHierarchy(path ...string) (Bucket, error) {
+	var current Bucket
+	var err error
+
+	for i, name := range path {
+		if i == 0 {
+			current, err = bs.Bucket(name)
+		} else {
+			current, err = current.Bucket(name)
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return current, nil
 }
 
 type boltBucket struct {
