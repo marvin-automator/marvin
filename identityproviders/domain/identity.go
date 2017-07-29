@@ -26,6 +26,6 @@ type IdentityFetcher interface{
 type IdentityStore interface {
 	SaveIdentity(account, provider string, id Identity) error
 	GetIdentity(account, provider, id string) (Identity, error)
-	GetAccountIdentitiesForProvider(account, provider string) []Identity
+	GetAccountIdentitiesForProvider(account, provider string) ([]Identity, error)
 	DeleteIdentity(account, provider string, i Identity) error
 }
