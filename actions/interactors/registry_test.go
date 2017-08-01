@@ -1,8 +1,8 @@
 package interactors
 
 import (
-	"github.com/bigblind/marvin/actions"
-	"github.com/bigblind/marvin/actions/domain"
+	"github.com/marvin-automator/marvin/actions"
+	"github.com/marvin-automator/marvin/actions/domain"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

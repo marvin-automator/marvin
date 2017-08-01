@@ -3,8 +3,8 @@ package interactors
 import (
 	"errors"
 
-	"github.com/bigblind/marvin/accounts/domain"
-	configdomain "github.com/bigblind/marvin/config/domain"
+	"github.com/marvin-automator/marvin/accounts/domain"
+	configdomain "github.com/marvin-automator/marvin/config/domain"
 )
 
 // ErrAccountsDisabled is returned when trying to log in when accounts are disabled

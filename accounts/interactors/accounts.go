@@ -1,7 +1,7 @@
 package interactors
 
 import (
-	"github.com/bigblind/marvin/accounts/domain"
+	"github.com/marvin-automator/marvin/accounts/domain"
 )
 
 // The Account type that the actions return to handlers.

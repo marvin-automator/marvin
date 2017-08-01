@@ -5,7 +5,7 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/bigblind/marvin/app"
+	"github.com/marvin-automator/marvin/app"
 	. "github.com/markbates/grift/grift" // nolint
 )
 

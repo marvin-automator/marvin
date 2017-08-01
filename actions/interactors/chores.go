@@ -1,6 +1,6 @@
 package interactors
 
-import "github.com/bigblind/marvin/actions/domain"
+import "github.com/marvin-automator/marvin/actions/domain"
 
 // GetChores is an interactor for retrieving chores
 type GetChores struct {

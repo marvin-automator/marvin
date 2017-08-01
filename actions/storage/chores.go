@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"github.com/bigblind/marvin/actions/domain"
-	"github.com/bigblind/marvin/storage"
+	"github.com/marvin-automator/marvin/actions/domain"
+	"github.com/marvin-automator/marvin/storage"
 )
 
 // ChoreStore is an implementation of the domain.ChoreStore interface, using the storage package

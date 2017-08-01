@@ -3,7 +3,7 @@ package url
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/bigblind/marvin/actions/domain"
+	"github.com/marvin-automator/marvin/actions/domain"
 	"io"
 	"log"
 	"net/http"

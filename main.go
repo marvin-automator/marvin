@@ -1,15 +1,15 @@
 package main
 
 import (
-	"github.com/bigblind/marvin/app"
-	"github.com/bigblind/marvin/storage"
+	"github.com/marvin-automator/marvin/app"
+	"github.com/marvin-automator/marvin/storage"
 	"github.com/gobuffalo/envy"
 	"log"
-	"github.com/bigblind/marvin/actions/interactors/execution"
-	"github.com/bigblind/marvin/app/domain"
+	"github.com/marvin-automator/marvin/actions/interactors/execution"
+	"github.com/marvin-automator/marvin/app/domain"
 
 	// import the built-in providers so they get registered
-	_ "github.com/bigblind/marvin/actions/providers"
+	_ "github.com/marvin-automator/marvin/actions/providers"
 )
 
 func main() {

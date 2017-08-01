@@ -1,9 +1,9 @@
 package storage
 
 import (
-	"github.com/bigblind/marvin/storage"
-	"github.com/bigblind/marvin/actions/domain"
-	"github.com/bigblind/marvin/actions/interactors"
+	"github.com/marvin-automator/marvin/storage"
+	"github.com/marvin-automator/marvin/actions/domain"
+	"github.com/marvin-automator/marvin/actions/interactors"
 	"encoding/gob"
 	"bytes"
 )

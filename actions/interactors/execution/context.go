@@ -1,11 +1,11 @@
 package execution
 
 import (
-	"github.com/bigblind/marvin/actions/domain"
+	"github.com/marvin-automator/marvin/actions/domain"
 	"context"
-	appdomain "github.com/bigblind/marvin/app/domain"
+	appdomain "github.com/marvin-automator/marvin/app/domain"
 	"net/http"
-	idinteractors "github.com/bigblind/marvin/identityproviders/interactors"
+	idinteractors "github.com/marvin-automator/marvin/identityproviders/interactors"
 	"reflect"
 )
 

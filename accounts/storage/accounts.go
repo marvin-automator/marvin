@@ -2,8 +2,8 @@ package storage
 
 import (
 	"errors"
-	"github.com/bigblind/marvin/accounts/domain"
-	"github.com/bigblind/marvin/storage"
+	"github.com/marvin-automator/marvin/accounts/domain"
+	"github.com/marvin-automator/marvin/storage"
 )
 
 var accountFound = errors.New("account found") // nolint

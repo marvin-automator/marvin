@@ -1,11 +1,11 @@
 package middleware
 
 import (
-	"github.com/bigblind/marvin/accounts/domain"
-	"github.com/bigblind/marvin/accounts/interactors"
-	accountsstorage "github.com/bigblind/marvin/accounts/storage"
-	configstorage "github.com/bigblind/marvin/config/storage"
-	"github.com/bigblind/marvin/handlers"
+	"github.com/marvin-automator/marvin/accounts/domain"
+	"github.com/marvin-automator/marvin/accounts/interactors"
+	accountsstorage "github.com/marvin-automator/marvin/accounts/storage"
+	configstorage "github.com/marvin-automator/marvin/config/storage"
+	"github.com/marvin-automator/marvin/handlers"
 	"github.com/gobuffalo/buffalo"
 	"github.com/pkg/errors"
 )

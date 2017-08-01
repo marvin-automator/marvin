@@ -2,9 +2,9 @@ package interactors
 
 import (
 	"net/http"
-	"github.com/bigblind/marvin/identityproviders/domain"
-	actiondomain "github.com/bigblind/marvin/actions/domain"
-	appdomain "github.com/bigblind/marvin/app/domain"
+	"github.com/marvin-automator/marvin/identityproviders/domain"
+	actiondomain "github.com/marvin-automator/marvin/actions/domain"
+	appdomain "github.com/marvin-automator/marvin/app/domain"
 )
 
 // IdentityProvider provides identities for actions.

@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/bigblind/marvin/app/domain"
+	"github.com/marvin-automator/marvin/app/domain"
 	"net/http"
 )
 

@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"github.com/bigblind/marvin/config/domain"
-	"github.com/bigblind/marvin/storage"
+	"github.com/marvin-automator/marvin/config/domain"
+	"github.com/marvin-automator/marvin/storage"
 )
 
 // ConfigStore is an implementation of the ConfigStore interface that uses the storage package as a backend.

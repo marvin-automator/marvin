@@ -2,8 +2,8 @@
 # https://docs.docker.com/engine/userguide/eng-image/multistage-build/
 FROM gobuffalo/buffalo:v0.9.0 as builder
 
-RUN mkdir -p $GOPATH/src/github.com/bigblind/marvin2
-WORKDIR $GOPATH/src/github.com/bigblind/marvin2
+RUN mkdir -p $GOPATH/src/github.com/marvin-automator/marvin
+WORKDIR $GOPATH/src/github.com/marvin-automator/marvin
 
 # this will cache the npm install step, unless package.json changes
 ADD package.json .
@@ -23,6 +23,4 @@ COPY --from=builder /bin/app .
 
 EXPOSE 3000
 
-# Comment out to run the migrations before running the binary:
-# CMD /bin/app migrate; /bin/app
 CMD /bin/app

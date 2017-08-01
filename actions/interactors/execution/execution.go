@@ -1,12 +1,12 @@
 package execution
 
 import (
-	"github.com/bigblind/marvin/actions/domain"
-	accountsdomain "github.com/bigblind/marvin/accounts/domain"
+	"github.com/marvin-automator/marvin/actions/domain"
+	accountsdomain "github.com/marvin-automator/marvin/accounts/domain"
 	"fmt"
 	"context"
-	appdomain "github.com/bigblind/marvin/app/domain"
-	iddomain "github.com/bigblind/marvin/identityproviders/domain"
+	appdomain "github.com/marvin-automator/marvin/app/domain"
+	iddomain "github.com/marvin-automator/marvin/identityproviders/domain"
 )
 
 // SetupExecutionEnvironment should be called by the main function to set up some global variables that will be used

@@ -2,9 +2,9 @@ package grifts
 
 import (
 	"fmt"
-	"github.com/bigblind/marvin/accounts/interactors"
-	"github.com/bigblind/marvin/accounts/storage"
-	globalstorage "github.com/bigblind/marvin/storage"
+	"github.com/marvin-automator/marvin/accounts/interactors"
+	"github.com/marvin-automator/marvin/accounts/storage"
+	globalstorage "github.com/marvin-automator/marvin/storage"
 	. "github.com/markbates/grift/grift" // nolint
 	"strings"
 )

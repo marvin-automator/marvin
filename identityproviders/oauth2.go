@@ -2,7 +2,7 @@ package identityproviders
 
 import (
 	"net/http"
-	"github.com/bigblind/marvin/identityproviders/interactors"
+	"github.com/marvin-automator/marvin/identityproviders/interactors"
 	"context"
 	"golang.org/x/oauth2"
 	"strings"

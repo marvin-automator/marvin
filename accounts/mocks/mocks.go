@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"github.com/bigblind/marvin/accounts/domain"
+	"github.com/marvin-automator/marvin/accounts/domain"
 	"github.com/stretchr/testify/mock"
 )
 

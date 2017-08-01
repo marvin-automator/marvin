@@ -1,7 +1,7 @@
 package interactors
 
 import (
-	"github.com/bigblind/marvin/actions/domain"
+	"github.com/marvin-automator/marvin/actions/domain"
 )
 
 // The Registry interactor gives access to the available actions.

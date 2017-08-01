@@ -1,9 +1,9 @@
 package accounts
 
 import (
-	"github.com/bigblind/marvin/handlers"
+	"github.com/marvin-automator/marvin/handlers"
 
-	"github.com/bigblind/marvin/accounts/interactors"
+	"github.com/marvin-automator/marvin/accounts/interactors"
 )
 
 func CurrentAccount(c handlers.Context) interactors.Account {

@@ -1,7 +1,7 @@
 package github
 
 import (
-	"github.com/bigblind/marvin/actions/domain"
+	"github.com/marvin-automator/marvin/actions/domain"
 	"golang.org/x/oauth2/github"
 )
 

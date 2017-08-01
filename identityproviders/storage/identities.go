@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"github.com/bigblind/marvin/storage"
-	"github.com/bigblind/marvin/identityproviders/domain"
+	"github.com/marvin-automator/marvin/storage"
+	"github.com/marvin-automator/marvin/identityproviders/domain"
 )
 
 type IdentityStore struct {

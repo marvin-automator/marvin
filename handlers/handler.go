@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/bigblind/marvin/storage"
+	"github.com/marvin-automator/marvin/storage"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/buffalo/render"
 )

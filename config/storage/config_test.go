@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"github.com/bigblind/marvin/config/domain"
-	"github.com/bigblind/marvin/storage"
+	"github.com/marvin-automator/marvin/config/domain"
+	"github.com/marvin-automator/marvin/storage"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

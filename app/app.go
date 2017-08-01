@@ -6,14 +6,14 @@ import (
 	"github.com/gobuffalo/buffalo/middleware/csrf"
 	"github.com/gobuffalo/buffalo/middleware/i18n"
 
-	accountmiddleware "github.com/bigblind/marvin/accounts/middleware"
+	accountmiddleware "github.com/marvin-automator/marvin/accounts/middleware"
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/packr"
 
 	"context"
-	accounthandlers "github.com/bigblind/marvin/accounts/handlers"
-	actionhandlers "github.com/bigblind/marvin/actions/handlers"
-	"github.com/bigblind/marvin/handlers"
+	accounthandlers "github.com/marvin-automator/marvin/accounts/handlers"
+	actionhandlers "github.com/marvin-automator/marvin/actions/handlers"
+	"github.com/marvin-automator/marvin/handlers"
 )
 
 // ENV is used to help switch settings based on where the

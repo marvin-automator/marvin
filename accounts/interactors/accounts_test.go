@@ -2,8 +2,8 @@ package interactors
 
 import (
 	"errors"
-	"github.com/bigblind/marvin/accounts/mocks"
-	"github.com/bigblind/marvin/accounts/domain"
+	"github.com/marvin-automator/marvin/accounts/mocks"
+	"github.com/marvin-automator/marvin/accounts/domain"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"testing"

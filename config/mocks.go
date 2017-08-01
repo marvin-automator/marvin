@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/bigblind/marvin/config/domain"
+	"github.com/marvin-automator/marvin/config/domain"
 	"github.com/stretchr/testify/mock"
 )
 

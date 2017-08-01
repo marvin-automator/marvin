@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"github.com/bigblind/marvin/handlers"
-	actionstorage "github.com/bigblind/marvin/actions/storage"
-	"github.com/bigblind/marvin/actions/interactors"
-	"github.com/bigblind/marvin/accounts"
+	"github.com/marvin-automator/marvin/handlers"
+	actionstorage "github.com/marvin-automator/marvin/actions/storage"
+	"github.com/marvin-automator/marvin/actions/interactors"
+	"github.com/marvin-automator/marvin/accounts"
 )
 
 // The AccountChores handler responds with the current account's chores in JSON.
