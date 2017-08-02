@@ -8,3 +8,5 @@ How would you like to help out.
  - [Request a feature](issues.md#feature-requests)
  - [Non-code contributions](non-code.md)
  - [Contribute code](code.md)
+ 
+When interacting with this project, you agree to follow our [Code of Conduct](../CODE_OF_CONDUCT.md)
