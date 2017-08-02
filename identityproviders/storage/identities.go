@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"github.com/marvin-automator/marvin/storage"
 	"github.com/marvin-automator/marvin/identityproviders/domain"
+	"github.com/marvin-automator/marvin/storage"
 )
 
 type IdentityStore struct {
@@ -10,7 +10,7 @@ type IdentityStore struct {
 }
 
 func (is *IdentityStore) SaveIdentity(account, provider string, id domain.Identity) error {
-	b, err := is.store.CreateBucketHierarchy("identities_" + account, provider)
+	b, err := is.store.CreateBucketHierarchy("identities_"+account, provider)
 	if err != nil {
 		return err
 	}
@@ -19,7 +19,7 @@ func (is *IdentityStore) SaveIdentity(account, provider string, id domain.Identi
 }
 
 func (is *IdentityStore) GetIdentity(account, provider, id string) (domain.Identity, error) {
-	b, err := is.store.GetBucketFromPath("identities_" + account, provider)
+	b, err := is.store.GetBucketFromPath("identities_"+account, provider)
 	if err != nil {
 		return domain.Identity{}, err
 	}
@@ -30,7 +30,7 @@ func (is *IdentityStore) GetIdentity(account, provider, id string) (domain.Ident
 }
 
 func (is *IdentityStore) GetAccountIdentitiesForProvider(account, provider string) ([]domain.Identity, error) {
-	b, err := is.store.GetBucketFromPath("identities_" + account, provider)
+	b, err := is.store.GetBucketFromPath("identities_"+account, provider)
 	if err != nil {
 		return []domain.Identity{}, err
 	}
@@ -50,7 +50,7 @@ func (is *IdentityStore) GetAccountIdentitiesForProvider(account, provider strin
 }
 
 func (is *IdentityStore) DeleteIdentity(account, provider string, i domain.Identity) error {
-	b, err := is.store.GetBucketFromPath("identities_" + account, provider)
+	b, err := is.store.GetBucketFromPath("identities_"+account, provider)
 	if err != nil {
 		return err
 	}

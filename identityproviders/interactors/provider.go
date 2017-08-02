@@ -1,10 +1,10 @@
 package interactors
 
 import (
-	"net/http"
-	"github.com/marvin-automator/marvin/identityproviders/domain"
 	actiondomain "github.com/marvin-automator/marvin/actions/domain"
 	appdomain "github.com/marvin-automator/marvin/app/domain"
+	"github.com/marvin-automator/marvin/identityproviders/domain"
+	"net/http"
 )
 
 // IdentityProvider provides identities for actions.
@@ -22,7 +22,7 @@ func (i *IdentityProvider) GetHTTPClient(clientID, clientSecret, account, identi
 		i.Logger.Error(err)
 		return http.DefaultClient
 	}
-	cl, err :=  prot.GetHTTPClient(id.Token, conf)
+	cl, err := prot.GetHTTPClient(id.Token, conf)
 	if err != nil {
 		i.Logger.Error(err)
 		return http.DefaultClient
@@ -34,12 +34,12 @@ func (i *IdentityProvider) config(clientID, clientSecret string) ProtocolConfig 
 	return ProtocolConfig{
 		Endpoint: Endpoint{
 			AuthorizationURL: i.Provider.Meta().AuthorizationEndpoint,
-			AccessTokenURL: i.Provider.Meta().TokenEndpoint,
-			RequestTokenURL: i.Provider.Meta().RequestTokenEndpoint,
+			AccessTokenURL:   i.Provider.Meta().TokenEndpoint,
+			RequestTokenURL:  i.Provider.Meta().RequestTokenEndpoint,
 		},
-		Consumer: clientID,
-		Secret: clientSecret,
-		Scopes: i.Provider.Meta().Scopes,
+		Consumer:    clientID,
+		Secret:      clientSecret,
+		Scopes:      i.Provider.Meta().Scopes,
 		CallbackURL: MakeCallbackURL(i.Provider),
 	}
 }

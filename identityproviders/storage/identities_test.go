@@ -1,19 +1,19 @@
 package storage
 
 import (
-	"testing"
-	"github.com/marvin-automator/marvin/storage"
 	"github.com/marvin-automator/marvin/identityproviders/domain"
+	"github.com/marvin-automator/marvin/storage"
 	"github.com/stretchr/testify/require"
+	"testing"
 )
 
 func makeIdentity(id string) domain.Identity {
 	return domain.Identity{
 		ProviderID: id,
-		Token: "Token",
-		ImageURL: "http://example.com/image.jpg",
-		Name: "John Doe",
-		Subtext: "joe@example.com",
+		Token:      "Token",
+		ImageURL:   "http://example.com/image.jpg",
+		Name:       "John Doe",
+		Subtext:    "joe@example.com",
 	}
 }
 

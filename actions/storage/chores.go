@@ -43,7 +43,7 @@ func (c ChoreStore) GetChore(aid, cid string) (domain.Chore, error) {
 func (c ChoreStore) GetAccountChores(aid string) ([]domain.Chore, error) {
 	b, err := c.accountChoresBucket(aid)
 
-	if err != nil{
+	if err != nil {
 		return []domain.Chore{}, err
 	}
 

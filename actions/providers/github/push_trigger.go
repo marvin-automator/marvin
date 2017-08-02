@@ -1,15 +1,15 @@
 package github
 
 import (
+	"bytes"
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
 	"github.com/marvin-automator/marvin/actions/domain"
 	"github.com/satori/go.uuid"
 	"net/http"
-	"fmt"
-	"encoding/json"
-	"crypto/hmac"
-	"crypto/sha1"
-	"bytes"
-	"encoding/hex"
 )
 
 // PushTrigger is a trigger action that gets triggered when commits get pushed to a Github repository.
@@ -26,14 +26,14 @@ func newPushTrigger() PushTrigger {
 
 // PushOutput is the type that is output by this action.
 type PushOutput struct {
-	Ref string `json:"ref" description:"The full Git ref that was pushed. Example: 'refs/heads/master'.",json:"ref"`
-	Head string `json:"head" description:"The SHA of the most recent commit on ref after the push."`
-	Before string `json:"before" description:"The SHA of the most recent commit on ref before the push."`
-	Size int `json:"size" description:"The number of commits in the push."`
-	DistinctSize int `json:"distinct_size" description:"The number of distinct commits in the push."`
-	Commits []Commit `json:"commits" description:"The commits that were pushed."`
-	Sender   User    `json:"sender" description:"The GitHub user who pushed the changes"`
-	Pusher   CommitAuthor `json:"pusher" description:"The Git author who pushed the changes."`
+	Ref          string       `json:"ref" description:"The full Git ref that was pushed. Example: 'refs/heads/master'.",json:"ref"`
+	Head         string       `json:"head" description:"The SHA of the most recent commit on ref after the push."`
+	Before       string       `json:"before" description:"The SHA of the most recent commit on ref before the push."`
+	Size         int          `json:"size" description:"The number of commits in the push."`
+	DistinctSize int          `json:"distinct_size" description:"The number of distinct commits in the push."`
+	Commits      []Commit     `json:"commits" description:"The commits that were pushed."`
+	Sender       User         `json:"sender" description:"The GitHub user who pushed the changes"`
+	Pusher       CommitAuthor `json:"pusher" description:"The Git author who pushed the changes."`
 }
 
 // OutputType returns a struct of the type that this action will output.
@@ -68,7 +68,7 @@ func (p PushTrigger) handlePush(req *http.Request, rw domain.ActionResponseWrite
 		rw.Text(500, err.Error())
 	}
 	if !p.checkVerifier(bodybuf.Bytes(), mac, c) {
-		rw.Text(400,"Incorrect hmac")
+		rw.Text(400, "Incorrect hmac")
 	}
 	bodybuf.Reset()
 	d := json.NewDecoder(bodybuf)
@@ -81,7 +81,7 @@ func (p PushTrigger) handleSetup(req *http.Request, rw domain.ActionResponseWrit
 	verifier, err := p.makeVerifier(c)
 	if err != nil {
 		c.Logger().Error(err)
-		rw.Text(500, "Something went wrong:\n" + err.Error())
+		rw.Text(500, "Something went wrong:\n"+err.Error())
 		return
 	}
 
@@ -104,7 +104,7 @@ func (p PushTrigger) handleSetup(req *http.Request, rw domain.ActionResponseWrit
 }
 
 func (p PushTrigger) handleUnknownPath(rw domain.ActionResponseWriter, path string) {
-	rw.Text(404, "Unknown path: " + path)
+	rw.Text(404, "Unknown path: "+path)
 }
 
 func (p PushTrigger) makeVerifier(c domain.ActionContext) (string, error) {
@@ -122,8 +122,3 @@ func (p PushTrigger) checkVerifier(body []byte, mac []byte, c domain.ActionConte
 	expected := h.Sum(nil)
 	return hmac.Equal(expected, mac)
 }
-
-
-
-
-

@@ -21,8 +21,8 @@ func NewMockProvider() *MockProvider {
 func (m *MockProvider) Meta() domain.ProviderMeta {
 	args := m.Called()
 	return domain.ProviderMeta{
-		Name: args.String(0),
-		Key: args.String(1),
+		Name:        args.String(0),
+		Key:         args.String(1),
 		Description: args.String(2),
 	}
 }

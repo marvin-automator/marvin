@@ -38,7 +38,7 @@ type Group interface {
 type IdentityProtocol uint8
 
 const (
-	None IdentityProtocol = iota
+	None   IdentityProtocol = iota
 	OAuth1 IdentityProtocol = iota
 	OAuth2 IdentityProtocol = iota
 )
@@ -48,7 +48,7 @@ type ProviderMeta struct {
 	Name        string
 	Description string
 	// The key should uniquely identify the provider
-	Key         string
+	Key string
 	// The protocol that should be used for getting identities to use with the actions for this provider.
 	// Use None if you don't need a 3rd-party identity.
 	//
@@ -150,7 +150,7 @@ type CallbackReceiver interface {
 
 // ActionResponseWriter is a http.ResponseWriter-derived interface
 // that actions use to respond to callback URLs
-type ActionResponseWriter interface{
+type ActionResponseWriter interface {
 	http.ResponseWriter
 	// Send a json response with the given code. i will be marshalled into JSON.
 	JSON(code int, i interface{})

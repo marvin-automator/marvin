@@ -14,16 +14,16 @@ type ActionInstance struct {
 	ActionProvider string `json:"action_provider"`
 	Action         string `json:"action"`
 	InputTemplate  string `json:"input_template"`
-	Identity	   string `json:"identity"`
+	Identity       string `json:"identity"`
 }
 
 // A Chore is a workflow specified as a list of actions.
 type Chore struct {
-	ID      string			 `json:"id"`
+	ID      string           `json:"id"`
 	Name    string           `json:"name"`
 	Actions []ActionInstance `json:"actions"`
 	Created time.Time        `json:"created_at"`
-	Owner	string			 `json:"owner"`
+	Owner   string           `json:"owner"`
 }
 
 // ChoreStore is an interface for persisting chores.

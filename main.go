@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/marvin-automator/marvin/app"
-	"github.com/marvin-automator/marvin/storage"
 	"github.com/gobuffalo/envy"
-	"log"
 	"github.com/marvin-automator/marvin/actions/interactors/execution"
+	"github.com/marvin-automator/marvin/app"
 	"github.com/marvin-automator/marvin/app/domain"
+	"github.com/marvin-automator/marvin/storage"
+	"log"
 
 	// import the built-in providers so they get registered
 	_ "github.com/marvin-automator/marvin/actions/providers"

@@ -1,16 +1,16 @@
 package interactors
 
 import (
-	"net/http"
 	"context"
+	"net/http"
 )
 
 type IdentityProtocol int
 
 const (
-	None IdentityProtocol = 0
-	OAuth1 = iota
-	OAuth2 = iota
+	None   IdentityProtocol = 0
+	OAuth1                  = iota
+	OAuth2                  = iota
 )
 
 var implementations = map[IdentityProtocol]Protocol{}

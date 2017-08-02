@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"github.com/marvin-automator/marvin/storage"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/buffalo/render"
+	"github.com/marvin-automator/marvin/storage"
 )
 
 // Context is a marvin-specific context object.
@@ -34,7 +34,7 @@ func (h Handler) ToBuffalo() buffalo.Handler {
 	s := storage.NewStore()
 	return func(bc buffalo.Context) error {
 		defer func() {
-			<- bc.Done() // When the context is done with; close the store.
+			<-bc.Done() // When the context is done with; close the store.
 			s.Close()
 		}()
 

@@ -3,11 +3,11 @@ package interactors
 import (
 	"errors"
 	"github.com/marvin-automator/marvin/accounts/domain"
+	"github.com/marvin-automator/marvin/accounts/mocks"
 	"github.com/marvin-automator/marvin/config"
 	configdomain "github.com/marvin-automator/marvin/config/domain"
 	"github.com/stretchr/testify/require"
 	"testing"
-	"github.com/marvin-automator/marvin/accounts/mocks"
 )
 
 func TestSuccessfulLogin(t *testing.T) {

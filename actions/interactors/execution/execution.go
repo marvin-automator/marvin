@@ -1,10 +1,10 @@
 package execution
 
 import (
-	"github.com/marvin-automator/marvin/actions/domain"
-	accountsdomain "github.com/marvin-automator/marvin/accounts/domain"
-	"fmt"
 	"context"
+	"fmt"
+	accountsdomain "github.com/marvin-automator/marvin/accounts/domain"
+	"github.com/marvin-automator/marvin/actions/domain"
 	appdomain "github.com/marvin-automator/marvin/app/domain"
 	iddomain "github.com/marvin-automator/marvin/identityproviders/domain"
 )
@@ -18,10 +18,10 @@ func SetupExecutionEnvironment(c context.Context, l appdomain.Logger) {
 
 // StartChore starts the triggers for chores
 type Executor struct {
-	accountStore accountsdomain.AccountStore
-	choreStore domain.ChoreStore
+	accountStore  accountsdomain.AccountStore
+	choreStore    domain.ChoreStore
 	identityStore iddomain.IdentityStore
-	registry domain.ProviderRegistry
+	registry      domain.ProviderRegistry
 }
 
 // All calls the triggers for all saved chores
@@ -87,7 +87,3 @@ func (e *Executor) StopAllActions() {
 func (e *Executor) CancelChore(cid string) {
 	getChoreContext(cid).cancel()
 }
-
-
-
-

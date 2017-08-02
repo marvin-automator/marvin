@@ -1,11 +1,11 @@
 package storage
 
 import (
-	"testing"
 	"github.com/marvin-automator/marvin/storage"
 	"github.com/stretchr/testify/require"
 	"math/rand"
 	"strings"
+	"testing"
 )
 
 func TestKVStoreStoreGetSetSameStore(t *testing.T) {
@@ -40,10 +40,10 @@ func makeTestData() testData {
 	return testData{
 		I: rand.Int(),
 		J: strings.Repeat("foo", rand.Intn(5)),
-		K:  struct {
-		L []byte
-		M *int
-		} {
+		K: struct {
+			L []byte
+			M *int
+		}{
 			L: bs,
 			M: &i,
 		},

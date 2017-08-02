@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"github.com/marvin-automator/marvin/handlers"
-	actionstorage "github.com/marvin-automator/marvin/actions/storage"
-	"github.com/marvin-automator/marvin/actions/interactors"
 	"github.com/marvin-automator/marvin/accounts"
+	"github.com/marvin-automator/marvin/actions/interactors"
+	actionstorage "github.com/marvin-automator/marvin/actions/storage"
+	"github.com/marvin-automator/marvin/handlers"
 )
 
 // The AccountChores handler responds with the current account's chores in JSON.

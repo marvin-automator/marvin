@@ -1,15 +1,15 @@
 package storage
 
 import (
-	"github.com/marvin-automator/marvin/storage"
+	"bytes"
+	"encoding/gob"
 	"github.com/marvin-automator/marvin/actions/domain"
 	"github.com/marvin-automator/marvin/actions/interactors"
-	"encoding/gob"
-	"bytes"
+	"github.com/marvin-automator/marvin/storage"
 )
 
 type kvStore struct {
-	store storage.Store
+	store  storage.Store
 	bucket storage.Bucket
 }
 
@@ -56,7 +56,7 @@ func NewKVStoreStore(s storage.Store) interactors.KVStoreStore {
 }
 
 // GetKVStore returns the KVStore in the given bucket with the given ID
-func (k KVStoreStore) GetKVStore(bucket, ID string) (domain.KVStore, error){
+func (k KVStoreStore) GetKVStore(bucket, ID string) (domain.KVStore, error) {
 	b, err := k.getBucket(bucket, ID)
 	if err != nil {
 		return nil, err
@@ -85,5 +85,3 @@ func gobdecode(valptr interface{}, encoded []byte) error {
 	dec := gob.NewDecoder(bytes.NewBuffer(encoded))
 	return dec.Decode(valptr)
 }
-
-

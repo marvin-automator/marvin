@@ -6,9 +6,9 @@ import (
 	"github.com/gobuffalo/buffalo/middleware/csrf"
 	"github.com/gobuffalo/buffalo/middleware/i18n"
 
-	accountmiddleware "github.com/marvin-automator/marvin/accounts/middleware"
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/packr"
+	accountmiddleware "github.com/marvin-automator/marvin/accounts/middleware"
 
 	"context"
 	accounthandlers "github.com/marvin-automator/marvin/accounts/handlers"

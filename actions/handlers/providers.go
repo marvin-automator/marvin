@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"github.com/marvin-automator/marvin/handlers"
 	"github.com/marvin-automator/marvin/actions/interactors"
+	"github.com/marvin-automator/marvin/handlers"
 )
 
 // The ActionGroups handler responds with the available groups with their actions, in JSON.

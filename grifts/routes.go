@@ -5,8 +5,8 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/marvin-automator/marvin/app"
 	. "github.com/markbates/grift/grift" // nolint
+	"github.com/marvin-automator/marvin/app"
 )
 
 var _ = Add("routes", func(c *Context) error {

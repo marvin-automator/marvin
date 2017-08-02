@@ -1,18 +1,18 @@
 package execution
 
 import (
-	"github.com/marvin-automator/marvin/actions/domain"
 	"context"
+	"github.com/marvin-automator/marvin/actions/domain"
 	appdomain "github.com/marvin-automator/marvin/app/domain"
-	"net/http"
 	idinteractors "github.com/marvin-automator/marvin/identityproviders/interactors"
+	"net/http"
 	"reflect"
 )
 
 var (
 	globalActionContext context.Context
 	cancelAllActions    context.CancelFunc
-	choreContexts        = map[string]choreContext{}
+	choreContexts       = map[string]choreContext{}
 	globalActionLogger  appdomain.Logger
 )
 
@@ -31,12 +31,12 @@ func getChoreContext(cid string) choreContext {
 
 	cc := choreContext{
 		Context: ctx,
-		cancel: cancel,
-		logger: globalActionLogger.WithField("chore", cid),
+		cancel:  cancel,
+		logger:  globalActionLogger.WithField("chore", cid),
 	}
 
 	go func() {
-		<- ctx.Done()
+		<-ctx.Done()
 		cc.logger.Info("Stopping chore %v", cid)
 	}()
 
@@ -44,13 +44,13 @@ func getChoreContext(cid string) choreContext {
 }
 
 type actionContext struct {
-	exec	   *Executor
+	exec       *Executor
 	context    context.Context
 	Cancel     context.CancelFunc
 	isTestCall bool
 	logger     appdomain.Logger
 
-	chore 	   domain.Chore
+	chore      domain.Chore
 	instance   domain.ActionInstance
 	actionMeta domain.ActionMeta
 }
@@ -60,19 +60,18 @@ func newActionContext(ex *Executor, ch domain.Chore, ac domain.BaseAction, inst 
 	cc := getChoreContext(ch.ID)
 	ctx, cancel := context.WithCancel(cc)
 	a := actionContext{
-		exec: ex,
-		context: ctx,
-		Cancel: cancel,
+		exec:       ex,
+		context:    ctx,
+		Cancel:     cancel,
 		isTestCall: false,
 		logger: cc.logger.WithFields(map[string]interface{}{
-			"action": ac.Meta().Key,
+			"action":          ac.Meta().Key,
 			"action_instance": inst.ID,
 		}),
 
-		chore: ch,
-		instance: inst,
+		chore:      ch,
+		instance:   inst,
 		actionMeta: ac.Meta(),
-
 	}
 	return &a
 }
@@ -132,11 +131,11 @@ func (a *actionContext) Logger() appdomain.Logger {
 // HTTPClient returns a http.Client that, if the action requires an identity, and everything is configured correctly,
 // will automatically make requests with the correct credentials.
 // In any other case, this returns http.DefaultClient.
-func (a *actionContext) HTTPClient() *http.Client{
+func (a *actionContext) HTTPClient() *http.Client {
 	ip := idinteractors.IdentityProvider{
-		Provider: a.exec.registry.Provider(a.instance.ActionProvider),
+		Provider:      a.exec.registry.Provider(a.instance.ActionProvider),
 		IdentityStore: a.exec.identityStore,
-		Logger: a.logger,
+		Logger:        a.logger,
 	}
 
 	gc := a.GlobalConfig()

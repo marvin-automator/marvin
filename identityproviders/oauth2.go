@@ -1,16 +1,16 @@
 package identityproviders
 
 import (
-	"net/http"
-	"github.com/marvin-automator/marvin/identityproviders/interactors"
 	"context"
+	"github.com/marvin-automator/marvin/identityproviders/interactors"
+	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
+	"net/http"
 	"strings"
 	"time"
-	"github.com/pkg/errors"
 )
 
-type OAuth2 struct {}
+type OAuth2 struct{}
 
 func init() {
 	interactors.RegisterImplementation(interactors.OAuth2, OAuth2{})
@@ -48,14 +48,14 @@ func (o OAuth2) GetHTTPClient(token string, conf interactors.ProtocolConfig) (*h
 
 func makeOAuth2Config(config interactors.ProtocolConfig) *oauth2.Config {
 	o := oauth2.Config{
-		ClientID: config.Consumer,
+		ClientID:     config.Consumer,
 		ClientSecret: config.Secret,
 		Endpoint: oauth2.Endpoint{
 			TokenURL: config.Endpoint.AccessTokenURL,
-			AuthURL: config.Endpoint.AuthorizationURL,
+			AuthURL:  config.Endpoint.AuthorizationURL,
 		},
 		RedirectURL: config.CallbackURL,
-		Scopes: config.Scopes,
+		Scopes:      config.Scopes,
 	}
 	return &o
 }
@@ -81,11 +81,10 @@ func tokenFromString(s string) (*oauth2.Token, error) {
 	exp := new(time.Time)
 	exp.UnmarshalText([]byte(parts[3]))
 	t := oauth2.Token{
-		AccessToken: parts[0],
+		AccessToken:  parts[0],
 		RefreshToken: parts[1],
-		TokenType: parts[2],
-		Expiry: *exp,
+		TokenType:    parts[2],
+		Expiry:       *exp,
 	}
 	return &t, nil
 }
-

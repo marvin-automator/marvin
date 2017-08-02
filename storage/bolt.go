@@ -7,7 +7,7 @@ import (
 // A Store is the way you access stored data. When you know you're not going to need to write data, open a read-only
 // store. There can only be one writable store open at a time, but multiple read-only stores.
 type boltStore struct {
-	tx *bolt.Tx
+	tx      *bolt.Tx
 	writers int
 }
 
@@ -87,9 +87,8 @@ func (s boltStore) EncodeBytes(d interface{}) ([]byte, error) {
 	return dataToBytes(d)
 }
 
-
 // GetBucketFromPath traverses the tree of buckets, to get the bucket at the given path.
-func (bs *boltStore) GetBucketFromPath(path... string) (Bucket, error) {
+func (bs *boltStore) GetBucketFromPath(path ...string) (Bucket, error) {
 	_, err := bs.getBoltBucketFromPath(path)
 	return bs.newBucket(path), err
 }
@@ -136,7 +135,7 @@ func (bs *boltStore) CreateBucketHierarchy(path ...string) (Bucket, error) {
 }
 
 type boltBucket struct {
-	bs *boltStore
+	bs   *boltStore
 	path []string
 }
 

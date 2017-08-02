@@ -11,8 +11,8 @@ type Registry struct {
 
 // Group represents a group of actions.
 type Group struct {
-	Name     string `json:"name"`
-	Provider string `json:"provider"`
+	Name     string              `json:"name"`
+	Provider string              `json:"provider"`
 	Actions  []domain.ActionMeta `json:"actions"`
 }
 

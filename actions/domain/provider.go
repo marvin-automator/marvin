@@ -6,16 +6,16 @@ type BasicProvider struct {
 	name        string
 	description string
 
-	groups       []Group
-	defaultGroup *BasicGroup
-	actions      map[string]BaseAction
+	groups           []Group
+	defaultGroup     *BasicGroup
+	actions          map[string]BaseAction
 	globalConfigType interface{}
 
 	// 3rd-party identities
 	requiredIdentityProtocol IdentityProtocol
-	authorizationEndpoint string
-	tokenEndpoint string
-	requestTokenEndpoint string
+	authorizationEndpoint    string
+	tokenEndpoint            string
+	requestTokenEndpoint     string
 }
 
 // NewProvider creates a new BasicProvider
@@ -24,7 +24,7 @@ func NewProvider(key, name, description string) *BasicProvider {
 		key:         key,
 		name:        name,
 		description: description,
-		actions: map[string]BaseAction{},
+		actions:     map[string]BaseAction{},
 	}
 
 	Registry.Register(&b)
@@ -42,14 +42,14 @@ func (b *BasicProvider) SetIdentityParameters(authorizationURL, tokenURL, reques
 // Meta returns metadata about the action provider.
 func (b *BasicProvider) Meta() ProviderMeta {
 	return ProviderMeta{
-		Name: b.name,
+		Name:        b.name,
 		Description: b.description,
-		Key: b.key,
+		Key:         b.key,
 
 		ReequiresIdentityProtocol: b.requiredIdentityProtocol,
-		AuthorizationEndpoint: b.authorizationEndpoint,
-		TokenEndpoint: b.tokenEndpoint,
-		RequestTokenEndpoint: b.requestTokenEndpoint,
+		AuthorizationEndpoint:     b.authorizationEndpoint,
+		TokenEndpoint:             b.tokenEndpoint,
+		RequestTokenEndpoint:      b.requestTokenEndpoint,
 	}
 }
 
