@@ -70,8 +70,7 @@ func Middleware(next buffalo.Handler) buffalo.Handler {
 		c.Logger().Debug("Account found, store it in the session")
 		c.Set("account", account)
 		c.Session().Set(uidKey, account.ID)
-		return nil
-
+		
 		if err == errNeedsLogin {
 			return c.Redirect(302, "/login")
 		}
