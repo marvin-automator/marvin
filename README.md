@@ -1,4 +1,5 @@
 # Marvin
+[![Code Climate](https://codeclimate.com/github/marvin-automator/marvin/badges/gpa.svg)](https://codeclimate.com/github/marvin-automator/marvin)
 
 Marvin is an app to program the web, similar to [IFTTT](ifttt.com) and [Zapier](zapier.com), but **Free**
 (in [both senses of the word](https://en.wikipedia.org/wiki/Gratis_versus_libre) and **open source**.

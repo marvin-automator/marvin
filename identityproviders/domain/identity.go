@@ -2,7 +2,7 @@ package domain
 
 import "net/http"
 
-// an Ieentity, provider by an IdentityProvider
+// an Identity, provider by an IdentityProvider
 type Identity struct {
 	Name     string
 	ImageURL string
