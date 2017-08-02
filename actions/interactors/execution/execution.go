@@ -16,7 +16,7 @@ func SetupExecutionEnvironment(c context.Context, l appdomain.Logger) {
 	globalActionLogger = l
 }
 
-// StartChore starts the triggers for chores
+// The Executor is responsible for running chores.
 type Executor struct {
 	accountStore  accountsdomain.AccountStore
 	choreStore    domain.ChoreStore
@@ -25,7 +25,7 @@ type Executor struct {
 }
 
 // All calls the triggers for all saved chores
-func (e *Executor) SAll() error {
+func (e *Executor) All() error {
 	return e.accountStore.EachAccount(func(a accountsdomain.Account) error {
 		chores, err := e.choreStore.GetAccountChores(a.ID)
 		if err != nil {
@@ -40,7 +40,6 @@ func (e *Executor) SAll() error {
 		}
 		return nil
 	})
-	return nil
 }
 
 // One starts one specific chore, owned by account with ID aid, and chore ID cid
@@ -69,13 +68,13 @@ func (e *Executor) startChore(c domain.Chore) error {
 
 func (e *Executor) actionToTrigger(a domain.BaseAction) (domain.Trigger, error) {
 	if !a.Meta().IsTrigger {
-		return nil, fmt.Errorf("Action %v is first of a chore, but meta.isTrigger is false.", a.Meta().Key)
+		return nil, fmt.Errorf("action %v is first of a chore, but meta.isTrigger is false", a.Meta().Key)
 	}
 	if t, ok := a.(domain.Trigger); ok {
 		return t, nil
 	}
 
-	return nil, fmt.Errorf("Action %v is first of a chore, but doesn't implement the Trigger interface.", a.Meta().Key)
+	return nil, fmt.Errorf("action %v is first of a chore, but doesn't implement the Trigger interface.", a.Meta().Key)
 }
 
 // StopAllActions shuts down all the currently running actions.

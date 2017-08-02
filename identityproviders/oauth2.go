@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// OAuth2 is the client implementation for the OAuth 2.0 protocol
 type OAuth2 struct{}
 
 func init() {
@@ -26,7 +27,7 @@ func (o OAuth2) GetToken(req http.Request, state string, conf interactors.Protoc
 	oconf := makeOAuth2Config(conf)
 
 	if req.FormValue("state") != state {
-		return "", errors.WithStack(errors.New("OAuth state doesn't match."))
+		return "", errors.WithStack(errors.New("the OAuth state doesn't match."))
 	}
 
 	token, err := oconf.Exchange(c, req.FormValue("code"))
@@ -75,7 +76,7 @@ func tokenFromString(s string) (*oauth2.Token, error) {
 	parts := strings.Split(s, "\n")
 
 	if len(parts) != 4 {
-		return nil, errors.WithStack(errors.New("Incorrect token format, expectted 4 lines oftext."))
+		return nil, errors.WithStack(errors.New("incorrect token format, expectted 4 lines of text."))
 	}
 
 	exp := new(time.Time)

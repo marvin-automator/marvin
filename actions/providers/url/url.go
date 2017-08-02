@@ -196,7 +196,7 @@ func handleValue(i interface{}) interface{} {
 	case bool, string, nil:
 		return t
 	default:
-		log.Printf("Wasn't expecting %v (%v) when converting json to a struct. We should handle this.")
+		log.Printf("Wasn't expecting %v (%v) when converting json to a struct. We should handle this.", t, reflect.TypeOf(t))
 		return t
 	}
 }

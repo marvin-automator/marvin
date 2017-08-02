@@ -12,6 +12,7 @@ type Context struct {
 	store storage.Store
 }
 
+// Store returns a Store. The Store should only be used while this context is valid.
 func (c Context) Store() storage.Store {
 	return c.store
 }

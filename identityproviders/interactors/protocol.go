@@ -5,8 +5,10 @@ import (
 	"net/http"
 )
 
+// IdentityProtocol is an identifier for an authentication protocol.
 type IdentityProtocol int
 
+// Identifiers for different protocols
 const (
 	None   IdentityProtocol = 0
 	OAuth1                  = iota
@@ -15,11 +17,12 @@ const (
 
 var implementations = map[IdentityProtocol]Protocol{}
 
-// Register an implementation for the given protocol
+// RegisterImplementation registers an implementation for the given protocol
 func RegisterImplementation(p IdentityProtocol, impl Protocol) {
 	implementations[p] = impl
 }
 
+// GetProtocol returns the requested protocol
 func GetProtocol(p IdentityProtocol) Protocol {
 	return implementations[p]
 }

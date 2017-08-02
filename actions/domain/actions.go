@@ -35,12 +35,13 @@ type Group interface {
 	Name() string
 }
 
+// IdentityProtocol identifies an authentication protocol.
 type IdentityProtocol uint8
 
 const (
-	None   IdentityProtocol = iota
-	OAuth1 IdentityProtocol = iota
-	OAuth2 IdentityProtocol = iota
+	None   IdentityProtocol = iota // No identity protocol needed
+	OAuth1 IdentityProtocol = iota // OAuth 1.0a
+	OAuth2 IdentityProtocol = iota // Oauth 2.0
 )
 
 // ProviderMeta stores metadata about a set of actions
@@ -116,7 +117,7 @@ type BaseAction interface {
 	OutputType(c ActionContext) interface{}
 }
 
-// A trigger is an action that starts off a chore.
+// A Trigger is an action that starts off a chore.
 type Trigger interface {
 	BaseAction
 

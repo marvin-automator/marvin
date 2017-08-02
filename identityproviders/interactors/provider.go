@@ -14,6 +14,7 @@ type IdentityProvider struct {
 	Logger        appdomain.Logger
 }
 
+// GetHTTPClient returns a http.Coient that sends authentication headers with all requests
 func (i *IdentityProvider) GetHTTPClient(clientID, clientSecret, account, identity string) *http.Client {
 	prot := GetProtocol(IdentityProtocol(i.Provider.Meta().ReequiresIdentityProtocol))
 	conf := i.config(clientID, clientSecret)
@@ -44,6 +45,7 @@ func (i *IdentityProvider) config(clientID, clientSecret string) ProtocolConfig 
 	}
 }
 
+// MakeCallbackURL returns the callback URL to use for the given provider.
 func MakeCallbackURL(p actiondomain.ActionProvider) string {
 	return "/auth/callbacks/" + p.Meta().Name
 }

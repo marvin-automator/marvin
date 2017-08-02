@@ -91,7 +91,7 @@ func (b *BasicProvider) GlobalConfigType() interface{} {
 	return b.globalConfigType
 }
 
-// Set the global configuration struct returned by GlobalConfigurationType. This is nil by default,
+// SetGlobalConfigType sets the global configuration struct returned by GlobalConfigurationType	 . This is nil by default,
 // indicating that no global configuration is necessary.
 func (b *BasicProvider) SetGlobalConfigType(c interface{}) {
 	b.globalConfigType = c

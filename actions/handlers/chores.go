@@ -7,7 +7,7 @@ import (
 	"github.com/marvin-automator/marvin/handlers"
 )
 
-// The AccountChores handler responds with the current account's chores in JSON.
+// AccountChores responds with the current account's chores in JSON.
 func AccountChores(c handlers.Context) error {
 	s := c.Store()
 	cs := actionstorage.NewChoreStore(s)

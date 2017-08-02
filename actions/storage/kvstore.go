@@ -45,7 +45,7 @@ func (kv kvStore) Close() {
 	kv.store.Close()
 }
 
-// KVStore is an implementation of the domain.KVStoreStore interface, using the storage package
+// KVStoreStore is an implementation of the domain.KVStoreStore interface, using the storage package
 type KVStoreStore struct {
 	store storage.Store
 }
@@ -65,6 +65,7 @@ func (k KVStoreStore) GetKVStore(bucket, ID string) (domain.KVStore, error) {
 	return kvStore{store: k.store, bucket: b}, nil
 }
 
+// DeleteKVStore deletes the KV store in the given bucket, with the given ID.
 func (k KVStoreStore) DeleteKVStore(bucket, ID string) error {
 	return k.store.DeleteBucket("kv_store_" + bucket + "_" + ID)
 }

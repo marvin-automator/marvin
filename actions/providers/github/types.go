@@ -6,12 +6,13 @@ type Resource struct {
 	APIEndpoint string `json:"url" description:"The API endpoint URL that represents this resource"`
 }
 
-// a CommitAuthor is an identity in Git
+// CommitAuthor is an identity in Git
 type CommitAuthor struct {
 	Name  string `json:"name"`
 	Email string `json:"email"`
 }
 
+// Commit represents a commit to a Git repository.
 type Commit struct {
 	Resource
 	SHA        string       `json:"sha" description:"The SHA of the commit."`
@@ -31,7 +32,7 @@ type Repository struct {
 	IsFork      bool   `json:"fork" description:"Whether the repository is a fork."`
 }
 
-// Use"r is a GitHub user.
+// User is a GitHub user.
 type User struct {
 	Resource
 	Username  string `json:"login" description:"The user's public username'"`

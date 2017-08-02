@@ -37,6 +37,7 @@ type loggerWrapper struct {
 	buffalo.Logger
 }
 
+// LoggerFromBuffaloLogger creates a marvin-specific Logger from a buffalo.Logger
 func LoggerFromBuffaloLogger(l buffalo.Logger) Logger {
 	lw := loggerWrapper{l}
 	return &lw
