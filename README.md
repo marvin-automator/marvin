@@ -1,4 +1,5 @@
 # Marvin
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![Code Climate](https://codeclimate.com/github/marvin-automator/marvin/badges/gpa.svg)](https://codeclimate.com/github/marvin-automator/marvin)
 
 Marvin is an app to program the web, similar to [IFTTT](ifttt.com) and [Zapier](zapier.com), but **Free**
