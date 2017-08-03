@@ -33,13 +33,18 @@ type Handler func(Context) error
 // ToBuffalo turns returns a Buffalo handler that calls this one
 func (h Handler) ToBuffalo() buffalo.Handler {
 	s := storage.NewStore()
+
 	return func(bc buffalo.Context) error {
-		defer func() {
+		c := Context{bc, s}
+		err := h(c)
+
+		go func() {
 			<-bc.Done() // When the context is done with; close the store.
+			bc.Logger().Debug("Closing store")
 			s.Close()
+			bc.Logger().Debug("Closed store")
 		}()
 
-		c := Context{bc, s}
-		return h(c)
+		return err
 	}
 }
