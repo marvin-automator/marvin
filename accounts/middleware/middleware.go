@@ -50,7 +50,7 @@ func Middleware(next buffalo.Handler) buffalo.Handler {
 		} else {
 			// If there's no user id in our session, make them log in
 			if uid == nil {
-				return errNeedsLogin
+				err = errNeedsLogin
 			}
 
 			// Try to get the user with the id in the session
@@ -59,8 +59,8 @@ func Middleware(next buffalo.Handler) buffalo.Handler {
 			// If there's no user with this ID...
 			if err == domain.ErrAccountNotFound {
 				// ... Make them log in again
-				c.Logger().Debug("No user with ID %v", uid)
-				return errNeedsLogin
+				c.Logger().Debugf("No user with ID %v", uid)
+				err =  errNeedsLogin
 				//Any other error should be returned as normal
 			} else if err != nil {
 				return err
@@ -72,6 +72,7 @@ func Middleware(next buffalo.Handler) buffalo.Handler {
 		c.Session().Set(uidKey, account.ID)
 
 		if err == errNeedsLogin {
+			c.Logger().Debug("Redirecting to /login")
 			return c.Redirect(302, "/login")
 		}
 		return next(c)
