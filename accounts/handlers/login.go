@@ -33,14 +33,15 @@ func ProcessLogin(c handlers.Context) error {
 
 	act, err := login.Execute(email, password)
 	if err == interactors.ErrLoginFailed {
+		c.Logger().Infof("Failed login for %v", email)
 		c.Session().Set("login_email", email)
-		err = c.Redirect(302, "/login?error="+url.QueryEscape(err.Error()))
-		return err
+		return c.Redirect(302, "/login?error="+url.QueryEscape(err.Error()))
 	} else if err != nil {
-		return err
+		return c.Error(500, err)
 	}
 
 	c.Session().Set(uidKey, act.ID)
 	err = c.Redirect(302, "/")
+	c.Logger().Infof("Successfully logged in %v", act.ID)
 	return err
 }
