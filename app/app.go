@@ -13,6 +13,7 @@ import (
 	"context"
 	accounthandlers "github.com/marvin-automator/marvin/accounts/handlers"
 	actionhandlers "github.com/marvin-automator/marvin/actions/handlers"
+	apphandlers "github.com/marvin-automator/marvin/app/handlers"
 	"github.com/marvin-automator/marvin/handlers"
 )
 
@@ -48,29 +49,21 @@ func App() *buffalo.App {
 			app.Use(csrf.Middleware)
 		}
 
-		// Setup and use translations:
-		var err error
-		if T, err = i18n.New(packr.NewBox("../locales"), "en-US"); err != nil {
-			err = app.Stop(err)
-			if err != nil {
-				panic(err)
-			}
-		}
 
-		app.Use(T.Middleware())
-
-		app.Redirect(302, "/", "/dashboard")
+		app.Redirect(302, "/", "/app/")
 		app.GET("/login", bf(accounthandlers.LoginPage))
 		app.POST("/login", bf(accounthandlers.ProcessLogin))
 
 		g := app.Group("/app")
 		g.Use(accountmiddleware.Middleware)
+		g.Redirect(302, "", "/")
+		g.GET("/{rest<:.*}", bf(apphandlers.AppPage))
 
 		// API
-		//  Chores
-		g.GET("/chores", bf(actionhandlers.AccountChores))
-		//  Actions
-		g.GET("/actions", bf(actionhandlers.ActionGroups))
+		a := app.Group("/api")
+		a.Use(accountmiddleware.Middleware)
+		a.GET("/chores", bf(actionhandlers.AccountChores))
+		a.GET("/actions", bf(actionhandlers.ActionGroups))
 
 		app.ServeFiles("/assets", packr.NewBox("./public/assets"))
 	}
