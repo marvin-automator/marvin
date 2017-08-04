@@ -7,6 +7,7 @@ import (
 	"github.com/marvin-automator/marvin/accounts/storage"
 	globalstorage "github.com/marvin-automator/marvin/storage"
 	"strings"
+	"github.com/marvin-automator/marvin/accounts/domain"
 )
 
 func init() {
@@ -67,5 +68,28 @@ var _ = Add("accounts:delete", func(c *Context) error {
 	}
 
 	fmt.Printf("Deleted account with %v: %v\n", t, arg)
+	return nil
+})
+
+// Grift to list all accounts.
+var _ = Add("accounts:list", func(c *Context) error {
+	globalstorage.Setup()
+	defer globalstorage.CloseDB()
+
+	dbs := globalstorage.NewStore()
+	defer dbs.Close()
+	s := storage.NewAccountStore(dbs)
+
+	any := false
+	fmt.Println("Accounts:")
+	s.EachAccount(func(a domain.Account) error {
+		any = true
+		fmt.Printf("%s: %s", a.Email, a.ID)
+		return nil
+	})
+
+	if !any {
+		fmt.Println("There are no accounts saved. You can create one by running accounts:create.")
+	}
 	return nil
 })
