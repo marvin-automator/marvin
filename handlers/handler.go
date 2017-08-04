@@ -14,6 +14,13 @@ type Context struct {
 
 // Store returns a Store. The Store should only be used while this context is valid.
 func (c Context) Store() storage.Store {
+	if c.store == nil || c.store.Closed() {
+		c.store = storage.NewStore()
+		go func() {
+			<- c.Done()
+			c.store.Close()
+		}()
+	}
 	return c.store
 }
 
@@ -32,18 +39,9 @@ type Handler func(Context) error
 
 // ToBuffalo turns returns a Buffalo handler that calls this one
 func (h Handler) ToBuffalo() buffalo.Handler {
-	s := storage.NewStore()
-
 	return func(bc buffalo.Context) error {
-		c := Context{bc, s}
+		c := Context{bc, nil	}
 		err := h(c)
-
-		go func() {
-			<-bc.Done() // When the context is done with; close the store.
-			bc.Logger().Debug("Closing store")
-			s.Close()
-			bc.Logger().Debug("Closed store")
-		}()
 
 		return err
 	}
