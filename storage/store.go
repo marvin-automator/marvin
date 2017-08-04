@@ -20,6 +20,9 @@ type Store interface {
 
 	// Close frees up the resources that the store uses.
 	Close() error
+
+	// Closed returns whether this store has been closed.
+	Closed() bool
 }
 
 type Bucket interface {

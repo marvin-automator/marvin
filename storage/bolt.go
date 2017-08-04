@@ -9,6 +9,7 @@ import (
 type boltStore struct {
 	tx      *bolt.Tx
 	writers int
+	closed bool
 }
 
 // NewStore creates a new Store
@@ -17,7 +18,7 @@ func NewStore() Store {
 	if err != nil {
 		panic(err)
 	}
-	return &boltStore{tx, 0}
+	return &boltStore{tx, 0, false}
 }
 
 func (bs *boltStore) beginWrite() {
@@ -108,11 +109,19 @@ func (bs *boltStore) getBoltBucketFromPath(path []string) (*bolt.Bucket, error) 
 	return current, nil
 }
 
+// Close frees up resources used by this Store.
+// This instance can no longer be used after closing.
 func (bs *boltStore) Close() error {
+	bs.closed = true
 	if bs.tx.Writable() {
 		return bs.tx.Commit()
 	}
 	return bs.tx.Rollback()
+}
+
+// Closed returns whether this store has been closed.
+func (bs *boltStore) Closed() bool {
+	return bs.closed
 }
 
 func (bs *boltStore) CreateBucketHierarchy(path ...string) (Bucket, error) {
