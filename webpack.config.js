@@ -2,6 +2,8 @@ var webpack = require("webpack");
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+process.env["NODE_ENV"] = "development"
+
 module.exports = {
   entry: [
     "./assets/js/application.js",
@@ -12,10 +14,6 @@ module.exports = {
     path: __dirname + "/public/assets"
   },
   plugins: [
-    new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery"
-    }),
     new ExtractTextPlugin("application.css"),
     new CopyWebpackPlugin([{
       from: "./assets",
@@ -31,7 +29,7 @@ module.exports = {
       test: /\.jsx?$/,
       loader: "babel-loader",
       options: {
-        presets: ['env']
+        presets: ['react-app']
       },
       exclude: /node_modules/
     }, {
