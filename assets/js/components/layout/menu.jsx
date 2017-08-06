@@ -7,7 +7,7 @@ const AppMenu = () => {
         <Menu.Item>Chores</Menu.Item>
         <Menu.Item>Settings</Menu.Item>
         <Menu.Item style={{float:"right"}}><Icon type="logout" />Log Out</Menu.Item>
-        <Menu.Item style={{float:"right"}}><Icon type="user" />test@example.com</Menu.Item>
+        <Menu.Item style={{float:"right"}}><Icon type="user" />{ACCOUNT_EMAIL}</Menu.Item>
     </Menu>
 }
 

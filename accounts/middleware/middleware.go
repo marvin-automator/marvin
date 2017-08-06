@@ -68,6 +68,7 @@ func Middleware(next buffalo.Handler) buffalo.Handler {
 		}
 		// Save the account in the context and session.
 		c.Logger().Debug("Account found, store it in the session")
+		c.LogField("account", account.ID)
 		c.Set("account", account)
 		c.Session().Set(uidKey, account.ID)
 

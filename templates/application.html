@@ -1,6 +1,9 @@
 <html>
   <head>
     <%= partial("partials/head.html") %>
+    <script>
+      ACCOUNT_EMAIL = "<%= account.Email %>"
+    </script>
   </head>
   <body>
   <%= yield %>
