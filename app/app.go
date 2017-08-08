@@ -15,6 +15,7 @@ import (
 	actionhandlers "github.com/marvin-automator/marvin/actions/handlers"
 	apphandlers "github.com/marvin-automator/marvin/app/handlers"
 	"github.com/marvin-automator/marvin/handlers"
+	"github.com/marvin-automator/marvin/graphql"
 )
 
 // ENV is used to help switch settings based on where the
@@ -62,6 +63,7 @@ func App() *buffalo.App {
 		// API
 		a := app.Group("/api")
 		a.Use(accountmiddleware.Middleware)
+		a.POST("/graphql", graphql.Handler)
 		a.GET("/chores", bf(actionhandlers.AccountChores))
 		a.GET("/actions", bf(actionhandlers.ActionGroups))
 
