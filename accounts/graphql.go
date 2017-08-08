@@ -1,9 +1,12 @@
 package accounts
 
-import "github.com/graphql-go/graphql"
+import (
+	"github.com/graphql-go/graphql"
+	"github.com/marvin-automator/marvin/handlers"
+)
 
 // GraphQLAccount is the GraphQL representation of an Account.
-var GraphQLAccount = graphql.NewObject(graphql.ObjectConfig{
+var GQLAccount = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Account",
 	Fields: graphql.Fields{
 		"id": &graphql.Field{Type: graphql.ID},
@@ -11,3 +14,10 @@ var GraphQLAccount = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
+var GQLCurrentAccount = graphql.Field{
+	Name: "currentAccount",
+	Type: GraphQLAccount,
+	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+		return CurrentAccount(p.Context.(handlers.Context)), nil
+	},
+}
