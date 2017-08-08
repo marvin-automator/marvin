@@ -16,7 +16,7 @@ var GQLAccount = graphql.NewObject(graphql.ObjectConfig{
 
 var GQLCurrentAccount = graphql.Field{
 	Name: "currentAccount",
-	Type: GraphQLAccount,
+	Type: GQLAccount,
 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 		return CurrentAccount(p.Context.(handlers.Context)), nil
 	},
