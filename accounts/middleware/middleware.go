@@ -51,19 +51,20 @@ func Middleware(next buffalo.Handler) buffalo.Handler {
 			// If there's no user id in our session, make them log in
 			if uid == nil {
 				err = errNeedsLogin
-			}
+			} else {
 
-			// Try to get the user with the id in the session
-			account, err = i.GetAccountByID(uid.(string))
+				// Try to get the user with the id in the session
+				account, err = i.GetAccountByID(uid.(string))
 
-			// If there's no user with this ID...
-			if err == domain.ErrAccountNotFound {
-				// ... Make them log in again
-				c.Logger().Debugf("No user with ID %v", uid)
-				err =  errNeedsLogin
-				//Any other error should be returned as normal
-			} else if err != nil {
-				return err
+				// If there's no user with this ID...
+				if err == domain.ErrAccountNotFound {
+					// ... Make them log in again
+					c.Logger().Debugf("No user with ID %v", uid)
+					err = errNeedsLogin
+					//Any other error should be returned as normal
+				} else if err != nil {
+					return err
+				}
 			}
 		}
 		// Save the account in the context and session.
