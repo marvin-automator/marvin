@@ -11,9 +11,9 @@ var ErrChoreNotFound = errors.New("chore not found")
 // An ActionInstance is an instance of an action in a Chore.
 type ActionInstance struct {
 	ID             string `json:"id"`
-	ActionProvider string `json:"action_provider"`
+	ActionProvider string `json:"actionProvider"`
 	Action         string `json:"action"`
-	InputTemplate  string `json:"input_template"`
+	InputTemplate  string `json:"inputTemplate"`
 	Identity       string `json:"identity"`
 }
 
