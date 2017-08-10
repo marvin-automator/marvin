@@ -7,7 +7,10 @@ export const link = new HttpLink({uri});
 export const fetcher = (operation) => execute(link, operation);
 
 let netInt = createNetworkInterface({
-    uri: uri
+    uri: uri,
+    opts: {
+        credentials: 'same-origin',
+    }
 });
 export const client = new ApolloClient({
     networkInterface: netInt,
