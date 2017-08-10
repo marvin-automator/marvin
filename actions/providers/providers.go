@@ -4,4 +4,5 @@ package providers
 
 import (
 	_ "github.com/marvin-automator/marvin/actions/providers/url" // register the URL provider
+	_ "github.com/marvin-automator/marvin/actions/providers/github" // register the GitHub provider
 )
