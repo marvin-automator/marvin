@@ -62,7 +62,7 @@ func App() *buffalo.App {
 
 		// API
 		a := app.Group("/api")
-		//a.Use(accountmiddleware.Middleware)
+		a.Use(accountmiddleware.Middleware)
 		a.POST("/graphql", graphql.Handler)
 		a.GET("/chores", bf(actionhandlers.AccountChores))
 		a.GET("/actions", bf(actionhandlers.ActionGroups))
