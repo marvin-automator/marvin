@@ -2,7 +2,6 @@ package graphql
 
 import (
 	"github.com/graphql-go/handler"
-	"github.com/bigblind/buffalo"
 	"github.com/marvin-automator/marvin/handlers"
 )
 

@@ -5,6 +5,7 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 process.env["NODE_ENV"] = "development"
 
 module.exports = {
+    devtool: "eval-source-map",
     entry: [
         "./assets/js/application.js",
     ],
