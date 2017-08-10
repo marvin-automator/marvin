@@ -46,10 +46,10 @@ const (
 
 // ProviderMeta stores metadata about a set of actions
 type ProviderMeta struct {
-	Name        string
-	Description string
+	Name        string	`json:"name"`
+	Description string  `json:"description"`
 	// The key should uniquely identify the provider
-	Key string
+	Key 		string	`json:"key"`
 	// The protocol that should be used for getting identities to use with the actions for this provider.
 	// Use None if you don't need a 3rd-party identity.
 	//
@@ -70,9 +70,9 @@ type ProviderMeta struct {
 // ActionMeta stores metadata about a specific action
 type ActionMeta struct {
 	// The key should uniquely identify the action within the provider
-	Key         string
-	Name        string
-	Description string
+	Key         string	`json:"key"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
 
 	// SetupStepPath, should either be an empty string if your action doesn't need a setup step, or a path that your
 	// action can handle via the callback URL. The response from this path will be included in an iframe during the
@@ -84,7 +84,7 @@ type ActionMeta struct {
 
 	// The key is used to retrieve the actual action object.
 	// Whether this action is a trigger
-	IsTrigger bool
+	IsTrigger bool    `json:"isTrigger"`
 	// Whether this action needs to do a test run to get the output schema
 	RequiresTestRun bool
 	// Whether this action requires a 3rd-party identity
