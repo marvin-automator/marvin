@@ -4,6 +4,8 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 process.env["NODE_ENV"] = "development"
 
+fileLoaderPath = "&publicPath=/assets"
+
 module.exports = {
     devtool: "eval-source-map",
     entry: [
@@ -59,19 +61,23 @@ module.exports = {
             ]
         }, {
             test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-            use: "url-loader?limit=10000&mimetype=application/font-woff"
+            use: "url-loader?limit=10000&mimetype=application/font-woff" + fileLoaderPath
         }, {
             test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-            use: "url-loader?limit=10000&mimetype=application/font-woff"
+            use: "url-loader?limit=10000&mimetype=application/font-woff" + fileLoaderPath
         }, {
             test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-            use: "url-loader?limit=10000&mimetype=application/octet-stream"
+            use: "url-loader?limit=10000&mimetype=application/octet-stream" + fileLoaderPath
         }, {
             test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-            use: "file-loader"
+            use: "file-loader?useRelativePath"
         }, {
             test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-            use: "url-loader?limit=10000&mimetype=image/svg+xml"
-        }]
+            use: "url-loader?limit=10000&mimetype=image/svg+xml" + fileLoaderPath
+        },
+            {
+                test: /\.png$/,
+                use: "url-loader?limit=10000&mimetype=image/png" + fileLoaderPath
+            }]
     }
 };

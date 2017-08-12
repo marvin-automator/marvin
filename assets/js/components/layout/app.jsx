@@ -1,18 +1,17 @@
 import React from "react"
-import Layout from "antd/lib/layout/layout"
+import {Route} from "react-router-dom"
+import {Container} from "semantic-ui-react"
 
 import Menu from "./menu.jsx"
+import ChoresPage from "../chores/ChoresPage"
 
 const App = () => {
-    return <Layout>
-        <Layout.Header>
-            <img src="http://via.placeholder.com/128x128" style={{width: "64px", height: "63px", float:"left"}} />
-            <Menu />
-        </Layout.Header>
-        <Layout.Content>
-
-        </Layout.Content>
-    </Layout>
+    return <div>
+        <Menu />
+        <Container text style={{marginTop: '7em'}}>
+            <Route path="/chores" component={ChoresPage} />
+        </Container>
+    </div>
 }
 
 export default App

@@ -1,13 +1,17 @@
 import React from "react"
-import Menu from "antd/lib/menu"
-import Icon from "antd/lib/icon"
+import {Menu, Container, Image, Icon} from "semantic-ui-react"
 
 const AppMenu = () => {
-    return <Menu theme="dark" mode="horizontal" style={{ lineHeight: '64px' }}>
-        <Menu.Item>Chores</Menu.Item>
-        <Menu.Item>Settings</Menu.Item>
-        <Menu.Item style={{float:"right"}}><Icon type="logout" />Log Out</Menu.Item>
-        <Menu.Item style={{float:"right"}}><Icon type="user" />{ACCOUNT_EMAIL}</Menu.Item>
+    return <Menu fixed="top" inverted>
+        <Container icon="labeled">
+            <Menu.Item as="a">
+                <Image src="http://via.placeholder.com/64x64" size="mini" style={{marginRight: '1.5em'}}/>
+            </Menu.Item>
+            <Menu.Item as="a" href="/app/chores">Chores</Menu.Item>
+            <Menu.Item as="a" href="/app/settings">Settings</Menu.Item>
+            <Menu.Item as="a" href="/app/account" position="right"><Icon name="user" />{ACCOUNT_EMAIL}</Menu.Item>
+            <Menu.Item as="a" href="/logout"><Icon name="log out"/>Log Out</Menu.Item>
+        </Container>
     </Menu>
 }
 
