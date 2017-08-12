@@ -11,6 +11,7 @@ func schema() *graphql.Schema {
 		"currentAccount": &accounts.GQLCurrentAccount,
 		"providers": actions_graphql.ProvidersField,
 		"viewerChores": actions_graphql.ViewerChoresField,
+		"groups": actions_graphql.GroupsField,
 	}
 
 	rq := graphql.ObjectConfig{
