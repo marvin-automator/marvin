@@ -1,4 +1,4 @@
-package url
+package web
 
 import (
 	"bytes"
@@ -13,14 +13,14 @@ import (
 )
 
 func init() {
-	p := domain.NewProvider("url", "URL", "Actions triggering and triggered-by HTTP requests.")
-	a := CallURL{}
-	(&a).SetMeta("call_url", "Send a HTTP request", "Send an HtTP (web) request to a URL", false, true, false)
+	p := domain.NewProvider("web", "Web", "Actions triggering and triggered-by web (HTTP) requests.")
+	a := SendRequest{}
+	(&a).SetMeta("call_url", "Send a request", "Send an HTTP (web) request to a URL", false, true, false)
 	p.Add(a)
 }
 
-// CallURL Is an Action that sends a HTTP request
-type CallURL struct {
+// SendRequest Is an Action that sends a HTTP request
+type SendRequest struct {
 	domain.ActionMeta
 }
 
@@ -36,12 +36,12 @@ type urlInput struct {
 }
 
 // InputType returns the type that input json will be deserialized into.
-func (a CallURL) InputType(c domain.ActionContext) interface{} {
+func (a SendRequest) InputType(c domain.ActionContext) interface{} {
 	return urlInput{}
 }
 
 // Execute actually executes the action
-func (a CallURL) Execute(input interface{}, c domain.ActionContext) error {
+func (a SendRequest) Execute(input interface{}, c domain.ActionContext) error {
 	var bodyr io.Reader
 	inp := input.(urlInput)
 	resp, err := a.makeRequest(inp)
@@ -78,14 +78,14 @@ func (a CallURL) Execute(input interface{}, c domain.ActionContext) error {
 }
 
 // OutputType returns an instance of the type that output from this action will have
-func (a CallURL) OutputType(c domain.ActionContext) interface{} {
+func (a SendRequest) OutputType(c domain.ActionContext) interface{} {
 	json, _ := c.InstanceStore().Get("outputSchema")
 	resp, _ := arbitraryJSONToTypet(strings.NewReader(json.(string)))
 	return resp
 }
 
 // makeRequest actually makes the HTTP request
-func (a CallURL) makeRequest(u urlInput) (io.Reader, error) {
+func (a SendRequest) makeRequest(u urlInput) (io.Reader, error) {
 	var body *strings.Reader
 	if u.Method != "GET" && u.Method != "DELETE" {
 		body = strings.NewReader(u.Body)
