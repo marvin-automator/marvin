@@ -1,7 +1,6 @@
 package web
 
 import (
-	"bytes"
 	"encoding/json"
 	"github.com/marvin-automator/marvin/actions/domain"
 	"io"
@@ -42,46 +41,25 @@ func (a SendRequest) InputType(c domain.ActionContext) interface{} {
 
 // Execute actually executes the action
 func (a SendRequest) Execute(input interface{}, c domain.ActionContext) error {
-	var bodyr io.Reader
 	inp := input.(urlInput)
 	resp, err := a.makeRequest(inp)
 	if err != nil {
 		return err
 	}
-	if c.IsTestCall() {
-		buf := bytes.NewBuffer([]byte{})
-		_, err = buf.ReadFrom(resp)
-		if err != nil {
-			return err
-		}
 
-		bodys := buf.String()
-		err = c.InstanceStore().Put("outputSchema", bodys)
-		if err != nil {
-			return err
-		}
-
-		bodyr = strings.NewReader(bodys)
-	} else {
-		bodyr = resp
-	}
-
-	r, err := arbitraryJSONToTypet(bodyr)
+	r, err := arbitraryJSONToTypet(resp)
 	if err != nil {
 		return err
 	}
-
-	//todo: handle slices as the root element of r, and turn them into multiple outputs.
 
 	c.Output(r)
 	return nil
 }
 
-// OutputType returns an instance of the type that output from this action will have
+// OutputType will never be called. Since this action requires a test run,
+// the output of that run will be used to get the output type.
 func (a SendRequest) OutputType(c domain.ActionContext) interface{} {
-	json, _ := c.InstanceStore().Get("outputSchema")
-	resp, _ := arbitraryJSONToTypet(strings.NewReader(json.(string)))
-	return resp
+	return nil
 }
 
 // makeRequest actually makes the HTTP request
