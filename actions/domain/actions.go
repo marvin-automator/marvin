@@ -31,6 +31,7 @@ type ActionProvider interface {
 type Group interface {
 	// Actions returns ActionMetas of actions that are available in this group
 	Actions() []ActionMeta
+
 	// Name returns a human-readable name for the group
 	Name() string
 }
@@ -48,8 +49,10 @@ const (
 type ProviderMeta struct {
 	Name        string	`json:"name"`
 	Description string  `json:"description"`
+
 	// The key should uniquely identify the provider
 	Key 		string	`json:"key"`
+
 	// The protocol that should be used for getting identities to use with the actions for this provider.
 	// Use None if you don't need a 3rd-party identity.
 	//
@@ -57,12 +60,16 @@ type ProviderMeta struct {
 	// ClientID string // Some providers call this a consumer ID, App ID, or other name.
 	// ClientSecret string // Some  providers may call this the Consumer Secret or App Secret
 	ReequiresIdentityProtocol IdentityProtocol
+
 	// If 3rd-party identities are required, AuthorizationEndpoint is the authorization endpoint of the provider
 	AuthorizationEndpoint string
+
 	// If 3rd-party identities are required, TokenEndpoint is the URL where a token can be obtained
 	TokenEndpoint string
+
 	// If 3rd-party identities are required, and uses Oauth 1.0, RequestTokenEndpoint is the URL where a request token can be obtained.
 	RequestTokenEndpoint string
+
 	// The scopes to require for a 3rd-party identity
 	Scopes []string
 }
@@ -85,8 +92,10 @@ type ActionMeta struct {
 	// The key is used to retrieve the actual action object.
 	// Whether this action is a trigger
 	IsTrigger bool    `json:"isTrigger"`
+
 	// Whether this action needs to do a test run to get the output schema
 	RequiresTestRun bool
+
 	// Whether this action requires a 3rd-party identity
 	RequiresIdentity bool
 }
@@ -113,7 +122,10 @@ type BaseAction interface {
 	// Meta returns metadata about the action
 	// To avoid having to implement this, embed an instance of ActionMeta
 	Meta() ActionMeta
+
 	// The struct type of the data that this action will output.
+	// If RequiresTestCall is true for this action's meta, OutputType will not be called,
+	// The action will be run instead and whatever it outputs will be used as its output type.
 	OutputType(c ActionContext) interface{}
 }
 
@@ -153,10 +165,13 @@ type CallbackReceiver interface {
 // that actions use to respond to callback URLs
 type ActionResponseWriter interface {
 	http.ResponseWriter
+
 	// Send a json response with the given code. i will be marshalled into JSON.
 	JSON(code int, i interface{})
+
 	// Send an HTML response
 	HTML(code int, content string)
+
 	// Send a plaintext response
 	Text(code int, content string)
 }
@@ -166,50 +181,61 @@ type ActionContext interface {
 	// InvocationStore is a KVStore that stores data for the duration of the invocation of this action.
 	// The data is automatically deleted when you call Done
 	InvocationStore() KVStore
+
 	// The InstanceStore is used to store data that's
 	// specific to the current instance of the action.
 	// This should be used to store the configuration settings
 	// for this particular step in a chore. It can also be used to accumulate/change data across invocations.
 	InstanceStore() KVStore
+
 	// AccountGlobalStore is a KVStore that provides data that can be reused in any invocation of the action
 	// within the current user's account. It's the action's responsibility to keep this store clean.
 	// The user can clear this store as well.
 	AccountGlobalStore() KVStore
+
 	// HTTPClient returns a http.Client that'll make authenticated requests with the identity, selected for this action.
 	// If the action doesn't require a 3rd-party identity, this just returns an unmodified http.Client.
 	HTTPClient() *http.Client
+
 	// Returns a callbackURL that can be used to receive information from other services on the internet
 	// The URL is tied to the current invocation of the action. The domain and start of the path are fixed, buy
 	// you can provide your own path suffix to route things inside your action. The path suffix must always start with a /,
 	// or be the empty string.
 	GetCallbackURL(path string) string
+
 	// Whether this call is a test call.
-	// This will only return true in the first call to Execute() for instances of actions
-	// where RequiresTestCall is true.
 	IsTestCall() bool
+
 	// GlobalConfig returns the global config object. It should be convertible to the type
 	// returned from Action.GlobalConfigType(), unless that returned nil, in which case this
 	// function returns nil.
 	GlobalConfig() interface{}
+
 	// An action should call Output() to pass output on to the next action.
 	// You can call this as many times as you like to provide multiple outputs.
 	// In this case, the next step will be called multiple times.
 	Output(interface{})
+
 	// An action should call Done() when it is done sending outputs.
 	// A trigger should never call Done, as it should keep sending outputs until the chore is deleted
 	Done()
+
 	// Logger returns a Logger instance actions can use to log messages that help users understand what's going on.
 	Logger() domain.Logger
 }
 
 // KVStore is an interface for storing data in actions.
 type KVStore interface {
+
 	// Get data from the store. Returns nil if the key isn't there.
 	Get(key string) (interface{}, error)
+
 	// Put the value into the store
 	Put(key string, value interface{}) error
+
 	// Delete the ivalue associated with this key from the store.
 	Delete(key string) error
+
 	// Close needs to be called to free up resources on the database.
 	// Stores are automatically closed when the action that requested them finishes,
 	// but in triggers, it's important to close the store when as soon as possible
