@@ -36,13 +36,18 @@ type PushOutput struct {
 	Pusher       CommitAuthor `json:"pusher" description:"The Git author who pushed the changes."`
 }
 
+// ConfigType returns an object of the type that will be passed in as the "config" parameter to Start
+func (p PushTrigger) ConfigType(c domain.ActionContext) interface{} {
+	return nil
+}
+
 // OutputType returns a struct of the type that this action will output.
 func (p PushTrigger) OutputType(c domain.ActionContext) interface{} {
 	return PushOutput{}
 }
 
 // Start initializes the trigger
-func (p PushTrigger) Start(c domain.ActionContext) {
+func (p PushTrigger) Start(c domain.ActionContext, config interface{}) {
 	// We don't need any setup
 }
 

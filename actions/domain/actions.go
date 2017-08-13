@@ -133,8 +133,11 @@ type BaseAction interface {
 type Trigger interface {
 	BaseAction
 
+	// ConfigType should return an object of the type that the trigger expects as configuration
+	ConfigType(c ActionContext) interface{}
+
 	// Start starts off the trigger
-	Start(c ActionContext)
+	Start(c ActionContext, config interface{})
 }
 
 // An Action encapsulates how to perform a certain task
