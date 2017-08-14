@@ -13,8 +13,32 @@ type Registry struct {
 type Group struct {
 	Name     string              `json:"name"`
 	Provider string              `json:"provider"`
-	Actions  []domain.ActionMeta `json:"actions"`
+	actions  []domain.ActionMeta `json:"actions"`
 }
+
+func (g Group) filterActions(isTrigger bool) []domain.ActionMeta {
+	res := []domain.ActionMeta{}
+	for _, act := range g.actions {
+		if act.IsTrigger == isTrigger {
+			res = append(res, act)
+		}
+	}
+
+	return res
+}
+
+// Actions returns all the actions, excluding triggers, in the group.
+func (g Group) Actions()  []domain.ActionMeta {return g.filterActions(false)}
+
+// Triggers returns all the triggers in the group.
+func (g Group) Triggers() []domain.ActionMeta {return g.filterActions(true)}
+
+type Provider struct{
+	Key string		`json:"key"`
+	Name string 	`json:"name"`
+	Groups []Group	`json:"groups"`
+}
+
 
 // NewRegistryInteractor returns a new instance of the Registry interactors
 func NewRegistryInteractor() Registry {
@@ -32,4 +56,17 @@ func (r Registry) GetActionGroups() []Group {
 	}
 
 	return gs
+}
+
+func (r Registry) GetProviders() []Provider {
+	ps := make([]Provider, 0)
+	for _, pm := range r.r.Providers() {
+		p := Provider{pm.Key, pm.Name, []Group{}}
+		for _, g := range r.r.Provider(pm.Key).Groups() {
+			p.Groups = append(p.Groups, Group{g.Name(), pm.Key, g.Actions()})
+		}
+		ps = append(ps, p)
+	}
+
+	return ps
 }
