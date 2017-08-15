@@ -20,8 +20,40 @@ var ActionGroup = graphql.NewObject(graphql.ObjectConfig{
 	Name: "ActionGroup",
 	Fields: graphql.Fields{
 		"name": &graphql.Field{Type: graphql.String},
-		"actions": &graphql.Field{Type: graphql.NewList(Action)},
-		"triggers": &graphql.Field{Type: graphql.NewList(Action)},
+		"actions": &graphql.Field{
+			Type: graphql.NewList(Action),
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				return p.Source.(interactors.Group).Actions(), nil
+			},
+		},
+		"triggers": &graphql.Field{
+			Type: graphql.NewList(Action),
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				return p.Source.(interactors.Group).Triggers(), nil
+
+
+
+			},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+		},
 	},
 })
 

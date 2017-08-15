@@ -62,7 +62,7 @@ func (e *Executor) startChore(c domain.Chore) error {
 
 	ctx := newActionContext(e, c, act, inst)
 	ctx.logger.Infof("Starting Chore %v", c.ID)
-	go t.Start(ctx)
+	go t.Start(ctx, nil)
 	return nil
 }
 
