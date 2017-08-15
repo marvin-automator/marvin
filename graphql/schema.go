@@ -9,13 +9,13 @@ import (
 func schema() *graphql.Schema {
 	fields := graphql.Fields{
 		"currentAccount": &accounts.GQLCurrentAccount,
-		"providers": actions_graphql.ProvidersField,
-		"viewerChores": actions_graphql.ViewerChoresField,
-		"groups": actions_graphql.GroupsField,
+		"providers":      actions_graphql.ProvidersField,
+		"viewerChores":   actions_graphql.ViewerChoresField,
+		"groups":         actions_graphql.GroupsField,
 	}
 
 	rq := graphql.ObjectConfig{
-		Name: "rootQuery",
+		Name:   "rootQuery",
 		Fields: fields,
 	}
 

@@ -3,11 +3,11 @@ package grifts
 import (
 	"fmt"
 	. "github.com/markbates/grift/grift" // nolint
+	"github.com/marvin-automator/marvin/accounts/domain"
 	"github.com/marvin-automator/marvin/accounts/interactors"
 	"github.com/marvin-automator/marvin/accounts/storage"
 	globalstorage "github.com/marvin-automator/marvin/storage"
 	"strings"
-	"github.com/marvin-automator/marvin/accounts/domain"
 )
 
 func init() {

@@ -14,8 +14,8 @@ import (
 	accounthandlers "github.com/marvin-automator/marvin/accounts/handlers"
 	actionhandlers "github.com/marvin-automator/marvin/actions/handlers"
 	apphandlers "github.com/marvin-automator/marvin/app/handlers"
-	"github.com/marvin-automator/marvin/handlers"
 	"github.com/marvin-automator/marvin/graphql"
+	"github.com/marvin-automator/marvin/handlers"
 )
 
 // ENV is used to help switch settings based on where the
@@ -49,7 +49,6 @@ func App() *buffalo.App {
 			// Remove to disable this.
 			app.Use(csrf.Middleware)
 		}
-
 
 		app.Redirect(302, "/", "/app/")
 		app.GET("/login", bf(accounthandlers.LoginPage))

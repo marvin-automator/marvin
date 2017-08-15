@@ -5,14 +5,13 @@ import (
 	"github.com/marvin-automator/marvin/actions/interactors"
 )
 
-
 var Action = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Action",
 	Fields: graphql.Fields{
-		"name": &graphql.Field{Type: graphql.String},
+		"name":        &graphql.Field{Type: graphql.String},
 		"description": &graphql.Field{Type: graphql.String},
-		"key": &graphql.Field{Type: graphql.ID},
-		"isTrigger": &graphql.Field{Type: graphql.Boolean},
+		"key":         &graphql.Field{Type: graphql.ID},
+		"isTrigger":   &graphql.Field{Type: graphql.Boolean},
 	},
 })
 
@@ -35,13 +34,12 @@ var ActionGroup = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-
 var Provider = graphql.NewObject(graphql.ObjectConfig{
 	Name: "ActionProvider",
 	Fields: graphql.Fields{
-		"name": &graphql.Field{Type: graphql.String},
+		"name":        &graphql.Field{Type: graphql.String},
 		"description": &graphql.Field{Type: graphql.String},
-		"key": &graphql.Field{Type: graphql.ID},
+		"key":         &graphql.Field{Type: graphql.ID},
 		"actionGroups": &graphql.Field{
 			Type: graphql.NewList(ActionGroup),
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
@@ -53,7 +51,7 @@ var Provider = graphql.NewObject(graphql.ObjectConfig{
 
 var ProvidersField = &graphql.Field{
 	Name: "providers",
- 	Type: graphql.NewList(Provider),
+	Type: graphql.NewList(Provider),
 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 		return interactors.NewRegistryInteractor().GetProviders(), nil
 	},
@@ -66,4 +64,3 @@ var GroupsField = &graphql.Field{
 		return interactors.NewRegistryInteractor().GetActionGroups(), nil
 	},
 }
-

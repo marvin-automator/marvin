@@ -28,17 +28,16 @@ func (g Group) filterActions(isTrigger bool) []domain.ActionMeta {
 }
 
 // Actions returns all the actions, excluding triggers, in the group.
-func (g Group) Actions()  []domain.ActionMeta {return g.filterActions(false)}
+func (g Group) Actions() []domain.ActionMeta { return g.filterActions(false) }
 
 // Triggers returns all the triggers in the group.
-func (g Group) Triggers() []domain.ActionMeta {return g.filterActions(true)}
+func (g Group) Triggers() []domain.ActionMeta { return g.filterActions(true) }
 
-type Provider struct{
-	Key string		`json:"key"`
-	Name string 	`json:"name"`
-	Groups []Group	`json:"groups"`
+type Provider struct {
+	Key    string  `json:"key"`
+	Name   string  `json:"name"`
+	Groups []Group `json:"groups"`
 }
-
 
 // NewRegistryInteractor returns a new instance of the Registry interactors
 func NewRegistryInteractor() Registry {

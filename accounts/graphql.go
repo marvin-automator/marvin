@@ -9,7 +9,7 @@ import (
 var GQLAccount = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Account",
 	Fields: graphql.Fields{
-		"id": &graphql.Field{Type: graphql.ID},
+		"id":    &graphql.Field{Type: graphql.ID},
 		"email": &graphql.Field{Type: graphql.String},
 	},
 })

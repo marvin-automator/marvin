@@ -17,7 +17,7 @@ func (c Context) Store() storage.Store {
 	if c.store == nil || c.store.Closed() {
 		c.store = storage.NewStore()
 		go func() {
-			<- c.Done()
+			<-c.Done()
 			c.store.Close()
 		}()
 	}
@@ -40,7 +40,7 @@ type Handler func(Context) error
 // ToBuffalo turns returns a Buffalo handler that calls this one
 func (h Handler) ToBuffalo() buffalo.Handler {
 	return func(bc buffalo.Context) error {
-		c := Context{bc, nil	}
+		c := Context{bc, nil}
 		err := h(c)
 
 		return err

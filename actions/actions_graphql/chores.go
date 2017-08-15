@@ -2,10 +2,10 @@ package actions_graphql
 
 import (
 	"github.com/graphql-go/graphql"
-	"github.com/marvin-automator/marvin/actions/interactors"
-	"github.com/marvin-automator/marvin/handlers"
-	"github.com/marvin-automator/marvin/actions/storage"
 	accountsinteractors "github.com/marvin-automator/marvin/accounts/interactors"
+	"github.com/marvin-automator/marvin/actions/interactors"
+	"github.com/marvin-automator/marvin/actions/storage"
+	"github.com/marvin-automator/marvin/handlers"
 
 	"github.com/marvin-automator/marvin/actions/domain"
 )
@@ -13,7 +13,7 @@ import (
 var ActionInstance = graphql.NewObject(graphql.ObjectConfig{
 	Name: "ActionInstance",
 	Fields: graphql.Fields{
-		"id": &graphql.Field{Type: graphql.ID},
+		"id":            &graphql.Field{Type: graphql.ID},
 		"inputTemplate": &graphql.Field{Type: graphql.String},
 
 		"action": &graphql.Field{
@@ -33,12 +33,11 @@ var ActionInstance = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-
 var Chore = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Chore",
 	Fields: graphql.Fields{
-		"id": &graphql.Field{Type: graphql.ID},
-		"name": &graphql.Field{Type: graphql.String},
+		"id":    &graphql.Field{Type: graphql.ID},
+		"name":  &graphql.Field{Type: graphql.String},
 		"owner": &graphql.Field{Type: graphql.String},
 		"actions": &graphql.Field{
 			Type: graphql.NewList(Action),
@@ -48,7 +47,6 @@ var Chore = graphql.NewObject(graphql.ObjectConfig{
 		},
 	},
 })
-
 
 var ViewerChoresField = &graphql.Field{
 	Name: "viewerChores",
@@ -63,5 +61,4 @@ var ViewerChoresField = &graphql.Field{
 		ctx.Logger().Debug("Call done")
 		return chs, err
 	},
-
 }

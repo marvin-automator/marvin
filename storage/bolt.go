@@ -8,7 +8,6 @@ import (
 
 var stores = make(map[int]*boltStore)
 
-
 func logStoreState() {
 	log.Print("Stores overview")
 	for i, s := range stores {
@@ -29,8 +28,8 @@ func logStoreState() {
 type boltStore struct {
 	tx      *bolt.Tx
 	writers int
-	closed bool
-	id int
+	closed  bool
+	id      int
 }
 
 // NewStore creates a new Store

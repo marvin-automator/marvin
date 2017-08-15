@@ -3,7 +3,7 @@ package domain
 import "github.com/urakozz/go-json-schema-generator"
 
 type ActionSchemas struct {
-	InputSchema string `json:"inputSchema"`
+	InputSchema  string `json:"inputSchema"`
 	OutputSchema string `json:"outputSchema"`
 	ConfigSchema string `json:"configSchema"`
 }
