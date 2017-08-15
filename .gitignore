@@ -10,3 +10,5 @@ node_modules/
 public/assets/
 marvin
 marvin.db
+
+.DS_Store
