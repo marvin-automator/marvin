@@ -6,8 +6,8 @@ import (
 
 // The Account type that the actions return to handlers.
 type Account struct {
-	ID    string
-	Email string
+	ID    string	`json:"id"`
+	Email string    `json:"email"`
 }
 
 // CreateAccount is an interactor to create an account
