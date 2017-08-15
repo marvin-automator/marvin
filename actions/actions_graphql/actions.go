@@ -30,29 +30,7 @@ var ActionGroup = graphql.NewObject(graphql.ObjectConfig{
 			Type: graphql.NewList(Action),
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				return p.Source.(interactors.Group).Triggers(), nil
-
-
-
 			},
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			
 		},
 	},
 })
