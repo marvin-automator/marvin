@@ -65,6 +65,7 @@ func App() *buffalo.App {
 		a.POST("/graphql", graphql.Handler)
 		a.GET("/chores", bf(actionhandlers.AccountChores))
 		a.GET("/actions", bf(actionhandlers.ActionGroups))
+		a.GET("/icons", bf(actionhandlers.SpriteSheet))
 
 		app.ServeFiles("/assets", packr.NewBox("../public/assets"))
 	}

@@ -87,7 +87,7 @@ func (b *BasicProvider) getOrCreateDefaultGroup() *BasicGroup {
 
 // NewGroup returns a Group instance that is tied to this provider
 func (b *BasicProvider) NewGroup(name string) *BasicGroup {
-	g := &BasicGroup{b, name, make([]ActionMeta, 0)}
+	g := &BasicGroup{b, name, make([]ActionMeta, 0), nil}
 	b.groups = append(b.groups, g)
 	return g
 }

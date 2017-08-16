@@ -69,3 +69,7 @@ func (r Registry) GetProviders() []Provider {
 
 	return ps
 }
+
+func (r Registry) GetSpriteSheet() ([]byte, error) {
+	return domain.MakeSpriteSheet()
+}
