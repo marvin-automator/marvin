@@ -3,6 +3,7 @@ package domain
 import (
 	"encoding/xml"
 	"fmt"
+	"regexp"
 )
 
 // MakeSpriteSheet makes an SVG sprite sheet of all the icons of providers and actions.
@@ -34,8 +35,14 @@ func addProviderIcons(s *svg) {
 }
 
 func unmarshalIcon(data []byte) *svg {
+	r := regexp.MustCompile(`\<\?xml.*\?\>`)
+	data = r.ReplaceAll(data, []byte{})
+
 	s := &svg{}
-	xml.Unmarshal(data, s)
+	err := xml.Unmarshal(data, s)
+	if err != nil {
+		panic(err)
+	}
 	return s
 }
 
@@ -45,7 +52,7 @@ type svg struct {
 	Height	string		`xml:"height,attr,omitempty"`
 	XMLNS	string		`xml:"xmlns,attr"`
 	ViewBox	string		`xml:"viewBox,attr,omitempty"`
-	InnerXML string `xml:",innerxml"`
+	InnerXML string 	`xml:",innerxml"`
 	Symbols	 []Symbol
 }
 
@@ -53,7 +60,7 @@ func (s *svg) viewBox() string {
 	if s.ViewBox != "" {
 		return s.ViewBox
 	}
-
+	// Generate one based on dimensions.
 	return fmt.Sprintf("0 0 %v %v", s.Width, s.Height)
 }
 
