@@ -41,10 +41,10 @@ func unmarshalIcon(data []byte) *svg {
 
 type svg struct {
 	XMLName xml.Name	`xml:"svg"`
-	Width	string		`xml:"width,attr"`
-	Height	string		`xml:"height,attr"`
+	Width	string		`xml:"width,attr,omitempty"`
+	Height	string		`xml:"height,attr,omitempty"`
 	XMLNS	string		`xml:"xmlns,attr"`
-	ViewBox	string		`xml:"viewBox,attr"`
+	ViewBox	string		`xml:"viewBox,attr,omitempty"`
 	InnerXML string `xml:",innerxml"`
 	Symbols	 []Symbol
 }
