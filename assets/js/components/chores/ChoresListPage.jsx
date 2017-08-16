@@ -9,8 +9,6 @@ const ChoresListPage = () => {
                 <Button positive as="a" href="/chores/new" size="small" content="new" icon="plus"/>
             </span>
         </h1>
-        <p>ABC</p>
-        <p>DEF</p>
     </div>
 }
 
