@@ -1,0 +1,2 @@
+Web Provider icon by [Alfredo Hernandez](https://www.flaticon.com/authors/alfredo-hernandez) from [www.flaticon.com](https://www.flaticon.com/), licensed under [Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0/)
+HTTP icon by <div>Icons by [MadeByOliver](https://www.flaticon.com/authors/madebyoliver) from [www.flaticon.com](https://www.flaticon.com/), licensed under [Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0/)

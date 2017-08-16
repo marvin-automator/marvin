@@ -9,12 +9,18 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+	"github.com/gobuffalo/packr"
 )
 
 func init() {
+	icons := packr.NewBox("./icons")
+
 	p := domain.NewProvider("web", "Web", "Actions triggering and triggered-by web (HTTP) requests.")
+	p.SetIcon(icons.Bytes("internet.svg"))
+
 	a := SendRequest{}
 	(&a).SetMeta("call_url", "Send a request", "Send an HTTP (web) request to a URL", false, true, false)
+	a.SVGIcon = icons.Bytes("http.svg")
 	p.Add(a)
 }
 
