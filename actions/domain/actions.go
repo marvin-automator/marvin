@@ -34,6 +34,9 @@ type Group interface {
 
 	// Name returns a human-readable name for the group
 	Name() string
+
+	//SVGIcon returns an icon that represents the action
+	SVGIcon() []byte
 }
 
 // IdentityProtocol identifies an authentication protocol.
@@ -72,6 +75,9 @@ type ProviderMeta struct {
 
 	// The scopes to require for a 3rd-party identity
 	Scopes []string
+
+	//SVGIcon holds an icon that represents the action
+	SVGIcon []byte
 }
 
 // ActionMeta stores metadata about a specific action
@@ -98,6 +104,9 @@ type ActionMeta struct {
 
 	// Whether this action requires a 3rd-party identity
 	RequiresIdentity bool
+
+	//SVGIcon holds an icon that represents the action
+	SVGIcon []byte
 }
 
 // Meta returns itself. This is so that action

@@ -10,12 +10,14 @@ type BasicProvider struct {
 	defaultGroup     *BasicGroup
 	actions          map[string]BaseAction
 	globalConfigType interface{}
+	svgIcon []byte
 
 	// 3rd-party identities
 	requiredIdentityProtocol IdentityProtocol
 	authorizationEndpoint    string
 	tokenEndpoint            string
 	requestTokenEndpoint     string
+
 }
 
 // NewProvider creates a new BasicProvider
@@ -39,12 +41,18 @@ func (b *BasicProvider) SetIdentityParameters(authorizationURL, tokenURL, reques
 	b.requestTokenEndpoint = requestTokenURL
 }
 
+//SetIcon sets the SVG icon for this provider
+func (b *BasicProvider) SetIcon(i []byte) {
+	b.svgIcon = i
+}
+
 // Meta returns metadata about the action provider.
 func (b *BasicProvider) Meta() ProviderMeta {
 	return ProviderMeta{
 		Name:        b.name,
 		Description: b.description,
 		Key:         b.key,
+		SVGIcon: 	 b.svgIcon,
 
 		ReequiresIdentityProtocol: b.requiredIdentityProtocol,
 		AuthorizationEndpoint:     b.authorizationEndpoint,
@@ -103,6 +111,7 @@ type BasicGroup struct {
 	provider *BasicProvider
 	name     string
 	metas    []ActionMeta
+	svgIcon	 []byte
 }
 
 // Name returns a human-readable name for the group.
@@ -120,3 +129,17 @@ func (b *BasicGroup) Add(a BaseAction) {
 	b.metas = append(b.metas, a.Meta())
 	b.provider.actions[a.Meta().Key] = a
 }
+
+// SVGIcon returns the SVG icon representing this group.
+func (b *BasicGroup) SVGIcon() []byte {
+	if b.svgIcon == nil {
+		return b.provider.svgIcon
+	}
+	return b.svgIcon
+}
+
+// SetIcon sets the SVG icon representing this group
+func (b *BasicGroup) SetIcon(i []byte) {
+	b.svgIcon = i
+}
+
