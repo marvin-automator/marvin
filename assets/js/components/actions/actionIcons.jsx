@@ -14,15 +14,17 @@ function ensureIconsLoaded(){
     }).then((resp) => {
         return resp.text()
     }).then((txt) => {
-        document.body.innerHTML = txt + document.body.innerHTML;
+        let div = document.createElement("div");
+        div.innerHTML = txt;
+        document.body.insertBefore(div.firstChild, document.body.firstChild)
     });
 }
 
 let SVGIcon = (props) => {
     ensureIconsLoaded();
-    return <svg style={props.style}>
+    return <span><svg style={props.style}>
         <use xlinkHref={`#${props.prefix}_${props.id}`} />
-    </svg>
+    </svg></span>
 }
 
 export const ProviderIcon = (props) => {
@@ -30,9 +32,9 @@ export const ProviderIcon = (props) => {
 };
 
 export const GroupIcon = (props) => {
-    return <SVGIcon prefix="group" id={props.group} />
+    return <SVGIcon prefix="group" id={props.group} style={props.style} />
 };
 
 export const ActionIcon = (props) => {
-    return <SVGIcon prefix="action" id={`${props.provider}_${props.action}`}/>
+    return <SVGIcon prefix="action" id={`${props.provider}_${props.action}`} style={props.style}/>
 }
