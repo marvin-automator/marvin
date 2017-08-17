@@ -8,7 +8,7 @@ import ChoresPage from "../chores/ChoresPage"
 const App = () => {
     return <div>
         <Menu />
-        <Container text style={{marginTop: '7em'}}>
+        <Container style={{marginTop: '7em'}}>
             <Route path="/chores" component={ChoresPage} />
         </Container>
     </div>
