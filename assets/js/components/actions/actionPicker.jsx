@@ -41,8 +41,9 @@ let ActionsGrid = (props) => {
     return <Grid columns={4}>
         <Grid.Row>
             {props.actions.map((action) => {
+                let resultAction = {action: action.key, provider: props.provider}
                 return <Grid.Column key={action.key}>
-                    <Card onClick={() => {props.onSelect({action: action.key, provider: props.provider})}>
+                    <Card onClick={() => props.onSelect(resultAction)}>
                         <Image>
                             <ActionIcon action={action.key} provider={props.provider} />
                         </Image>
