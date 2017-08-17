@@ -19,6 +19,7 @@ var ActionGroup = graphql.NewObject(graphql.ObjectConfig{
 	Name: "ActionGroup",
 	Fields: graphql.Fields{
 		"name": &graphql.Field{Type: graphql.String},
+		"provider": &graphql.Field{Type: graphql.String},
 		"actions": &graphql.Field{
 			Type: graphql.NewList(Action),
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
