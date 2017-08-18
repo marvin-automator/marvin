@@ -252,6 +252,8 @@ func (bb *boltBucket) Put(key string, value interface{}) error {
 }
 
 func (bb *boltBucket) Each(f func(key string) error) error {
+	bb.bs.beginWrite()
+	defer bb.bs.endWrite()
 	b, err := bb.bolt()
 	if err != nil {
 		return err
