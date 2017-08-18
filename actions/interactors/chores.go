@@ -15,3 +15,16 @@ func (c GetChores) ForAccount(aid string) ([]domain.Chore, error) {
 	}
 	return cs, err
 }
+
+type TemporaryInstances struct {
+	TemporaryInstanceStore domain.TemporaryInstanceStore
+}
+
+func (ti TemporaryInstances) New(provider, action string) (domain.TemporaryActionInstance, error) {
+	tai := domain.NewTemporaryActionInstance(provider, action)
+	return tai, ti.TemporaryInstanceStore.Save(tai)
+}
+
+func (ti TemporaryInstances) ByID(ID string) (domain.TemporaryActionInstance, error) {
+	return ti.TemporaryInstanceStore.Get(ID)
+}
