@@ -3,6 +3,7 @@ package domain
 import (
 	"errors"
 	"time"
+	"github.com/satori/go.uuid"
 )
 
 // ErrChoreNotFound is returned by methods that should return a chore when the requested chore cannot be found.
@@ -15,6 +16,15 @@ type ActionInstance struct {
 	Action         string `json:"action"`
 	InputTemplate  string `json:"inputTemplate"`
 	Identity       string `json:"identity"`
+}
+
+//NewActionInstance creates a new action instance.
+func NewActionInstance(provider, action string) ActionInstance {
+	return ActionInstance{
+		ID: uuid.NewV4().String(),
+		ActionProvider: provider,
+		Action: action,
+	}
 }
 
 // A Chore is a workflow specified as a list of actions.
