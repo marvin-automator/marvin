@@ -97,3 +97,9 @@ func (m *MockGroup) Name() string {
 	args := m.Called()
 	return args.String(0)
 }
+
+// SVGIcon is the mocked implementation of Group.SVGIcon
+func (m *MockGroup) SVGIcon() []byte {
+	args := m.Called()
+	return args.Get(0).([]byte)
+}
