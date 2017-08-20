@@ -62,3 +62,27 @@ var ViewerChoresField = &graphql.Field{
 		return chs, err
 	},
 }
+
+var newInstanceInput = graphql.NewInputObject(graphql.InputObjectConfig{
+	Name: "NewInstanceInput",
+	Fields: graphql.InputObjectConfigFieldMap{
+		"provider": &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(graphql.String)},
+		"action": &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(graphql.String)},
+	},
+})
+
+var NewTemporaryInstance = &graphql.Field{
+	Type: ActionInstance,
+	Args: graphql.FieldConfigArgument{
+		"input": &graphql.ArgumentConfig{
+			Type: graphql.NewNonNull(newInstanceInput),
+		},
+	},
+	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+		tais := storage.NewTemporaryInstanceStore(p.Context.(handlers.Context).Store())
+		input := p.Args["input"].(map[string]interface{})
+		interactor := interactors.TemporaryInstances{tais}
+		tai, err := interactor.New(input["provider"].(string), input["action"].(string))
+		return tai.ActionInstance, err
+	},
+}

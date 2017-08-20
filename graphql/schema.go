@@ -21,6 +21,7 @@ func schema() *graphql.Schema {
 
 	sch, err := graphql.NewSchema(graphql.SchemaConfig{
 		Query: graphql.NewObject(rq),
+		Mutation: makeMutations(),
 	})
 
 	if err != nil {
@@ -28,4 +29,15 @@ func schema() *graphql.Schema {
 	}
 
 	return &sch
+}
+
+func makeMutations() *graphql.Object {
+	fields := graphql.Fields{
+		"newTemporaryInstance": actions_graphql.NewTemporaryInstance,
+	}
+
+	return graphql.NewObject(graphql.ObjectConfig{
+		Name: "Mutations",
+		Fields: fields,
+	})
 }
