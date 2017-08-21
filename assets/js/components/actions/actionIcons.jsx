@@ -25,7 +25,7 @@ let SVGIcon = (props) => {
     return <span><svg style={props.style}>
         <use xlinkHref={`#${props.prefix}_${props.id}`} />
     </svg></span>
-}
+};
 
 export const ProviderIcon = (props) => {
     return <SVGIcon prefix="provider" id={props.provider} />
