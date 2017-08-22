@@ -86,3 +86,18 @@ var NewTemporaryInstance = &graphql.Field{
 		return tai.ActionInstance, err
 	},
 }
+
+var TemporaryInstanceField = &graphql.Field{
+	Type: ActionInstance,
+	Args: graphql.FieldConfigArgument{
+		"id": &graphql.ArgumentConfig{
+			Type: graphql.String,
+		},
+	},
+	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+		ctx := p.Context.(handlers.Context)
+		tais := storage.NewTemporaryInstanceStore(ctx.Store())
+		tai, err := tais.Get(p.Args["id"].(string))
+		return tai.ActionInstance, err
+	},
+}

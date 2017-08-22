@@ -8,10 +8,11 @@ import (
 
 func schema() *graphql.Schema {
 	fields := graphql.Fields{
-		"currentAccount": &accounts.GQLCurrentAccount,
-		"providers":      actions_graphql.ProvidersField,
-		"viewerChores":   actions_graphql.ViewerChoresField,
-		"groups":         actions_graphql.GroupsField,
+		"currentAccount": 		&accounts.GQLCurrentAccount,
+		"providers":      		actions_graphql.ProvidersField,
+		"viewerChores":   		actions_graphql.ViewerChoresField,
+		"groups":         		actions_graphql.GroupsField,
+		"temporaryInstance":	actions_graphql.TemporaryInstanceField,
 	}
 
 	rq := graphql.ObjectConfig{
