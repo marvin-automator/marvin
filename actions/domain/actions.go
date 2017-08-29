@@ -135,7 +135,7 @@ type BaseAction interface {
 	// The struct type of the data that this action will output.
 	// If RequiresTestCall is true for this action's meta, OutputType will not be called,
 	// The action will be run instead and whatever it outputs will be used as its output type.
-	OutputType(c ActionContext) interface{}
+	OutputType(c ConfigurationContext) interface{}
 }
 
 // A Trigger is an action that starts off a chore.
@@ -143,7 +143,7 @@ type Trigger interface {
 	BaseAction
 
 	// ConfigType should return an object of the type that the trigger expects as configuration
-	ConfigType(c ActionContext) interface{}
+	ConfigType(c ConfigurationContext) interface{}
 
 	// Start starts off the trigger
 	Start(c ActionContext, config interface{})
@@ -188,22 +188,13 @@ type ActionResponseWriter interface {
 	Text(code int, content string)
 }
 
-// ActionContext gives an action access to data and functionality that can be useful when executing an action
-type ActionContext interface {
-	// InvocationStore is a KVStore that stores data for the duration of the invocation of this action.
-	// The data is automatically deleted when you call Done
-	InvocationStore() KVStore
-
+//ConfigurationContext gives an action access to data that it may need while it is being configured
+type ConfigurationContext interface {
 	// The InstanceStore is used to store data that's
 	// specific to the current instance of the action.
 	// This should be used to store the configuration settings
 	// for this particular step in a chore. It can also be used to accumulate/change data across invocations.
 	InstanceStore() KVStore
-
-	// AccountGlobalStore is a KVStore that provides data that can be reused in any invocation of the action
-	// within the current user's account. It's the action's responsibility to keep this store clean.
-	// The user can clear this store as well.
-	AccountGlobalStore() KVStore
 
 	// HTTPClient returns a http.Client that'll make authenticated requests with the identity, selected for this action.
 	// If the action doesn't require a 3rd-party identity, this just returns an unmodified http.Client.
@@ -215,13 +206,25 @@ type ActionContext interface {
 	// or be the empty string.
 	GetCallbackURL(path string) string
 
-	// Whether this call is a test call.
-	IsTestCall() bool
-
 	// GlobalConfig returns the global config object. It should be convertible to the type
 	// returned from Action.GlobalConfigType(), unless that returned nil, in which case this
 	// function returns nil.
 	GlobalConfig() interface{}
+
+	// Logger returns a Logger instance actions can use to log messages that help users understand what's going on.
+	Logger() domain.Logger
+}
+
+// ActionContext gives an action access to data and functionality that can be useful when executing an action
+type ActionContext interface {
+	ConfigurationContext
+
+	// InvocationStore is a KVStore that stores data for the duration of the invocation of this action.
+	// The data is automatically deleted when you call Done
+	InvocationStore() KVStore
+
+	// Whether this call is a test call.
+	IsTestCall() bool
 
 	// An action should call Output() to pass output on to the next action.
 	// You can call this as many times as you like to provide multiple outputs.
@@ -231,9 +234,6 @@ type ActionContext interface {
 	// An action should call Done() when it is done sending outputs.
 	// A trigger should never call Done, as it should keep sending outputs until the chore is deleted
 	Done()
-
-	// Logger returns a Logger instance actions can use to log messages that help users understand what's going on.
-	Logger() domain.Logger
 }
 
 // KVStore is an interface for storing data in actions.

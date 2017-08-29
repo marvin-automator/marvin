@@ -37,12 +37,12 @@ type PushOutput struct {
 }
 
 // ConfigType returns an object of the type that will be passed in as the "config" parameter to Start
-func (p PushTrigger) ConfigType(c domain.ActionContext) interface{} {
+func (p PushTrigger) ConfigType(c domain.ConfigurationContext) interface{} {
 	return nil
 }
 
 // OutputType returns a struct of the type that this action will output.
-func (p PushTrigger) OutputType(c domain.ActionContext) interface{} {
+func (p PushTrigger) OutputType(c domain.ConfigurationContext) interface{} {
 	return PushOutput{}
 }
 

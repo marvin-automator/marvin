@@ -41,7 +41,7 @@ type urlInput struct {
 }
 
 // InputType returns the type that input json will be deserialized into.
-func (a SendRequest) InputType(c domain.ActionContext) interface{} {
+func (a SendRequest) InputType(c domain.ConfigurationContext) interface{} {
 	return urlInput{}
 }
 
@@ -64,7 +64,7 @@ func (a SendRequest) Execute(input interface{}, c domain.ActionContext) error {
 
 // OutputType will never be called. Since this action requires a test run,
 // the output of that run will be used to get the output type.
-func (a SendRequest) OutputType(c domain.ActionContext) interface{} {
+func (a SendRequest) OutputType(c domain.ConfigurationContext) interface{} {
 	return nil
 }
 
