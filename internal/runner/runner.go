@@ -6,7 +6,7 @@ import (
 )
 
 type TaskRunner struct {
-	wg sync.WaitGroup
+	wg     sync.WaitGroup
 	doneCh chan struct{}
 }
 
@@ -19,7 +19,7 @@ func NewRunner() *TaskRunner {
 func (tr *TaskRunner) start(ctx context.Context) {
 	go func() {
 		for {
-			<- tr.doneCh
+			<-tr.doneCh
 			tr.wg.Done()
 		}
 	}()

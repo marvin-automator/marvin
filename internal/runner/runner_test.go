@@ -24,7 +24,7 @@ func TestTaskRunner_Run(t *testing.T) {
 	tr.Run(func(doneCh chan<- struct{}) {
 		time.AfterFunc(5*time.Millisecond, func() {
 			res = "run"
-			doneCh<- struct{}{}
+			doneCh <- struct{}{}
 		})
 	})
 
