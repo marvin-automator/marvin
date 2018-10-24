@@ -12,7 +12,7 @@ import (
 func TestTaskRunner_Run_No_Tasks(t *testing.T) {
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Millisecond)
 	tr := NewRunner()
-	tr.start(ctx)
+	tr.Start(ctx)
 }
 
 func TestTaskRunner_Run(t *testing.T) {
@@ -29,7 +29,7 @@ func TestTaskRunner_Run(t *testing.T) {
 	})
 
 	time.AfterFunc(1*time.Millisecond, cancel)
-	tr.start(ctx)
+	tr.Start(ctx)
 
 	r.Equal("run", res)
 }

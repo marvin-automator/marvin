@@ -5,18 +5,23 @@ import (
 	"sync"
 )
 
-type TaskRunner struct {
+type taskRunner struct {
 	wg     sync.WaitGroup
 	doneCh chan struct{}
 }
 
 type Task func(doneCh chan<- struct{})
 
-func NewRunner() *TaskRunner {
-	return &TaskRunner{doneCh: make(chan struct{}, 10)}
+type TaskRunner interface {
+	Start(ctx context.Context)
+	Run(t Task)
 }
 
-func (tr *TaskRunner) start(ctx context.Context) {
+func NewRunner() TaskRunner {
+	return &taskRunner{doneCh: make(chan struct{}, 10)}
+}
+
+func (tr *taskRunner) Start(ctx context.Context) {
 	go func() {
 		for {
 			<-tr.doneCh
@@ -28,7 +33,7 @@ func (tr *TaskRunner) start(ctx context.Context) {
 	tr.wg.Wait()
 }
 
-func (tr *TaskRunner) Run(t Task) {
+func (tr *taskRunner) Run(t Task) {
 	tr.wg.Add(1)
 	t(tr.doneCh)
 }
