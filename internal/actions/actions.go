@@ -17,6 +17,7 @@ type Info struct {
 	BaseInfo
 	InputType  reflect.Type
 	OutputType reflect.Type
+	IsTrugger bool
 }
 
 type Action interface {
@@ -40,6 +41,51 @@ func (a *action) Run(input interface{}, ctx context.Context) (interface{}, error
 	return res, err
 }
 
+func (a *action) validate() {
+	name := a.Info().Name
+
+	if a.runFunc.Kind() != reflect.Func {
+		panic(fmt.Sprintf("Action %v did not receive a function as runFunc", name))
+	}
+
+	ft := a.runFunc.Type()
+	ctx := context.Background()
+	if !(ft.NumIn() == 2 &&
+		ft.In(0).Kind() == reflect.Struct &&
+		reflect.TypeOf(ctx).AssignableTo(ft.In(1))) {
+		panic(fmt.Sprintf("Action %v should have a function that takes 2 arguments. The first is a struct type that you define, the second is a context.Context", name))
+	}
+
+	if a.info.IsTrugger {
+		a.validateTrigger(ft)
+		a.info.OutputType = ft.Out(0).Elem()
+	} else {
+		a.validateAction(ft)
+		a.info.OutputType = ft.Out(0)
+	}
+
+	a.info.InputType = ft.In(0)
+}
+
+func (a *action) validateAction(ft reflect.Type) {
+	name := a.Info().Name
+
+	var e *error
+	if !(ft.NumOut() == 2 && ft.Out(0).Kind() == reflect.Struct && ft.Out(1).Implements(reflect.TypeOf(e).Elem())) {
+		panic(fmt.Sprintf("Action %v should have a function that returns 2 values, one of a struct type that you define, and an error.", name))
+	}
+}
+
+func (a *action) validateTrigger(ft reflect.Type) {
+	name := a.Info().Name
+
+	var e *error
+	if !(ft.NumOut() == 2 && ft.Out(0).Kind() == reflect.Chan && ft.Out(1).Implements(reflect.TypeOf(e).Elem()) &&
+		ft.Out(0).ChanDir() & reflect.RecvDir == reflect.RecvDir) {
+		panic(fmt.Sprintf("Trigger %v should have a function that returns 2 values:\n- A readable channel containing structs representing events\n - an error in case anything went wrong.", name))
+	}
+}
+
 type Group struct {
 	BaseInfo
 	Actions map[string]Action
@@ -56,14 +102,11 @@ func (p *Provider) AddGroup(name, description string, svgIcon []byte) actions.Gr
 	return g
 }
 
-func (g *Group) AddAction(name, description string, svgIcon []byte, runFunc interface{}) {
-	f := reflect.ValueOf(runFunc)
-	g.checkActionFunction(name, f)
 
+func (g *Group) addAction(name, description string, svgIcon []byte, runFunc interface{}, trigger bool) {
 	info := Info{
 		BaseInfo:   BaseInfo{name, description, svgIcon},
-		InputType:  f.Type().In(0),
-		OutputType: f.Type().Out(0),
+		IsTrugger:	trigger,
 	}
 
 	a := &action{
@@ -71,26 +114,18 @@ func (g *Group) AddAction(name, description string, svgIcon []byte, runFunc inte
 		runFunc: reflect.ValueOf(runFunc),
 	}
 
+	a.validate()
+
 	g.Actions[name] = a
 }
 
-func (g *Group) checkActionFunction(name string, f reflect.Value) {
-	if f.Kind() != reflect.Func {
-		panic(fmt.Sprintf("Action %v did not receive a function as runFunc", name))
-	}
+func (g *Group) AddAction(name, description string, svgIcon []byte, runFunc interface{}) {
+	g.addAction(name, description, svgIcon, runFunc, false)
+}
 
-	ft := f.Type()
-	ctx := context.Background()
-	if !(ft.NumIn() == 2 &&
-		ft.In(0).Kind() == reflect.Struct &&
-		reflect.TypeOf(ctx).AssignableTo(ft.In(1))) {
-		panic(fmt.Sprintf("Action %v should have a function that takes 2 arguments. The first is a struct type that you define, the second is a context.Context", name))
-	}
+func (g *Group) AddManualTrigger(name, description string, svgIcon []byte, runFunc interface{}) {
+	g.addAction(name, description, svgIcon, runFunc, true)
 
-	var e *error
-	if !(ft.NumOut() == 2 && ft.Out(0).Kind() == reflect.Struct && ft.Out(1).Implements(reflect.TypeOf(e).Elem())) {
-		panic(fmt.Sprintf("Action %v should have a function that returns 2 values, one of a struct type that you define, and an error.", name))
-	}
 }
 
 type ProviderRegistry struct {
@@ -131,7 +166,7 @@ func (r *ProviderRegistry) GetAction(provider, group, action string) (Action, er
 		}
 		return nil, fmt.Errorf("Provider %v has no group %v", provider, group)
 	}
-	return nil, fmt.Errorf("No provider: %v", provider)
+	return nil, fmt.Errorf("no provider: %v", provider)
 }
 
 func init() {

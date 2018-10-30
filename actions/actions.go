@@ -2,6 +2,7 @@ package actions
 
 type Group interface {
 	AddAction(name, description string, svgInput []byte, runFunc interface{})
+	AddManualTrigger(name, description string, svgIcon []byte, runFunc interface{})
 }
 
 type Provider interface {

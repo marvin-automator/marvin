@@ -39,3 +39,13 @@ func TestProviderRegistry_GetAction(t *testing.T) {
 	r.Equal("ad", a.Info().Description)
 	r.NoError(err)
 }
+
+func TestGroup_AddManualTrigger(t *testing.T) {
+	r := makeRegistry()
+
+	g := r.providers["provider2"].groups["g1"]
+	g.AddManualTrigger("myTrigger", "test trigger", []byte{},
+	func(s struct{}, ctx context.Context) ( <-chan struct{}, error) {
+		return nil, nil
+	})
+}
