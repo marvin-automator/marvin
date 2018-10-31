@@ -11,6 +11,7 @@ func init() {
 	p := actions.Registry.AddProvider("Time", "Time-related actions", []byte{})
 	g := p.AddGroup("cron", "Cron-related tasks", []byte{})
 	g.AddManualTrigger("Cron", "Schedule a function to run on an interval based on a Cron expression.", []byte{}, cronTrigger)
+	g.AddAction("Next Cron Time", "Get the next time a cron trigger with the given expression would run.", []byte{}, getNextExecutionTime)
 }
 
 type CronInput struct {
@@ -45,3 +46,13 @@ func cronTrigger(in CronInput, ctx context.Context) (<-chan CronEvent, error) {
 	go f()
 	return out, nil
 }
+
+func getNextExecutionTime(in CronInput, ctx context.Context) (CronEvent, error) {
+	expr, err := cronexpr.Parse(in.Expression)
+	if err != nil {
+		return CronEvent{}, err
+	}
+
+	return CronEvent{expr.Next(time.Now())}, nil
+}
+
