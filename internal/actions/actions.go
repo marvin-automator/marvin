@@ -7,30 +7,12 @@ import (
 	"reflect"
 )
 
-type BaseInfo struct {
-	Name        string
-	Description string
-	SVGIcon     []byte
-}
-
-type Info struct {
-	BaseInfo
-	InputType  reflect.Type
-	OutputType reflect.Type
-	IsTrugger  bool
-}
-
-type Action interface {
-	Info() Info
-	Run(input interface{}, ctx context.Context) (interface{}, error)
-}
-
 type action struct {
-	info    Info
+	info    actions.Info
 	runFunc reflect.Value
 }
 
-func (a *action) Info() Info {
+func (a *action) Info() actions.Info {
 	return a.info
 }
 
@@ -87,24 +69,33 @@ func (a *action) validateTrigger(ft reflect.Type) {
 }
 
 type Group struct {
-	BaseInfo
-	Actions map[string]Action
+	actions.BaseInfo
+	actions map[string]actions.Action
 }
 
 type Provider struct {
-	BaseInfo
+	actions.BaseInfo
 	groups map[string]*Group
 }
 
 func (p *Provider) AddGroup(name, description string, svgIcon []byte) actions.Group {
-	g := &Group{BaseInfo{name, description, svgIcon}, make(map[string]Action)}
+	g := &Group{actions.BaseInfo{name, description, svgIcon}, make(map[string]actions.Action)}
 	p.groups[name] = g
 	return g
 }
 
+func (p *Provider) Groups() []actions.Group {
+	res := make([]actions.Group, 0, len(p.groups))
+	for _, g := range p.groups {
+		res = append(res, g)
+	}
+
+	return res
+}
+
 func (g *Group) addAction(name, description string, svgIcon []byte, runFunc interface{}, trigger bool) {
-	info := Info{
-		BaseInfo:  BaseInfo{name, description, svgIcon},
+	info := actions.Info{
+		BaseInfo:  actions.BaseInfo{name, description, svgIcon},
 		IsTrugger: trigger,
 	}
 
@@ -115,7 +106,7 @@ func (g *Group) addAction(name, description string, svgIcon []byte, runFunc inte
 
 	a.validate()
 
-	g.Actions[name] = a
+	g.actions[name] = a
 }
 
 func (g *Group) AddAction(name, description string, svgIcon []byte, runFunc interface{}) {
@@ -124,7 +115,15 @@ func (g *Group) AddAction(name, description string, svgIcon []byte, runFunc inte
 
 func (g *Group) AddManualTrigger(name, description string, svgIcon []byte, runFunc interface{}) {
 	g.addAction(name, description, svgIcon, runFunc, true)
+}
 
+func (g *Group) Actions() []actions.Action {
+	res := make([]actions.Action, 0, len(g.actions))
+	for _, a := range g.actions {
+		res = append(res, a)
+	}
+
+	return res
 }
 
 type ProviderRegistry struct {
@@ -137,7 +136,7 @@ func NewRegistry() *ProviderRegistry {
 
 func (r *ProviderRegistry) AddProvider(name, description string, svgIcon []byte) actions.Provider {
 	p := &Provider{
-		BaseInfo: BaseInfo{name, description, svgIcon},
+		BaseInfo: actions.BaseInfo{name, description, svgIcon},
 		groups:   make(map[string]*Group),
 	}
 
@@ -146,8 +145,8 @@ func (r *ProviderRegistry) AddProvider(name, description string, svgIcon []byte)
 	return p
 }
 
-func (r *ProviderRegistry) Providers() []*Provider {
-	ps := make([]*Provider, 0, len(r.providers))
+func (r *ProviderRegistry) Providers() []actions.Provider {
+	ps := make([]actions.Provider, 0, len(r.providers))
 	for _, p := range r.providers {
 		ps = append(ps, p)
 	}
@@ -155,10 +154,10 @@ func (r *ProviderRegistry) Providers() []*Provider {
 	return ps
 }
 
-func (r *ProviderRegistry) GetAction(provider, group, action string) (Action, error) {
+func (r *ProviderRegistry) GetAction(provider, group, action string) (actions.Action, error) {
 	if p, ok := r.providers[provider]; ok {
 		if g, ok := p.groups[group]; ok {
-			if a, ok := g.Actions[action]; ok {
+			if a, ok := g.actions[action]; ok {
 				return a, nil
 			}
 			return nil, fmt.Errorf("Group %v->%v has no action %v", provider, group, action)
