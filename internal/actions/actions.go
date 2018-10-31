@@ -38,7 +38,7 @@ func (a *action) validate() {
 		panic(fmt.Sprintf("Action %v should have a function that takes 2 arguments. The first is a struct type that you define, the second is a context.Context", name))
 	}
 
-	if a.info.IsTrugger {
+	if a.info.IsTrigger {
 		a.validateTrigger(ft)
 		a.info.OutputType = ft.Out(0).Elem()
 	} else {
@@ -96,7 +96,7 @@ func (p *Provider) Groups() []actions.Group {
 func (g *Group) addAction(name, description string, svgIcon []byte, runFunc interface{}, trigger bool) {
 	info := actions.Info{
 		BaseInfo:  actions.BaseInfo{name, description, svgIcon},
-		IsTrugger: trigger,
+		IsTrigger: trigger,
 	}
 
 	a := &action{

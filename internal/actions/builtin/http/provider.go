@@ -5,7 +5,7 @@ import (
 )
 
 func init() {
-	p := actions.Registry.AddProvider("HTTP", "Send and Receive HTTP(S) requests.", []byte{})
+	p := actions.Registry.AddProvider("http", "Send and Receive HTTP(S) requests.", []byte{})
 	g := p.AddGroup("default", "", []byte{})
 	g.AddAction("send request", "Send an HTTP Request", []byte{}, makeRequest)
 }

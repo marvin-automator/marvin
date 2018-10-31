@@ -11,6 +11,10 @@ type BaseInfo struct {
 	SVGIcon     []byte
 }
 
+func (i BaseInfo) Info() BaseInfo {
+	return i
+}
+
 type Info struct {
 	BaseInfo
 	InputType  reflect.Type
@@ -27,11 +31,13 @@ type Group interface {
 	AddAction(name, description string, svgInput []byte, runFunc interface{})
 	AddManualTrigger(name, description string, svgIcon []byte, runFunc interface{})
 	Actions() []Action
+	Info() BaseInfo
 }
 
 type Provider interface {
 	AddGroup(name, description string, svgIcon []byte) Group
 	Groups() []Group
+	Info() BaseInfo
 }
 
 type ProviderRegistry interface {
