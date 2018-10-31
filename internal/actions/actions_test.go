@@ -45,7 +45,7 @@ func TestGroup_AddManualTrigger(t *testing.T) {
 
 	g := r.providers["provider2"].groups["g1"]
 	g.AddManualTrigger("myTrigger", "test trigger", []byte{},
-	func(s struct{}, ctx context.Context) ( <-chan struct{}, error) {
-		return nil, nil
-	})
+		func(s struct{}, ctx context.Context) (<-chan struct{}, error) {
+			return nil, nil
+		})
 }

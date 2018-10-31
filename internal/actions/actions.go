@@ -17,7 +17,7 @@ type Info struct {
 	BaseInfo
 	InputType  reflect.Type
 	OutputType reflect.Type
-	IsTrugger bool
+	IsTrugger  bool
 }
 
 type Action interface {
@@ -81,7 +81,7 @@ func (a *action) validateTrigger(ft reflect.Type) {
 
 	var e *error
 	if !(ft.NumOut() == 2 && ft.Out(0).Kind() == reflect.Chan && ft.Out(1).Implements(reflect.TypeOf(e).Elem()) &&
-		ft.Out(0).ChanDir() & reflect.RecvDir == reflect.RecvDir) {
+		ft.Out(0).ChanDir()&reflect.RecvDir == reflect.RecvDir) {
 		panic(fmt.Sprintf("Trigger %v should have a function that returns 2 values:\n- A readable channel containing structs representing events\n - an error in case anything went wrong.", name))
 	}
 }
@@ -102,11 +102,10 @@ func (p *Provider) AddGroup(name, description string, svgIcon []byte) actions.Gr
 	return g
 }
 
-
 func (g *Group) addAction(name, description string, svgIcon []byte, runFunc interface{}, trigger bool) {
 	info := Info{
-		BaseInfo:   BaseInfo{name, description, svgIcon},
-		IsTrugger:	trigger,
+		BaseInfo:  BaseInfo{name, description, svgIcon},
+		IsTrugger: trigger,
 	}
 
 	a := &action{

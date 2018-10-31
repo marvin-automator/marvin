@@ -8,29 +8,29 @@ import (
 
 type RegisteredTrigger struct {
 	Provider string
-	Group string
-	Action string
+	Group    string
+	Action   string
 }
 
 type ConfigInput struct {
-	Name string
+	Name        string
 	Description string
 }
 
 type ChoreTemplateConfig struct {
 	Triggers []RegisteredTrigger
-	Inputs []ConfigInput
+	Inputs   []ConfigInput
 }
 
-
 type ChoreTemplate struct {
-	Name string
-	Id []byte
+	Name   string
+	Id     []byte
 	Script string
 	Config ChoreTemplateConfig
 }
 
 var bp, bpErr = packr.NewBox("./js").FindString("boilerplate.js")
+
 func (ct *ChoreTemplate) combineScriptWithBoilerplate() string {
 	if bpErr != nil {
 		panic(bpErr) // If everything is set up correctly during build, this shouldn't happen.
@@ -41,7 +41,7 @@ func (ct *ChoreTemplate) combineScriptWithBoilerplate() string {
 
 func (ct *ChoreTemplate) GenerateConfigs() error {
 	is := v8.NewIsolate()
-	res, err := is.NewContext().Eval(ct.combineScriptWithBoilerplate() + ";marvin;", "marvin.js")
+	res, err := is.NewContext().Eval(ct.combineScriptWithBoilerplate()+";marvin;", "marvin.js")
 
 	if err != nil {
 		return err

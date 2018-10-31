@@ -9,5 +9,3 @@ func init() {
 	g := p.AddGroup("default", "", []byte{})
 	g.AddAction("send request", "Send an HTTP Request", []byte{}, makeRequest)
 }
-
-

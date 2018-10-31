@@ -14,7 +14,7 @@ marvin.input("another_input", "description2");
 `
 	err := ct.GenerateConfigs()
 
-	r :=  require.New(t)
+	r := require.New(t)
 
 	r.NoError(err)
 	inputs := []ConfigInput{

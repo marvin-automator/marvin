@@ -2,8 +2,8 @@ package time
 
 import (
 	"context"
-	"github.com/marvin-automator/marvin/actions"
 	"github.com/gorhill/cronexpr"
+	"github.com/marvin-automator/marvin/actions"
 	"time"
 )
 
@@ -55,4 +55,3 @@ func getNextExecutionTime(in CronInput, ctx context.Context) (CronEvent, error) 
 
 	return CronEvent{expr.Next(time.Now())}, nil
 }
-

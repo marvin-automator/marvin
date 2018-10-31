@@ -6,27 +6,27 @@ import (
 	"net/http"
 	"strings"
 )
+
 type requestInput struct {
-	URL string
-	Method string
-	Body string
+	URL     string
+	Method  string
+	Body    string
 	Headers map[string]string
 }
 
 type responseOutput struct {
-	Status int
+	Status  int
 	Headers map[string][]string
-	Body string
-
+	Body    string
 }
 
 func outFromHttpResponse(response *http.Response) (responseOutput, error) {
 	bodyBytes, err := ioutil.ReadAll(response.Body)
 
 	return responseOutput{
-		Status: response.StatusCode,
+		Status:  response.StatusCode,
 		Headers: response.Header,
-		Body: string(bodyBytes),
+		Body:    string(bodyBytes),
 	}, err
 }
 
