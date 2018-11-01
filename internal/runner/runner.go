@@ -14,7 +14,7 @@ type Task func(doneCh chan<- struct{})
 
 type TaskRunner interface {
 	Start(ctx context.Context)
-	Run(t Task) error
+	Run(t Task)
 }
 
 func NewRunner() TaskRunner {
@@ -33,14 +33,7 @@ func (tr *taskRunner) Start(ctx context.Context) {
 	tr.wg.Wait()
 }
 
-func (tr *taskRunner) Run(t Task) (err error) {
-	defer func(){
-		v := recover()
-		if v != nil {
-			tr.doneCh<- struct{}{}
-		}
-	}()
+func (tr *taskRunner) Run(t Task) {
 	tr.wg.Add(1)
 	t(tr.doneCh)
-	return nil
 }
