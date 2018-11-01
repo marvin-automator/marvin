@@ -1,9 +1,12 @@
 package chores
 
 import (
+	"bytes"
 	"encoding/json"
 	"github.com/bigblind/v-eight"
 	"github.com/gobuffalo/packr"
+	"github.com/marvin-automator/marvin/actions"
+	"text/template"
 )
 
 type RegisteredTrigger struct {
@@ -29,14 +32,21 @@ type ChoreTemplate struct {
 	Config ChoreTemplateConfig
 }
 
-var bp, bpErr = packr.NewBox("./js").FindString("boilerplate.js")
+var bp, bpErr = packr.NewBox("./js").FindString("boilerplate.js.template")
+var bpTemplate = template.Must(template.New("js").Parse(bp))
 
 func (ct *ChoreTemplate) combineScriptWithBoilerplate() string {
 	if bpErr != nil {
 		panic(bpErr) // If everything is set up correctly during build, this shouldn't happen.
 	}
 
-	return bp + ct.Script
+	w := bytes.NewBuffer([]byte{})
+	bpTemplate.Execute(w, struct{
+		Providers []actions.Provider
+	}{actions.Registry.Providers()})
+
+	s := w.String() + ct.Script
+	return s
 }
 
 func (ct *ChoreTemplate) GenerateConfigs() error {

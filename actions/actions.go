@@ -19,7 +19,7 @@ type Info struct {
 	BaseInfo
 	InputType  reflect.Type
 	OutputType reflect.Type
-	IsTrugger  bool
+	IsTrigger  bool
 }
 
 type Action interface {

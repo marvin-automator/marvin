@@ -1,24 +1,45 @@
 let marvin = {
     _triggers: [],
     _inputs: [],
-    _valueResolvers: {},
+    _inputValues: {},
+    _inputsSeen: {},
     isSetup: true
 };
 
+marvin._runAction = (provider, groupp, name) => {
+        if(marvin.isSetup){
+            throw new Error(`Can't call an action: ${provider}.${group}.{name}, during setup.`);
+        }
+        return _runAction(provider, group, name);
+};
+
 marvin.input = (name, description) => {
-    marvin._inputs.push({name, description});
-    return new Promise((resolve, reject) => {
-        marvin._valueResolvers[name] = {resolve, reject};
-    })
+    if(!marvin._inputsSeen[name]){
+        marvin._inputs.push({name, description});
+        marvin._inputsSeen[name] = true;
+    }
+    return marvin._inputValues[name];
 };
 
-marvin._resolveInput = (name, value) => {
-    marvin._valueResolvers[name].resolve(value);
-    delete marvin._valueResolvers[name]
-};
+marvin._setInputValue = (name, value) => marvin._inputValues[name] = value;
 
-marvin._rejecUnknownInputs = () => {
-    Object.keys(marvin._valueResolvers).forEach((name) => {
-        marvin._valueResolvers[name].reject(`Configuration input ${name} is not defined.`)
-    })
-}
+
+{{range $provider := .Providers}}
+var {{$provider.Info.Name}} = {};
+{{range $group := $provider.Groups}}
+        {{$provider.Info.Name}}.{{$group.Info.Name}} = {};
+        {{range $action := $group.Actions -}}
+            {{$provider.Info.Name}}.{{$group.Info.Name}}.{{$action.Info.Name}} = {{if $action.Info.IsTrigger -}}
+                (input, callback) => marvin._triggers.push({
+                        provider: "{{$provider.Info.Name}}",
+                        group: "{{$group.Info.Name}}",
+                        action: "{{$action.Info.Name}}",
+                        input: input,
+                        callback: callback
+                });
+            {{- else -}}
+                (input) => marvin._runAction("{{$provider.Info.Name}}", "{{$group.Info.Name}}", "{{$action.Info.Name}}");
+            {{- end}}
+        {{end}}
+{{end}}
+{{end}}
