@@ -35,7 +35,7 @@ type ChoreTemplate struct {
 var bp, bpErr = packr.NewBox("./js").FindString("boilerplate.js.template")
 var bpTemplate = template.Must(template.New("js").Parse(bp))
 
-func (ct *ChoreTemplate) combineScriptWithBoilerplate() string {
+func (ct *ChoreTemplate) combineScriptWithBoilerplate(inputs map[string]string) string {
 	if bpErr != nil {
 		panic(bpErr) // If everything is set up correctly during build, this shouldn't happen.
 	}
@@ -43,16 +43,26 @@ func (ct *ChoreTemplate) combineScriptWithBoilerplate() string {
 	w := bytes.NewBuffer([]byte{})
 	bpTemplate.Execute(w, struct{
 		Providers []actions.Provider
-	}{actions.Registry.Providers()})
+		Inputs map[string]string
+	}{actions.Registry.Providers(), inputs})
 
 	s := w.String() + ct.Script
 	return s
 }
 
-func (ct *ChoreTemplate) GenerateConfigs() error {
-	is := v8.NewIsolate()
-	res, err := is.NewContext().Eval(ct.combineScriptWithBoilerplate()+";marvin;", "marvin.js")
+func (ct *ChoreTemplate) GetChoreSnapshot(inputs map[string]string) []byte {
+	s := v8.CreateSnapshot(ct.combineScriptWithBoilerplate(inputs))
+	return s.Export()
+}
 
+func (ct *ChoreTemplate) getConfigV8Value(inputs map[string]string) (*v8.Value, error) {
+	is := v8.NewIsolate()
+	return is.NewContext().Eval(ct.combineScriptWithBoilerplate(inputs)+";marvin;", "marvin.js")
+
+}
+
+func (ct *ChoreTemplate) GenerateTemplateConfigs() error {
+	res, err := ct.getConfigV8Value(nil)
 	if err != nil {
 		return err
 	}
@@ -64,12 +74,20 @@ func (ct *ChoreTemplate) GenerateConfigs() error {
 		return err
 	}
 
-	err = decodeFieldValue(res, "_inputs", &(ct.Config.Inputs))
+	return decodeFieldValue(res, "_inputs", &(ct.Config.Inputs))
+}
+
+func (ct *ChoreTemplate) GenerateChoreConfig(inputValues map[string]string) (*choreConfig, error) {
+	res, err := ct.getConfigV8Value(inputValues)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	cc := choreConfig{}
+	cc.Inputs = inputValues
+
+	err = decodeFieldValue(res, "_triggers", &(cc.Triggers))
+	return &cc, err
 }
 
 func decodeFieldValue(value *v8.Value, field string, ptr interface{}) error {

@@ -1,7 +1,11 @@
 let marvin = {
     _triggers: [],
     _inputs: [],
-    _inputValues: {},
+    _inputValues: {
+        {{range $name, $value := .Inputs}}
+        {{$name}}: "{{$value}}",
+        {{end}}
+    },
     _inputsSeen: {},
     isSetup: true
 };
