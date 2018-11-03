@@ -1,8 +1,8 @@
-package marvin
+package main
 
-import (
-	_ "github.com/marvin-automator/marvin/actions"
-	_ "github.com/marvin-automator/marvin/internal/actions/builtin/http"
-	_ "github.com/marvin-automator/marvin/internal/actions/builtin/time"
-	_ "github.com/marvin-automator/marvin/internal/chores"
-)
+import "github.com/marvin-automator/marvin/internal/cmd"
+
+
+func main() {
+	cmd.Execute()
+}
