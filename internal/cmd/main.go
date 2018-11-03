@@ -3,6 +3,7 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"github.com/marvin-automator/marvin/internal/config"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -13,7 +14,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "marvin",
 	Short: "Marvin is a tool for automating all sorts of things.",
-	Long: `Here I am, brain the size of a planet`,
+	Long: `Here I am, brain the size of a planet.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Do Stuff Here
 	},
@@ -31,8 +32,6 @@ var cfgFile string
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./marvin.yaml, and if that doesn't exist, $HOME/.marvin.yaml)")
-	rootCmd.Flags().StringP("template_path", "t", "chore_templates", "The path where chore templates are stored. Relative paths are resolved relative to the config file that was loaded.")
-	viper.BindPFlag("template_path", rootCmd.Flags().Lookup("template_path"))
 }
 
 func initConfig() {
@@ -73,6 +72,8 @@ func initConfig() {
 	} else {
 		fmt.Printf("Loaded config file from: %s\n", viper.ConfigFileUsed())
 	}
+
+	config.Setup()
 }
 
 func createConfigFile() error {
