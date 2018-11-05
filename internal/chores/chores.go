@@ -45,7 +45,7 @@ type choreConfig struct {
 
 type Chore struct {
 	Name string
-	Id []byte
+	Id string
 	Template ChoreTemplate
 	Config choreConfig
 	Snapshot []byte
@@ -62,7 +62,7 @@ func FromTemplate(ct *ChoreTemplate, name string, inputs map[string]string) (*Ch
 		Config: *conf,
 		Template: *ct,
 		Snapshot: ct.GetChoreSnapshot(inputs),
-		Id: uuid.NewV4().Bytes(),
+		Id: uuid.NewV4().String(),
 	}, nil
 }
 

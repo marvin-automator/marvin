@@ -27,7 +27,7 @@ type ChoreTemplateConfig struct {
 
 type ChoreTemplate struct {
 	Name   string
-	Id     []byte
+	Id     string
 	Script string
 	Config ChoreTemplateConfig
 }
