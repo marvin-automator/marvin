@@ -6,8 +6,12 @@ import (
 	"github.com/bigblind/v-eight"
 	"github.com/gobuffalo/packr"
 	"github.com/marvin-automator/marvin/actions"
+	"github.com/marvin-automator/marvin/internal/db"
+	"github.com/pkg/errors"
+	"github.com/satori/go.uuid"
 	"text/template"
 )
+
 
 type RegisteredTrigger struct {
 	Provider string
@@ -30,6 +34,79 @@ type ChoreTemplate struct {
 	Id     string
 	Script string
 	Config ChoreTemplateConfig
+}
+
+var (
+	errTemplateNotFound = errors.New("Template not found")
+)
+
+func NewChoreTemplate(name, script string) (*ChoreTemplate, error) {
+	ct := ChoreTemplate{
+		Name: name,
+		Script: script,
+		Id: uuid.NewV4().String(),
+	}
+
+	err := ct.GenerateTemplateConfigs()
+	return &ct, err
+}
+
+var templateCache map[string]*ChoreTemplate
+var cacheLoaded = false
+const storeName = "chore_templates"
+
+func LoadChoreTemplate(id string) (*ChoreTemplate, error) {
+	ct, ok := templateCache[id]
+	if !ok {
+		return ct, errTemplateNotFound
+	}
+
+	s := db.GetStore(storeName)
+	ct = new(ChoreTemplate)
+	err := s.Get(id, ct)
+	if _, ok := err.(db.KeyNotFoundError); ok {
+		return ct, errTemplateNotFound
+	}
+
+	if err != nil {
+		return ct, err
+	}
+
+	templateCache[id] = ct
+	return ct, nil
+}
+
+func GetChoreTemplates() ([]*ChoreTemplate, error) {
+	results := make([]*ChoreTemplate, 0, len(templateCache))
+
+	if cacheLoaded {
+		for _, ct := range templateCache {
+			results = append(results, ct)
+		}
+		return results, nil
+	}
+
+	s := db.GetStore(storeName)
+	ct := new(ChoreTemplate)
+	err := s.EachKeyWithPrefix("", ct, func(key string) error {
+		newPtr := &(*ct)
+		templateCache[key] = newPtr
+		results = append(results, newPtr)
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	cacheLoaded = true
+	return results, nil
+}
+
+func (ct *ChoreTemplate) Save() error {
+	s := db.GetStore("chore_templates")
+	templateCache[ct.Id] = ct
+	return s.Set(ct.Id, ct)
 }
 
 var bp, bpErr = packr.NewBox("./js").FindString("boilerplate.js.template")
