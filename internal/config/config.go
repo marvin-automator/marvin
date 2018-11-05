@@ -8,7 +8,6 @@ import (
 )
 
 
-var TemplateDir string
 var DataDir string
 
 func init() {
@@ -17,9 +16,6 @@ func init() {
 }
 
 func Setup() {
-	TemplateDir = resolvePath(viper.GetString("template_dir"))
-	ensureDir(TemplateDir)
-
 	DataDir = resolvePath(viper.GetString("data_dir"))
 	ensureDir(DataDir)
 }
