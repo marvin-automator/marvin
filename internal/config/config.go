@@ -9,9 +9,19 @@ import (
 
 
 var TemplateDir string
+var DataDir string
 
 func init() {
 	viper.SetDefault("template_dir", "chore_templates")
+	viper.SetDefault("data_dir", "marvin_data")
+}
+
+func Setup() {
+	TemplateDir = resolvePath(viper.GetString("template_dir"))
+	ensureDir(TemplateDir)
+
+	DataDir = resolvePath(viper.GetString("data_dir"))
+	ensureDir(DataDir)
 }
 
 func resolvePath(p string) string {
@@ -21,11 +31,6 @@ func resolvePath(p string) string {
 	}
 
 	return filepath.Clean(p)
-}
-
-func Setup() {
-	TemplateDir = resolvePath(viper.GetString("template_dir"))
-	ensureDir(TemplateDir)
 }
 
 func ensureDir(d string) {
