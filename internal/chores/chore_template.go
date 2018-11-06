@@ -51,7 +51,7 @@ func NewChoreTemplate(name, script string) (*ChoreTemplate, error) {
 	return &ct, err
 }
 
-var templateCache map[string]*ChoreTemplate
+var templateCache = make(map[string]*ChoreTemplate)
 var cacheLoaded = false
 const storeName = "chore_templates"
 
