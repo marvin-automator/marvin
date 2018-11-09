@@ -36,7 +36,7 @@ func (ct *choreTrigger) start(c *Chore, index int, ctx context.Context) error {
 			select {
 			case v := <- outInterfaces:
 				fmt.Printf("Received value %v\n", v)
-				c.triggerCallback(index, v)
+				c.triggerCallback(index, v, ctx)
 			case <-ctx.Done():
 				return
 			}
@@ -138,11 +138,11 @@ func (c *Chore) Start(ctx context.Context) {
 }
 
 var choreContexts = make(map[string]*v8.Context)
-func (c *Chore) triggerCallback(index int, value interface{}) {
+func (c *Chore) triggerCallback(index int, value interface{}, ctx context.Context) {
 	jsCtx, ok := choreContexts[c.Id]
 	if !ok {
 		fmt.Printf("Creating context for chore %v\n", c.Name)
-		jsCtx = c.CreateContext()
+		jsCtx = c.CreateContext(ctx)
 		fmt.Printf("Created context for chore %v\n", c.Name)
 		choreContexts[c.Id] = jsCtx
 	}
@@ -171,7 +171,7 @@ func (c *Chore) triggerCallback(index int, value interface{}) {
 
 }
 
-func (c *Chore) CreateContext() *v8.Context {
+func (c *Chore) CreateContext(ctx context.Context) *v8.Context {
 	is := v8.NewIsolate()
 	jsCtx := is.NewContext()
 
@@ -197,8 +197,7 @@ func (c *Chore) CreateContext() *v8.Context {
 			return undefined, err
 		}
 
-		//TODO: We should pass the context from the trigger here.
-		out, err := a.Run(in, context.Background())
+		out, err := a.Run(in, ctx)
 		if err != nil {
 			return undefined, err
 		}
