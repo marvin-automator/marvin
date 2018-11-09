@@ -14,7 +14,9 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "marvin",
 	Short: "Marvin is a tool for automating all sorts of things.",
-	Long: `Here I am, brain the size of a planet.`,
+	Long: `Here I am, brain the size of a planet. and they ask me to check the weather, update their calendar, send emails, ... Call that job satisfaction? I don't.
+
+Marvin allows you to automate all sorts of things.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Do Stuff Here
 	},
