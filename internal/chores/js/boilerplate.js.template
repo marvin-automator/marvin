@@ -1,4 +1,4 @@
-let marvin = {
+marvin = {
     _triggers: [],
     _inputs: [],
     _inputValues: {
@@ -10,11 +10,11 @@ let marvin = {
     isSetup: true
 };
 
-marvin._runAction = (provider, groupp, name) => {
+marvin._runAction = (provider, group, name, input) => {
         if(marvin.isSetup){
             throw new Error(`Can't call an action: ${provider}.${group}.{name}, during setup.`);
         }
-        return _runAction(provider, group, name);
+        return _runAction(provider, group, name, input);
 };
 
 marvin.input = (name, description) => {
@@ -25,11 +25,8 @@ marvin.input = (name, description) => {
     return marvin._inputValues[name];
 };
 
-marvin._setInputValue = (name, value) => marvin._inputValues[name] = value;
-
-
 {{range $provider := .Providers}}
-var {{$provider.Info.Name}} = {};
+{{$provider.Info.Name}} = {};
 {{range $group := $provider.Groups}}
         {{$provider.Info.Name}}.{{$group.Info.Name}} = {};
         {{range $action := $group.Actions -}}
@@ -42,7 +39,7 @@ var {{$provider.Info.Name}} = {};
                         callback: callback
                 });
             {{- else -}}
-                (input) => marvin._runAction("{{$provider.Info.Name}}", "{{$group.Info.Name}}", "{{$action.Info.Name}}");
+                (input) => marvin._runAction("{{$provider.Info.Name}}", "{{$group.Info.Name}}", "{{$action.Info.Name}}", input);
             {{- end}}
         {{end}}
 {{end}}

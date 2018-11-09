@@ -37,3 +37,24 @@ func (tr *taskRunner) Run(t Task) {
 	tr.wg.Add(1)
 	t(tr.doneCh)
 }
+
+var runner TaskRunner
+var cancelRunner context.CancelFunc
+
+func SetRunner(r TaskRunner, ctx context.Context) {
+	if cancelRunner != nil {
+		cancelRunner()
+	}
+
+	runner = r
+	ctx, cancelRunner = context.WithCancel(ctx)
+	r.Start(ctx)
+}
+
+func Run(t Task) {
+	runner.Run(t)
+}
+
+func init() {
+	SetRunner(NewRunner(), context.Background())
+}

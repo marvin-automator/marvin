@@ -3,7 +3,7 @@ package chores
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/bigblind/v-eight"
+	"github.com/augustoroman/v8"
 	"github.com/gobuffalo/packr"
 	"github.com/marvin-automator/marvin/actions"
 	"github.com/marvin-automator/marvin/internal/db"
@@ -41,13 +41,18 @@ var (
 )
 
 func NewChoreTemplate(name, script string) (*ChoreTemplate, error) {
+	id, err := uuid.NewV4()
+	if err != nil {
+		return nil, err
+	}
+
 	ct := ChoreTemplate{
 		Name: name,
 		Script: script,
-		Id: uuid.NewV4().String(),
+		Id: id.String(),
 	}
 
-	err := ct.GenerateTemplateConfigs()
+	err = ct.GenerateTemplateConfigs()
 	return &ct, err
 }
 
@@ -109,7 +114,7 @@ func (ct *ChoreTemplate) Save() error {
 	return s.Set(ct.Id, ct)
 }
 
-var bp, bpErr = packr.NewBox("./js").FindString("boilerplate.js.template")
+var bp, bpErr = packr.NewBox("./js").MustString("boilerplate.js.template")
 var bpTemplate = template.Must(template.New("js").Parse(bp))
 
 func (ct *ChoreTemplate) combineScriptWithBoilerplate(inputs map[string]string) string {
@@ -124,6 +129,7 @@ func (ct *ChoreTemplate) combineScriptWithBoilerplate(inputs map[string]string) 
 	}{actions.Registry.Providers(), inputs})
 
 	s := w.String() + ct.Script
+	//s = v8console.WrapForSnapshot(s)
 	return s
 }
 

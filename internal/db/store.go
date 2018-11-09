@@ -50,7 +50,7 @@ func (s Store) Get(key string, ptr interface{}) error {
 			return err
 		}
 
-		v, err = item.Value()
+		v, err = item.ValueCopy(v)
 		return err
 	})
 
@@ -80,7 +80,8 @@ func (s Store) EachKeyWithPrefix(prefix string, ptr interface{}, f func(key stri
 		for it.Seek(bprefix); it.ValidForPrefix(bprefix); it.Next() {
 			item := it.Item()
 
-			val, err := item.Value()
+			var val []byte
+			val, err := item.ValueCopy(val)
 			if err != nil {
 				return err
 			}

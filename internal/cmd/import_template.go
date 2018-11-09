@@ -1,13 +1,16 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"github.com/marvin-automator/marvin/internal"
 	"github.com/marvin-automator/marvin/internal/chores"
 	"github.com/spf13/cobra"
+	"github.com/markbates/sigtx"
 	"io/ioutil"
 	"os"
 	"strings"
+	"syscall"
 )
 
 var importCmt = &cobra.Command{
@@ -40,6 +43,17 @@ var importCmt = &cobra.Command{
 
 		internal.ErrorAndExit(ct.Save())
 		fmt.Println("Successfully saved template: ", name)
+
+		c, err := chores.FromTemplate(ct, "test", map[string]string{})
+		internal.ErrorAndExit(err)
+
+		ctx, cancel := sigtx.WithCancel(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGKILL)
+		go c.Start(ctx)
+		defer cancel()
+		select {
+		case <-ctx.Done():
+			fmt.Println("thanks for stopping me")
+		}
 	},
 }
 

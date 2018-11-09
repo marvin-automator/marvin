@@ -2,6 +2,7 @@ package time
 
 import (
 	"context"
+	"fmt"
 	"github.com/gorhill/cronexpr"
 	"github.com/marvin-automator/marvin/actions"
 	"time"
@@ -28,18 +29,22 @@ func cronTrigger(in CronInput, ctx context.Context) (<-chan CronEvent, error) {
 		return nil, err
 	}
 
-	out := make(chan CronEvent)
+	out := make(chan CronEvent, 10)
 	var f func()
 	f = func() {
 		now := time.Now()
 		n := expr.Next(now)
-		t := time.NewTimer(n.Sub(now))
+		duration := n.Sub(now)
+		fmt.Printf("Next scheduled event in %v\n", duration)
+		t := time.NewTimer(duration)
 
 		select {
 		case <-ctx.Done():
 		case now = <-t.C:
+			fmt.Println("Sending event")
 			out <- CronEvent{now}
-			f()
+			fmt.Println("Event sent")
+			go f()
 		}
 	}
 

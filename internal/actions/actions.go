@@ -17,10 +17,19 @@ func (a *action) Info() actions.Info {
 }
 
 func (a *action) Run(input interface{}, ctx context.Context) (interface{}, error) {
-	retvals := a.runFunc.Call([]reflect.Value{reflect.ValueOf(input)})
+	v := reflect.ValueOf(input)
+	if v.Kind() == reflect.Ptr {
+		input = v.Elem().Interface()
+	}
+	fmt.Printf("Running %v with input %v", a.info.Name, reflect.TypeOf(input))
+	retvals := a.runFunc.Call([]reflect.Value{reflect.ValueOf(input), reflect.ValueOf(ctx)})
 	res := retvals[0].Interface()
-	err := retvals[1].Interface().(error)
-	return res, err
+	fmt.Printf("Returned value %v", res)
+	if err, ok := retvals[1].Interface().(error); !ok {
+		return res, nil
+	} else {
+		return res, err
+	}
 }
 
 func (a *action) validate() {
