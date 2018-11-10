@@ -114,7 +114,7 @@ func (ct *ChoreTemplate) Save() error {
 	return s.Set(ct.Id, ct)
 }
 
-var bp, bpErr = packr.NewBox("./js").MustString("boilerplate.js.template")
+var bp, bpErr = packr.NewBox("./js").FindString("boilerplate.js.template")
 var bpTemplate = template.Must(template.New("js").Parse(bp))
 
 func (ct *ChoreTemplate) combineScriptWithBoilerplate(inputs map[string]string) string {
