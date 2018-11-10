@@ -72,7 +72,7 @@ func TestChoreTemplate_GenerateChoreConfig(t *testing.T) {
 			"myProvider",
 			"myGroup",
 			"aTrigger"},
-		&struct{S string}{"val2"}},
+		struct{S string}{"val2"}},
 	}
 	r.Equal(triggers, cc.Triggers)
 }

@@ -35,6 +35,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./marvin.yaml, and if that doesn't exist, $HOME/.marvin.yaml)")
 	rootCmd.AddCommand(importCmt)
+	rootCmd.AddCommand(setPassword)
 }
 
 func initConfig() {
