@@ -1,21 +1,10 @@
 package db
 
 import (
-	"github.com/marvin-automator/marvin/internal/config"
 	"github.com/stretchr/testify/require"
-	"os"
 	"strconv"
 	"testing"
 )
-
-func setupDB() {
-	config.DataDir = "./test_data"
-	os.MkdirAll(config.DataDir, os.ModePerm)
-}
-
-func tearDownDb() {
-	os.RemoveAll(config.DataDir)
-}
 
 type Point struct {
 	X int
@@ -23,8 +12,8 @@ type Point struct {
 }
 
 func TestStore_Set_Get(t *testing.T) {
-	setupDB()
-	defer tearDownDb()
+	SetupTestDB()
+	defer TearDownTestDB()
 	pt1 := Point{42, 88}
 	var pt2 Point
 
@@ -37,8 +26,8 @@ func TestStore_Set_Get(t *testing.T) {
 }
 
 func TestStore_EachKeyWithPrefix(t *testing.T) {
-	setupDB()
-	defer tearDownDb()
+	SetupTestDB()
+	defer TearDownTestDB()
 	s1 := GetStore("store1")
 	s2 := GetStore("store2")
 
