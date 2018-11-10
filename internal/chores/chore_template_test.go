@@ -25,7 +25,7 @@ func setupRegistry() {
 	g.AddAction("anAction", "", bs, func(s struct{}, ctx context.Context) (struct{}, error) {
 		return struct{}{}, nil
 	})
-	g.AddManualTrigger("aTrigger", "", bs, func(s struct{S string}, ctx context.Context) (<-chan struct{}, error) {
+	g.AddManualTrigger("aTrigger", "", bs, func(s struct{ S string }, ctx context.Context) (<-chan struct{}, error) {
 		return nil, nil
 	})
 }
@@ -53,14 +53,13 @@ func TestChoreTemplate_GenerateTemplateConfigs(t *testing.T) {
 	r.Equal(triggers, ct.Config.Triggers)
 }
 
-
 func TestChoreTemplate_GenerateChoreConfig(t *testing.T) {
 	setupRegistry()
 
 	ct := &ChoreTemplate{}
 	ct.Script = testScript
 	cc, err := ct.GenerateChoreConfig(map[string]string{
-		"my_input": "val1",
+		"my_input":      "val1",
 		"another_input": "val2",
 	})
 
@@ -72,7 +71,7 @@ func TestChoreTemplate_GenerateChoreConfig(t *testing.T) {
 			"myProvider",
 			"myGroup",
 			"aTrigger"},
-		struct{S string}{"val2"}},
+			struct{ S string }{"val2"}},
 	}
 	r.Equal(triggers, cc.Triggers)
 }

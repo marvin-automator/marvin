@@ -12,7 +12,6 @@ import (
 	"text/template"
 )
 
-
 type RegisteredTrigger struct {
 	Provider string
 	Group    string
@@ -47,9 +46,9 @@ func NewChoreTemplate(name, script string) (*ChoreTemplate, error) {
 	}
 
 	ct := ChoreTemplate{
-		Name: name,
+		Name:   name,
 		Script: script,
-		Id: id.String(),
+		Id:     id.String(),
 	}
 
 	err = ct.GenerateTemplateConfigs()
@@ -58,6 +57,7 @@ func NewChoreTemplate(name, script string) (*ChoreTemplate, error) {
 
 var templateCache = make(map[string]*ChoreTemplate)
 var cacheLoaded = false
+
 const storeName = "chore_templates"
 
 func LoadChoreTemplate(id string) (*ChoreTemplate, error) {
@@ -123,9 +123,9 @@ func (ct *ChoreTemplate) combineScriptWithBoilerplate(inputs map[string]string) 
 	}
 
 	w := bytes.NewBuffer([]byte{})
-	bpTemplate.Execute(w, struct{
+	bpTemplate.Execute(w, struct {
 		Providers []actions.Provider
-		Inputs map[string]string
+		Inputs    map[string]string
 	}{actions.Registry.Providers(), inputs})
 
 	s := w.String() + ct.Script

@@ -35,7 +35,7 @@ func (s Store) makeKey(k string) []byte {
 }
 
 func (s Store) dbKeyToStorekey(dbKey []byte) string {
-	return string(dbKey[len(s.name) + 1:])
+	return string(dbKey[len(s.name)+1:])
 }
 
 func (s Store) Get(key string, ptr interface{}) error {
@@ -76,7 +76,7 @@ func (s Store) EachKeyWithPrefix(prefix string, ptr interface{}, f func(key stri
 	return db.View(func(txn *badger.Txn) error {
 		it := txn.NewIterator(badger.DefaultIteratorOptions)
 		defer it.Close()
-		bprefix :=  s.makeKey(prefix)
+		bprefix := s.makeKey(prefix)
 		for it.Seek(bprefix); it.ValidForPrefix(bprefix); it.Next() {
 			item := it.Item()
 

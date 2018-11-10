@@ -3,10 +3,10 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"github.com/markbates/sigtx"
 	"github.com/marvin-automator/marvin/internal"
 	"github.com/marvin-automator/marvin/internal/chores"
 	"github.com/spf13/cobra"
-	"github.com/markbates/sigtx"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -14,7 +14,7 @@ import (
 )
 
 var importCmt = &cobra.Command{
-	Use: "import <filepath> [-n=name]",
+	Use:   "import <filepath> [-n=name]",
 	Short: "Import a javascript file as a template",
 
 	Run: func(cmd *cobra.Command, args []string) {
@@ -57,6 +57,6 @@ var importCmt = &cobra.Command{
 	},
 }
 
-func init(){
+func init() {
 	importCmt.Flags().StringP("name", "n", "", "The name of the template. Will be taken from the filename if you leave this blank.")
 }

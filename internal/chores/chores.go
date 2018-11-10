@@ -31,10 +31,10 @@ func (ct *choreTrigger) start(c *Chore, index int, ctx context.Context) error {
 
 	outInterfaces, err := receiveValues(out, ctx)
 
-	go func(){
-		for{
+	go func() {
+		for {
 			select {
-			case v := <- outInterfaces:
+			case v := <-outInterfaces:
 				fmt.Printf("Received value %v\n", v)
 				c.triggerCallback(index, v, ctx)
 			case <-ctx.Done():
@@ -54,7 +54,7 @@ func receiveValues(in interface{}, ctx context.Context) (<-chan interface{}, err
 	}
 
 	out := make(chan interface{}, 20)
-	go func(){
+	go func() {
 		for {
 			i, outv, _ := reflect.Select([]reflect.SelectCase{
 				{Dir: reflect.SelectRecv, Chan: v},
@@ -85,7 +85,7 @@ func (ct *choreTrigger) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	inputHolder := struct{Input interface{}}{}
+	inputHolder := struct{ Input interface{} }{}
 	inputHolder.Input = reflect.New(a.Info().InputType).Interface()
 	err = json.Unmarshal(data, &inputHolder)
 	if err != nil {
@@ -98,15 +98,15 @@ func (ct *choreTrigger) UnmarshalJSON(data []byte) error {
 }
 
 type choreConfig struct {
-	Inputs map[string]string
+	Inputs   map[string]string
 	Triggers []choreTrigger
 }
 
 type Chore struct {
-	Name string
-	Id string
+	Name     string
+	Id       string
 	Template ChoreTemplate
-	Config choreConfig
+	Config   choreConfig
 	Snapshot []byte
 }
 
@@ -122,11 +122,11 @@ func FromTemplate(ct *ChoreTemplate, name string, inputs map[string]string) (*Ch
 	}
 
 	return &Chore{
-		Name: name,
-		Config: *conf,
+		Name:     name,
+		Config:   *conf,
 		Template: *ct,
 		Snapshot: ct.GetChoreSnapshot(inputs),
-		Id: id.String(),
+		Id:       id.String(),
 	}, nil
 }
 
@@ -138,6 +138,7 @@ func (c *Chore) Start(ctx context.Context) {
 }
 
 var choreContexts = make(map[string]*v8.Context)
+
 func (c *Chore) triggerCallback(index int, value interface{}, ctx context.Context) {
 	jsCtx, ok := choreContexts[c.Id]
 	if !ok {
@@ -167,7 +168,6 @@ func (c *Chore) triggerCallback(index int, value interface{}, ctx context.Contex
 		res, err := jsCtx.Eval(code, "name.js")
 		fmt.Println("result:", res, " error:", err)
 	}()
-
 
 }
 
@@ -215,4 +215,3 @@ func (c *Chore) CreateContext(ctx context.Context) *v8.Context {
 
 	return jsCtx
 }
-

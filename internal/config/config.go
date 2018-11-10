@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 )
 
-
 var DataDir string
 
 func init() {
@@ -49,5 +48,3 @@ func ensureDir(d string) {
 		os.Exit(1)
 	}
 }
-
-

@@ -38,7 +38,7 @@ func TestStore_EachKeyWithPrefix(t *testing.T) {
 	}
 
 	for i, pt := range pts {
-		s1.Set("pt" + strconv.Itoa(i), pt)
+		s1.Set("pt"+strconv.Itoa(i), pt)
 	}
 
 	s1.Set("notpt4", Point{404, 404})

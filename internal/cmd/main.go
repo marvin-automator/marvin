@@ -10,7 +10,6 @@ import (
 	"os"
 )
 
-
 var rootCmd = &cobra.Command{
 	Use:   "marvin",
 	Short: "Marvin is a tool for automating all sorts of things.",
