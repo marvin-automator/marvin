@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/marvin-automator/marvin/actions"
+	"golang.org/x/oauth2"
 	"reflect"
 )
 
@@ -85,6 +86,8 @@ type Group struct {
 type Provider struct {
 	actions.BaseInfo
 	groups map[string]*Group
+
+	OAuth2Endpoint oauth2.Endpoint
 }
 
 func (p *Provider) AddGroup(name, description string, svgIcon []byte) actions.Group {
@@ -100,6 +103,10 @@ func (p *Provider) Groups() []actions.Group {
 	}
 
 	return res
+}
+
+func (p *Provider) SetOAuth2Endpoint(ep oauth2.Endpoint) {
+	p.OAuth2Endpoint = ep
 }
 
 func (g *Group) addAction(name, description string, svgIcon []byte, runFunc interface{}, trigger bool) {

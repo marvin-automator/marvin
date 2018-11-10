@@ -2,6 +2,7 @@ package actions
 
 import (
 	"context"
+	"golang.org/x/oauth2"
 	"reflect"
 )
 
@@ -37,6 +38,8 @@ type Group interface {
 type Provider interface {
 	AddGroup(name, description string, svgIcon []byte) Group
 	Groups() []Group
+
+	SetOAuth2Endpoint(endpoint oauth2.Endpoint)
 	Info() BaseInfo
 }
 
