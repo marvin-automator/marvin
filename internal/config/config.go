@@ -8,15 +8,18 @@ import (
 )
 
 var DataDir string
+var ServerHost string
 
 func init() {
-	viper.SetDefault("template_dir", "chore_templates")
 	viper.SetDefault("data_dir", "marvin_data")
+	viper.SetDefault("server_host", ":80")
 }
 
 func Setup() {
 	DataDir = resolvePath(viper.GetString("data_dir"))
 	ensureDir(DataDir)
+
+	ServerHost = viper.GetString("server_host")
 }
 
 func resolvePath(p string) string {

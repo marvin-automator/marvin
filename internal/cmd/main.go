@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/marvin-automator/marvin/internal/config"
+	"github.com/marvin-automator/marvin/internal/web"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -17,7 +18,10 @@ var rootCmd = &cobra.Command{
 
 Marvin allows you to automate all sorts of things.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// Do Stuff Here
+
+		fmt.Println("Starting app...")
+		web.RunApp()
+		fmt.Println("Goodbye!")
 	},
 }
 
