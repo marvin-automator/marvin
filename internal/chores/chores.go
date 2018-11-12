@@ -15,7 +15,7 @@ import (
 
 type choreTrigger struct {
 	RegisteredTrigger
-	Input interface{}
+	Input interface{}	`json:"-"`
 }
 
 func (ct *choreTrigger) start(c *Chore, index int, ctx context.Context) error {
@@ -98,16 +98,16 @@ func (ct *choreTrigger) UnmarshalJSON(data []byte) error {
 }
 
 type choreConfig struct {
-	Inputs   map[string]string
-	Triggers []choreTrigger
+	Inputs   map[string]string	`json:"inputs"`
+	Triggers []choreTrigger		`json:"triggers"`
 }
 
 type Chore struct {
-	Name     string
-	Id       string
-	Template ChoreTemplate
-	Config   choreConfig
-	Snapshot []byte
+	Name     string			`json:"name"`
+	Id       string			`json:"id"`
+	Template ChoreTemplate	`json:"template"`
+	Config   choreConfig	`json:"config"`
+	Snapshot []byte			`json:"-"`
 }
 
 func FromTemplate(ct *ChoreTemplate, name string, inputs map[string]string) (*Chore, error) {

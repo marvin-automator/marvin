@@ -13,26 +13,26 @@ import (
 )
 
 type RegisteredTrigger struct {
-	Provider string
-	Group    string
-	Action   string
+	Provider string	`json:"provider"`
+	Group    string	`json:"group"`
+	Action   string	`json:"action"`
 }
 
 type ConfigInput struct {
-	Name        string
-	Description string
+	Name        string	`json:"name"`
+	Description string	`json:"description"`
 }
 
 type ChoreTemplateConfig struct {
-	Triggers []RegisteredTrigger
-	Inputs   []ConfigInput
+	Triggers []RegisteredTrigger	`json:"triggers"`
+	Inputs   []ConfigInput			`json:"inputs"`
 }
 
 type ChoreTemplate struct {
-	Name   string
-	Id     string
-	Script string
-	Config ChoreTemplateConfig
+	Name   string				`json:"name"`
+	Id     string				`json:"id"`
+	Script string				`json:"script"`
+	Config ChoreTemplateConfig	`json:"config"`
 }
 
 var (
