@@ -8,6 +8,7 @@ import (
 	"github.com/augustoroman/v8"
 	"github.com/augustoroman/v8/v8console"
 	"github.com/marvin-automator/marvin/actions"
+	"github.com/marvin-automator/marvin/internal/db"
 	"github.com/satori/go.uuid"
 	"os"
 	"reflect"
@@ -105,6 +106,7 @@ type choreConfig struct {
 type Chore struct {
 	Name     string			`json:"name"`
 	Id       string			`json:"id"`
+	Active	 bool			`json:"active"`
 	Template ChoreTemplate	`json:"template"`
 	Config   choreConfig	`json:"config"`
 	Snapshot []byte			`json:"-"`
@@ -214,4 +216,27 @@ func (c *Chore) CreateContext(ctx context.Context) *v8.Context {
 	cons.Inject(jsCtx)
 
 	return jsCtx
+}
+
+const choreStoreName = "chores"
+var choreCache = map[string]*Chore{}
+
+func (c *Chore) Save() error {
+	s := db.GetStore(choreStoreName)
+	choreCache[c.Id] = c
+	return s.Set(c.Id, c)
+}
+
+func GetChore(id string) (*Chore, error) {
+	if c, ok := choreCache[id]; ok {
+		return c, nil
+	}
+	s := db.GetStore(choreStoreName)
+	c := new(Chore)
+	err := s.Get(id, s)
+	if err != nil {
+		return nil, err
+	}
+	return c, nil
+
 }

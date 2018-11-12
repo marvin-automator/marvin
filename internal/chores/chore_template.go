@@ -58,7 +58,7 @@ func NewChoreTemplate(name, script string) (*ChoreTemplate, error) {
 var templateCache = make(map[string]*ChoreTemplate)
 var cacheLoaded = false
 
-const storeName = "chore_templates"
+const templateStoreName = "chore_templates"
 
 func LoadChoreTemplate(id string) (*ChoreTemplate, error) {
 	ct, ok := templateCache[id]
@@ -66,7 +66,7 @@ func LoadChoreTemplate(id string) (*ChoreTemplate, error) {
 		return ct, errTemplateNotFound
 	}
 
-	s := db.GetStore(storeName)
+	s := db.GetStore(templateStoreName)
 	ct = new(ChoreTemplate)
 	err := s.Get(id, ct)
 	if _, ok := err.(db.KeyNotFoundError); ok {
@@ -91,7 +91,7 @@ func GetChoreTemplates() ([]*ChoreTemplate, error) {
 		return results, nil
 	}
 
-	s := db.GetStore(storeName)
+	s := db.GetStore(templateStoreName)
 	ct := new(ChoreTemplate)
 	err := s.EachKeyWithPrefix("", ct, func(key string) error {
 		newPtr := &(*ct)
