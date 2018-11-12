@@ -7,5 +7,5 @@ type KeyNotFoundError struct {
 }
 
 func (e KeyNotFoundError) Error() string {
-	return fmt.Sprint("Key not found", e.key)
+	return fmt.Sprint("Key not found: ", e.key)
 }
