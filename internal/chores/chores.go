@@ -220,6 +220,7 @@ func (c *Chore) CreateContext(ctx context.Context) *v8.Context {
 
 const choreStoreName = "chores"
 var choreCache = map[string]*Chore{}
+var choresLoaded = false
 
 func (c *Chore) Save() error {
 	s := db.GetStore(choreStoreName)
@@ -238,5 +239,27 @@ func GetChore(id string) (*Chore, error) {
 		return nil, err
 	}
 	return c, nil
+}
 
+func GetChores() ([]*Chore, error) {
+	res := make([]*Chore, len(choreCache))
+	if choresLoaded {
+		for _, c := range choreCache {
+			res = append(res, c)
+		}
+	} else {
+		s := db.GetStore(choreStoreName)
+		c := new(Chore)
+		err := s.EachKeyWithPrefix("", c, func(key string) error {
+			choreCache[key] = &(*c)
+			res = append(res, choreCache[key])
+			return nil
+		})
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return res, nil
 }
