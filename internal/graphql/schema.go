@@ -25,9 +25,9 @@ func GetHandler() (*handler.Handler, error) {
 }
 
 func getSchema() (graphql.Schema, error) {
-	qt := getQueryType()
 	return graphql.NewSchema(graphql.SchemaConfig{
-		Query: qt,
+		Query: getQueryType(),
+		Mutation: getMutationType(),
 	})
 }
 
@@ -35,6 +35,14 @@ func getQueryType() *graphql.Object {
 	f := combineFields(getChoreQueryFields())
 	return graphql.NewObject(graphql.ObjectConfig{
 		Name:   "Query",
+		Fields: f,
+	})
+}
+
+func getMutationType() *graphql.Object {
+	f := combineFields(getChoreMutationFields())
+	return graphql.NewObject(graphql.ObjectConfig{
+		Name: "Mutation",
 		Fields: f,
 	})
 }

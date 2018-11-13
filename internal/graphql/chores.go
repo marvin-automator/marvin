@@ -5,6 +5,12 @@ import (
 	"github.com/marvin-automator/marvin/internal/chores"
 )
 
+var idArgs = graphql.FieldConfigArgument{
+	"id": &graphql.ArgumentConfig{
+		Type: graphql.String,
+	},
+}
+
 var choreType = graphql.NewObject(graphql.ObjectConfig{
 	Name:        "Chore",
 	Fields:      graphql.BindFields(chores.Chore{}),
@@ -33,11 +39,7 @@ func getChoreQueryFields() graphql.Fields {
 
 		"ChoreById": &graphql.Field{
 			Type: choreType,
-			Args: graphql.FieldConfigArgument{
-				"id": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-			},
+			Args: idArgs,
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				return chores.GetChore(p.Args["id"].(string))
 			},
@@ -52,14 +54,71 @@ func getChoreQueryFields() graphql.Fields {
 
 		"ChoreTemplateById": &graphql.Field{
 			Type: choreTemplateType,
-			Args: graphql.FieldConfigArgument{
-				"id": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-			},
+			Args: idArgs,
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				return chores.LoadChoreTemplate(p.Args["id"].(string))
 			},
 		},
 	}
 }
+
+func getChoreMutationFields() graphql.Fields {
+	return graphql.Fields{
+		"createChoreTemplate": &graphql.Field{
+			Type: choreTemplateType,
+			Args: graphql.FieldConfigArgument{
+				"name": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+				"script": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+			},
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				c, err := chores.NewChoreTemplate(p.Args["name"].(string), p.Args["script"].(string))
+				if err != nil {
+					return nil, err
+				}
+
+				return c, c.Save()
+			},
+		},
+
+		"updateChoreTemplate": &graphql.Field{
+			Type: choreTemplateType,
+			Args: graphql.FieldConfigArgument{
+				"id": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+				"name": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+				"script": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+			},
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				c, err := chores.LoadChoreTemplate(p.Args["id"].(string))
+				if err != nil {
+					return nil, err
+				}
+
+				c.Name = p.Args["name"].(string)
+				c.Script = p.Args["script"].(string)
+
+				err = c.GenerateTemplateConfigs()
+				if err != nil {
+					return nil, err
+				}
+
+				return c, c.Save()
+			},
+		},
+
+		"deleteChoreTemplate": &graphql.Field{
+			Type: graphql.Boolean,
+			Args: idArgs,
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				c, err := chores.LoadChoreTemplate(p.Args["id"].(string))
+				if err != nil {
+					return false, err
+				}
+
+				err = c.Delete()
+				return err == nil, err
+			},
+		},
+	}
+}
+
+
