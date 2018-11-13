@@ -229,12 +229,15 @@ func GetChore(id string) (*Chore, error) {
 	if c, ok := choreCache[id]; ok {
 		return c, nil
 	}
+
 	s := db.GetStore(choreStoreName)
 	c := new(Chore)
 	err := s.Get(id, s)
 	if err != nil {
 		return nil, err
 	}
+
+	choreCache[id] = c
 	return c, nil
 }
 
