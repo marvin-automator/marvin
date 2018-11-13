@@ -72,6 +72,12 @@ func (s Store) Set(key string, value interface{}) error {
 	})
 }
 
+func (s Store) Delete(key string) error {
+	return db.Update(func(txn *badger.Txn) error {
+		return txn.Delete(s.makeKey(key))
+	})
+}
+
 func (s Store) EachKeyWithPrefix(prefix string, ptr interface{}, f func(key string) error) error {
 	return db.View(func(txn *badger.Txn) error {
 		it := txn.NewIterator(badger.DefaultIteratorOptions)

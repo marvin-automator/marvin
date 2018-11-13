@@ -48,11 +48,15 @@ func SetRunner(r TaskRunner, ctx context.Context) {
 
 	runner = r
 	ctx, cancelRunner = context.WithCancel(ctx)
-	r.Start(ctx)
+	go r.Start(ctx)
 }
 
 func Run(t Task) {
 	runner.Run(t)
+}
+
+func Stop() {
+	cancelRunner()
 }
 
 func init() {

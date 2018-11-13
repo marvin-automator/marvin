@@ -25,6 +25,21 @@ func TestStore_Set_Get(t *testing.T) {
 	r.Equal(pt1, pt2)
 }
 
+func TestStore_Delete(t *testing.T) {
+	SetupTestDB()
+	defer TearDownTestDB()
+
+	pt := Point{42, 42}
+
+	r := require.New(t)
+	s := GetStore("myStore")
+	s.Set("WhatsThePoint", pt)
+	s.Delete("WhatsThePoint")
+	err := s.Get("WhatsThePoint", &pt)
+
+	r.IsType(KeyNotFoundError{}, err)
+}
+
 func TestStore_EachKeyWithPrefix(t *testing.T) {
 	SetupTestDB()
 	defer TearDownTestDB()
