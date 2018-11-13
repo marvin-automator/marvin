@@ -94,9 +94,9 @@ func GetChoreTemplates() ([]*ChoreTemplate, error) {
 	s := db.GetStore(templateStoreName)
 	ct := new(ChoreTemplate)
 	err := s.EachKeyWithPrefix("", ct, func(key string) error {
-		newPtr := &(*ct)
-		templateCache[key] = newPtr
-		results = append(results, newPtr)
+		ctcopy := *ct
+		templateCache[key] = &ctcopy
+		results = append(results, &ctcopy)
 		return nil
 	})
 

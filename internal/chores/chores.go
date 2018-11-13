@@ -248,7 +248,9 @@ func GetChores() ([]*Chore, error) {
 		s := db.GetStore(choreStoreName)
 		c := new(Chore)
 		err := s.EachKeyWithPrefix("", c, func(key string) error {
-			choreCache[key] = &(*c)
+			ccopy := *c
+			choreCache[key] = &ccopy
+
 			res = append(res, choreCache[key])
 			return nil
 		})
@@ -256,6 +258,8 @@ func GetChores() ([]*Chore, error) {
 		if err != nil {
 			return nil, err
 		}
+
+		choresLoaded = true
 	}
 
 	return res, nil
