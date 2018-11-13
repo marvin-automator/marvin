@@ -6,14 +6,14 @@ import (
 )
 
 var choreType = graphql.NewObject(graphql.ObjectConfig{
-	Name: "Chore",
-	Fields: graphql.BindFields(chores.Chore{}),
+	Name:        "Chore",
+	Fields:      graphql.BindFields(chores.Chore{}),
 	Description: "Describes a workflow executed by Marvin",
 })
 
 var choreTemplateType = graphql.NewObject(graphql.ObjectConfig{
-	Name: "ChoreTemplate",
-	Fields: graphql.BindFields(chores.ChoreTemplate{}),
+	Name:        "ChoreTemplate",
+	Fields:      graphql.BindFields(chores.ChoreTemplate{}),
 	Description: "Describes a template for chores.",
 })
 

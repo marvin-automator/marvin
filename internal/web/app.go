@@ -45,6 +45,5 @@ func RunApp() error {
 		})
 	})
 
-
 	return app.Run(iris.Addr(config.ServerHost))
 }

@@ -16,7 +16,7 @@ import (
 
 type choreTrigger struct {
 	RegisteredTrigger
-	Input interface{}	`json:"-"`
+	Input interface{} `json:"-"`
 }
 
 func (ct *choreTrigger) start(c *Chore, index int, ctx context.Context) error {
@@ -99,17 +99,17 @@ func (ct *choreTrigger) UnmarshalJSON(data []byte) error {
 }
 
 type choreConfig struct {
-	Inputs   map[string]string	`json:"inputs"`
-	Triggers []choreTrigger		`json:"triggers"`
+	Inputs   map[string]string `json:"inputs"`
+	Triggers []choreTrigger    `json:"triggers"`
 }
 
 type Chore struct {
-	Name     string			`json:"name"`
-	Id       string			`json:"id"`
-	Active	 bool			`json:"active"`
-	Template ChoreTemplate	`json:"template"`
-	Config   choreConfig	`json:"choreSettings"`
-	Snapshot []byte			`json:"-"`
+	Name     string        `json:"name"`
+	Id       string        `json:"id"`
+	Active   bool          `json:"active"`
+	Template ChoreTemplate `json:"template"`
+	Config   choreConfig   `json:"choreSettings"`
+	Snapshot []byte        `json:"-"`
 }
 
 func FromTemplate(ct *ChoreTemplate, name string, inputs map[string]string) (*Chore, error) {
@@ -216,6 +216,7 @@ func (c *Chore) CreateContext(ctx context.Context) *v8.Context {
 }
 
 const choreStoreName = "chores"
+
 var choreCache = map[string]*Chore{}
 var choresLoaded = false
 

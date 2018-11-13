@@ -8,9 +8,9 @@ import (
 
 //store keys
 const (
-	session_hash_store_key = "session_hash_key"
-	session_block_store_key ="session_block_key"
-	password_key = "password"
+	session_hash_store_key  = "session_hash_key"
+	session_block_store_key = "session_block_key"
+	password_key            = "password"
 )
 
 func SetPassword(pw string) error {

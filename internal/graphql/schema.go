@@ -17,10 +17,10 @@ func GetHandler() (*handler.Handler, error) {
 	}
 
 	return handler.New(&handler.Config{
-		Schema: schema,
+		Schema:     schema,
 		Playground: true,
-		GraphiQL: true,
-		Pretty: true,
+		GraphiQL:   true,
+		Pretty:     true,
 	}), nil
 }
 
@@ -28,14 +28,13 @@ func getSchema() (graphql.Schema, error) {
 	qt := getQueryType()
 	return graphql.NewSchema(graphql.SchemaConfig{
 		Query: qt,
-
 	})
 }
 
 func getQueryType() *graphql.Object {
 	f := combineFields(getChoreQueryFields())
 	return graphql.NewObject(graphql.ObjectConfig{
-		Name: "Query",
+		Name:   "Query",
 		Fields: f,
 	})
 }

@@ -25,7 +25,7 @@ func init() {
 func renderPasswordTemplate(ctx context.Context, error error, password string) {
 	w := bytes.NewBufferString("")
 	tpl.Execute(w, map[string]interface{}{
-		"error": error,
+		"error":    error,
 		"password": password,
 	})
 	ctx.HTML(w.String())
@@ -98,7 +98,6 @@ func IsAuthenticated(ctx context.Context) bool {
 	return GetSession(ctx).GetBooleanDefault("authenticated", false)
 }
 
-
 func makeSessions() error {
 	hash_key := make([]byte, 64)
 	block_key := make([]byte, 32)
@@ -114,9 +113,9 @@ func makeSessions() error {
 	s := securecookie.New(hash_key, block_key)
 
 	sess = sessions.New(sessions.Config{
-		Cookie: "auth",
-		Encode: s.Encode,
-		Decode: s.Decode,
+		Cookie:       "auth",
+		Encode:       s.Encode,
+		Decode:       s.Decode,
 		AllowReclaim: true,
 	})
 
