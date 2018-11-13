@@ -226,6 +226,17 @@ func (c *Chore) Save() error {
 	return s.Set(c.Id, c)
 }
 
+func (c *Chore) Delete() error {
+	s := db.GetStore(choreStoreName)
+	err := s.Delete(c.Id)
+	if err != nil {
+		return err
+	}
+
+	delete(choreCache, c.Id)
+	return nil
+}
+
 func GetChore(id string) (*Chore, error) {
 	if c, ok := choreCache[id]; ok {
 		return c, nil

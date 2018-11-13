@@ -114,6 +114,16 @@ func (ct *ChoreTemplate) Save() error {
 	return s.Set(ct.Id, ct)
 }
 
+func (ct *ChoreTemplate) Delete() error {
+	s := db.GetStore(templateStoreName)
+	err := s.Delete(ct.Id)
+	if err != nil {
+		return err
+	}
+	delete(templateCache, ct.Id)
+	return nil
+}
+
 var bp, bpErr = packr.NewBox("./js").FindString("boilerplate.js.template")
 var bpTemplate = template.Must(template.New("js").Parse(bp))
 
