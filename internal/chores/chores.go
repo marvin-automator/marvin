@@ -108,7 +108,7 @@ type Chore struct {
 	Id       string			`json:"id"`
 	Active	 bool			`json:"active"`
 	Template ChoreTemplate	`json:"template"`
-	Config   choreConfig	`json:"config"`
+	Config   choreConfig	`json:"choreSettings"`
 	Snapshot []byte			`json:"-"`
 }
 

@@ -32,7 +32,7 @@ type ChoreTemplate struct {
 	Name   string				`json:"name"`
 	Id     string				`json:"id"`
 	Script string				`json:"script"`
-	Config ChoreTemplateConfig	`json:"config"`
+	Config ChoreTemplateConfig	`json:"templateSettings"`
 }
 
 var (

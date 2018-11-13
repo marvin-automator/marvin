@@ -7,6 +7,7 @@ import (
 	"github.com/kataras/iris/core/router"
 	"github.com/marvin-automator/marvin/internal/auth"
 	"github.com/marvin-automator/marvin/internal/config"
+	"github.com/marvin-automator/marvin/internal/graphql"
 )
 
 func RunApp() error {
@@ -31,6 +32,16 @@ func RunApp() error {
 
 		p.Get("/", func(ctx context.Context) {
 			ctx.WriteString("Hey, you've logged in!")
+		})
+
+		p.Any("/graphql", func(ctx context.Context) {
+			h, err := graphql.GetHandler()
+			if err != nil {
+				ctx.Writef("There was a problem setting up the GraphQL server %v", err)
+				return
+			}
+
+			h.ServeHTTP(ctx.ResponseWriter(), ctx.Request())
 		})
 	})
 
