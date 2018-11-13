@@ -6,9 +6,9 @@ import (
 	"github.com/augustoroman/v8"
 	"github.com/gobuffalo/packr"
 	"github.com/marvin-automator/marvin/actions"
+	"github.com/marvin-automator/marvin/internal"
 	"github.com/marvin-automator/marvin/internal/db"
 	"github.com/pkg/errors"
-	"github.com/satori/go.uuid"
 	"text/template"
 )
 
@@ -40,7 +40,7 @@ var (
 )
 
 func NewChoreTemplate(name, script string) (*ChoreTemplate, error) {
-	id, err := uuid.NewV4()
+	id, err := internal.NewId()
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func NewChoreTemplate(name, script string) (*ChoreTemplate, error) {
 	ct := ChoreTemplate{
 		Name:   name,
 		Script: script,
-		Id:     id.String(),
+		Id:     id,
 	}
 
 	err = ct.GenerateTemplateConfigs()

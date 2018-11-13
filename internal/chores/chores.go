@@ -8,8 +8,8 @@ import (
 	"github.com/augustoroman/v8"
 	"github.com/augustoroman/v8/v8console"
 	"github.com/marvin-automator/marvin/actions"
+	"github.com/marvin-automator/marvin/internal"
 	"github.com/marvin-automator/marvin/internal/db"
-	"github.com/satori/go.uuid"
 	"os"
 	"reflect"
 )
@@ -118,17 +118,14 @@ func FromTemplate(ct *ChoreTemplate, name string, inputs map[string]string) (*Ch
 		return nil, err
 	}
 
-	id, err := uuid.NewV1()
-	if err != nil {
-		return nil, err
-	}
+	id, err := internal.NewId()
 
 	return &Chore{
 		Name:     name,
 		Config:   *conf,
 		Template: *ct,
 		Snapshot: ct.GetChoreSnapshot(inputs),
-		Id:       id.String(),
+		Id:       id,
 	}, nil
 }
 
