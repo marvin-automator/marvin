@@ -10,6 +10,7 @@ import (
 	"github.com/kataras/iris/sessions"
 	"github.com/marvin-automator/marvin/internal/db"
 	"html/template"
+	"strings"
 )
 
 var html, tplErr = packr.NewBox("./templates").FindString("password.html")
@@ -22,27 +23,34 @@ func init() {
 	tpl = template.Must(template.New("auth").Parse(html))
 }
 
-func renderPasswordTemplate(ctx context.Context, error error, password string) {
+func renderPasswordTemplate(ctx context.Context, error error, password, next string) {
 	w := bytes.NewBufferString("")
-	tpl.Execute(w, map[string]interface{}{
+	err := tpl.Execute(w, map[string]interface{}{
 		"error":    error,
 		"password": password,
+		"next": 	next,
 	})
+
+	if err != nil {
+		ctx.Writef("Error rendering template: %v", err)
+	}
 	ctx.HTML(w.String())
 }
 
 func AuthHandlers(p iris.Party) {
 	p.Use(ensureAuthSession)
 	p.Get("/", func(ctx context.Context) {
+		next := validateRedirectURL(ctx.FormValueDefault("next", "/"))
 		if IsAuthenticated(ctx) {
-			ctx.Redirect("/")
+			ctx.Redirect(next)
 			return
 		}
 
-		renderPasswordTemplate(ctx, nil, "")
+		renderPasswordTemplate(ctx, nil, "", next)
 	})
 
 	p.Post("/", func(ctx context.Context) {
+		next := ctx.FormValueDefault("next", "/")
 		pw := ctx.FormValue("password")
 		correct, err := IsPasswordValid(pw)
 
@@ -52,14 +60,22 @@ func AuthHandlers(p iris.Party) {
 		}
 
 		if !correct {
-			renderPasswordTemplate(ctx, errors.New("Incorrect password"), pw)
+			renderPasswordTemplate(ctx, errors.New("Incorrect password"), pw, next)
 			return
 		}
 
 		s := GetSession(ctx)
 		s.Set("authenticated", true)
-		ctx.Redirect("/")
+		ctx.Redirect(next)
 	})
+}
+
+// Guard against open redirect attacks by making sure the url redirects to the same site, by making sure they start with a slash, and only one slash.
+func validateRedirectURL(u string) string {
+	if strings.HasPrefix(u, "/") && !strings.HasPrefix(u, "//") {
+		return u
+	}
+	return "/"
 }
 
 var sess *sessions.Sessions
@@ -87,7 +103,8 @@ var RequireLogin = context.Handlers{
 	ensureAuthSession,
 	func(ctx context.Context) {
 		if !IsAuthenticated(ctx) {
-			ctx.Redirect("/auth")
+			next := ctx.Path()
+			ctx.Redirect("/auth?next=" + next)
 		} else {
 			ctx.Next()
 		}
