@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/dgraph-io/badger"
 	"github.com/marvin-automator/marvin/internal/config"
+	"time"
 )
 
 var db *badger.DB
@@ -62,13 +63,32 @@ func (s Store) Get(key string, ptr interface{}) error {
 	return d.Decode(ptr)
 }
 
-func (s Store) Set(key string, value interface{}) error {
+func (s Store) encodeValue(v interface{}) ([]byte, error) {
 	b := bytes.NewBuffer([]byte{})
 	e := gob.NewEncoder(b)
-	e.Encode(value)
+	err := e.Encode(v)
+	return b.Bytes(), err
+}
+
+func (s Store) Set(key string, value interface{}) error {
+	data, err := s.encodeValue(value)
+	if err != nil {
+		return err
+	}
 
 	return db.Update(func(tx *badger.Txn) error {
-		return tx.Set(s.makeKey(key), b.Bytes())
+		return tx.Set(s.makeKey(key), data)
+	})
+}
+
+func (s Store) SetWithExpiration(key string, value interface, expires time.Duration) error {
+	data, err := s.encodeValue(value)
+	if err != nil {
+		return err
+	}
+
+	return db.Update(func(tx *badger.Txn) error {
+		return tx.SetWithTTL(s.makeKey(key), data, expires)
 	})
 }
 
