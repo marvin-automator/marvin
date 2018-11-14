@@ -119,5 +119,7 @@ func makeSessions() error {
 		AllowReclaim: true,
 	})
 
+	sess.UseDatabase(getSessionDB())
+
 	return nil
 }
