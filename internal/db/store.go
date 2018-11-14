@@ -81,7 +81,7 @@ func (s Store) Set(key string, value interface{}) error {
 	})
 }
 
-func (s Store) SetWithExpiration(key string, value interface, expires time.Duration) error {
+func (s Store) SetWithExpiration(key string, value interface{}, expires time.Duration) error {
 	data, err := s.encodeValue(value)
 	if err != nil {
 		return err
@@ -90,6 +90,22 @@ func (s Store) SetWithExpiration(key string, value interface, expires time.Durat
 	return db.Update(func(tx *badger.Txn) error {
 		return tx.SetWithTTL(s.makeKey(key), data, expires)
 	})
+}
+
+func (s Store) GetExpiration(key string) (time.Duration, error) {
+	var d time.Duration
+	err := db.View(func(txn *badger.Txn) error {
+		item, err := txn.Get(s.makeKey(key))
+		if err != nil {
+			return err
+		}
+
+		exp := time.Unix(int64(item.ExpiresAt()), 0)
+		d = exp.Sub(time.Now())
+		return nil
+	})
+
+	return d, err
 }
 
 func (s Store) Delete(key string) error {
