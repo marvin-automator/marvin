@@ -68,6 +68,12 @@ func AuthHandlers(p iris.Party) {
 		s.Set("authenticated", true)
 		ctx.Redirect(next)
 	})
+
+	p.Get("/logout", func(ctx context.Context) {
+		s := GetSession(ctx)
+		s.Set("authenticated", false)
+		ctx.Redirect("/", iris.StatusTemporaryRedirect)
+	})
 }
 
 // Guard against open redirect attacks by making sure the url redirects to the same site, by making sure they start with a slash, and only one slash.
