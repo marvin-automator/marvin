@@ -14,11 +14,14 @@ import (
 	"reflect"
 )
 
+// choreTrigger is a trigger bound to a store.
 type choreTrigger struct {
 	RegisteredTrigger
 	Input interface{} `json:"-"`
 }
 
+// start calls the trigger function, and listens for triggered events. When an event is fired, it sends a callback to the store
+// so it can run the JavaScript function that was registered.
 func (ct *choreTrigger) start(c *Chore, index int, ctx context.Context) error {
 	t, err := actions.Registry.GetAction(ct.Provider, ct.Group, ct.Action)
 	if err != nil {
@@ -47,7 +50,7 @@ func (ct *choreTrigger) start(c *Chore, index int, ctx context.Context) error {
 	return nil
 }
 
-// helper function that takes a receiving channel of unknown type, and outputs all the values to a new channel
+// receiveValues is a helper function that takes a receiving channel of unknown type, and outputs all the values to a new channel
 func receiveValues(in interface{}, ctx context.Context) (<-chan interface{}, error) {
 	v := reflect.ValueOf(in)
 	if v.Kind() != reflect.Chan {
@@ -72,6 +75,8 @@ func receiveValues(in interface{}, ctx context.Context) (<-chan interface{}, err
 	return out, nil
 }
 
+// UnmarshalJSON lets choreTrigger implement the JSONUnmarshaler interface.
+// This is necessary because we need to convert the trigger inputs we got to the correct type for the trigger function.
 func (ct *choreTrigger) UnmarshalJSON(data []byte) error {
 	var rt RegisteredTrigger
 	err := json.Unmarshal(data, &rt)
@@ -98,11 +103,17 @@ func (ct *choreTrigger) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// holds configuration data for the chore.
 type choreConfig struct {
+	// configurable parameters that are used by the script specify behavior.
 	Inputs   map[string]string `json:"inputs"`
+
+	// The registered triggers, associated with their parameters.
 	Triggers []choreTrigger    `json:"triggers"`
 }
 
+// A chore is a workflow for Marvin to execute. It consists of a number of triggers with callbacks that specify what
+// should happen when a trigger fires.
 type Chore struct {
 	Name     string        `json:"name"`
 	Id       string        `json:"id"`
@@ -112,6 +123,7 @@ type Chore struct {
 	Snapshot []byte        `json:"-"`
 }
 
+// FromTemplate creates a new Chore based on a template.
 func FromTemplate(ct *ChoreTemplate, name string, inputs map[string]string) (*Chore, error) {
 	conf, err := ct.GenerateChoreConfig(inputs)
 	if err != nil {
@@ -129,7 +141,10 @@ func FromTemplate(ct *ChoreTemplate, name string, inputs map[string]string) (*Ch
 	}, nil
 }
 
+// Start activates the chore, and starts all triggers.
 func (c *Chore) Start(ctx context.Context) {
+	c.Active = true
+
 	for i, ct := range c.Config.Triggers {
 		//TODO handle any errors returned by the trigger
 		ct.start(c, i, ctx)
@@ -138,11 +153,13 @@ func (c *Chore) Start(ctx context.Context) {
 
 var choreContexts = make(map[string]*v8.Context)
 
+// TriggerCallback is called by a trigger when it has fired an event.
+// This will call the JavaScript callback that was registered for this trigger.
 func (c *Chore) triggerCallback(index int, value interface{}, ctx context.Context) {
 	jsCtx, ok := choreContexts[c.Id]
 	if !ok {
 		fmt.Printf("Creating context for chore %v\n", c.Name)
-		jsCtx = c.CreateContext(ctx)
+		jsCtx = c.createContext(ctx)
 		fmt.Printf("Created context for chore %v\n", c.Name)
 		choreContexts[c.Id] = jsCtx
 	}
@@ -170,7 +187,8 @@ func (c *Chore) triggerCallback(index int, value interface{}, ctx context.Contex
 
 }
 
-func (c *Chore) CreateContext(ctx context.Context) *v8.Context {
+// createContext creates a JavaScript context for this chore.
+func (c *Chore) createContext(ctx context.Context) *v8.Context {
 	is := v8.NewIsolate()
 	jsCtx := is.NewContext()
 
@@ -220,12 +238,14 @@ const choreStoreName = "chores"
 var choreCache = map[string]*Chore{}
 var choresLoaded = false
 
+// Save saves a chore to the database.
 func (c *Chore) Save() error {
 	s := db.GetStore(choreStoreName)
 	choreCache[c.Id] = c
 	return s.Set(c.Id, c)
 }
 
+// Delete removes a chore from the database.
 func (c *Chore) Delete() error {
 	s := db.GetStore(choreStoreName)
 	err := s.Delete(c.Id)
@@ -237,6 +257,7 @@ func (c *Chore) Delete() error {
 	return nil
 }
 
+// GetChore gets a single chore from the database.
 func GetChore(id string) (*Chore, error) {
 	if c, ok := choreCache[id]; ok {
 		return c, nil
@@ -253,6 +274,7 @@ func GetChore(id string) (*Chore, error) {
 	return c, nil
 }
 
+// GetChores gets all chores from the database.
 func GetChores() ([]*Chore, error) {
 	res := make([]*Chore, len(choreCache))
 	if choresLoaded {

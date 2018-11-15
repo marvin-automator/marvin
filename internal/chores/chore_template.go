@@ -12,22 +12,26 @@ import (
 	"text/template"
 )
 
+// RegisteredTrigger holds information about a trigger, registered in a template.
 type RegisteredTrigger struct {
 	Provider string `json:"provider"`
 	Group    string `json:"group"`
 	Action   string `json:"action"`
 }
 
+// ConfigInput describes a parameter that is configurable by the user when creating a chore from a template.
 type ConfigInput struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
+// ChoreTemplateConfig holds configuration information about a trigger.
 type ChoreTemplateConfig struct {
 	Triggers []RegisteredTrigger `json:"triggers"`
 	Inputs   []ConfigInput       `json:"inputs"`
 }
 
+// ChoreTemplate is a template for a chore (how surprising!)
 type ChoreTemplate struct {
 	Name   string              `json:"name"`
 	Id     string              `json:"id"`
@@ -39,6 +43,8 @@ var (
 	errTemplateNotFound = errors.New("Template not found")
 )
 
+// NewChoreTemplate creates a new chore template with the given name and string. It executes the script to determine
+// which triggers are registered, and which inputs are requested.
 func NewChoreTemplate(name, script string) (*ChoreTemplate, error) {
 	id, err := internal.NewId()
 	if err != nil {
@@ -60,6 +66,7 @@ var cacheLoaded = false
 
 const templateStoreName = "chore_templates"
 
+// LoadChoreTemplate loads a single template from the database
 func LoadChoreTemplate(id string) (*ChoreTemplate, error) {
 	ct, ok := templateCache[id]
 	if !ok {
@@ -81,6 +88,7 @@ func LoadChoreTemplate(id string) (*ChoreTemplate, error) {
 	return ct, nil
 }
 
+// GetChoreTemplates gets all chore templates from the database.
 func GetChoreTemplates() ([]*ChoreTemplate, error) {
 	results := make([]*ChoreTemplate, 0, len(templateCache))
 
@@ -108,12 +116,14 @@ func GetChoreTemplates() ([]*ChoreTemplate, error) {
 	return results, nil
 }
 
+// Save stores a chore template to the database.
 func (ct *ChoreTemplate) Save() error {
 	s := db.GetStore("chore_templates")
 	templateCache[ct.Id] = ct
 	return s.Set(ct.Id, ct)
 }
 
+// Delete removes a chore template from the database.
 func (ct *ChoreTemplate) Delete() error {
 	s := db.GetStore(templateStoreName)
 	err := s.Delete(ct.Id)
@@ -127,6 +137,8 @@ func (ct *ChoreTemplate) Delete() error {
 var bp, bpErr = packr.NewBox("./js").FindString("boilerplate.js.template")
 var bpTemplate = template.Must(template.New("js").Parse(bp))
 
+// combineScriptWithBoilerplate generates JavaScript code for a chore by combining the chore's script with
+// some setup code that makes actions and triggers, as well as marvin.input and other utilities, available to the script.
 func (ct *ChoreTemplate) combineScriptWithBoilerplate(inputs map[string]string) string {
 	if bpErr != nil {
 		panic(bpErr) // If everything is set up correctly during build, this shouldn't happen.
@@ -143,17 +155,20 @@ func (ct *ChoreTemplate) combineScriptWithBoilerplate(inputs map[string]string) 
 	return s
 }
 
+// GetChoreSnapshot generates a v8 Snapshot with all triggers in the template registered.
 func (ct *ChoreTemplate) GetChoreSnapshot(inputs map[string]string) []byte {
 	s := v8.CreateSnapshot(ct.combineScriptWithBoilerplate(inputs))
 	return s.Export()
 }
 
+// getConfigV8Value executes the tamplate to get the value needed to create a ChoreTemplateConfig
 func (ct *ChoreTemplate) getConfigV8Value(inputs map[string]string) (*v8.Value, error) {
 	is := v8.NewIsolate()
 	return is.NewContext().Eval(ct.combineScriptWithBoilerplate(inputs)+";marvin;", "marvin.js")
 
 }
 
+// GenerateTemplateConfig runs the script to generate a ChoreTemplateConfig
 func (ct *ChoreTemplate) GenerateTemplateConfigs() error {
 	res, err := ct.getConfigV8Value(nil)
 	if err != nil {
@@ -170,6 +185,7 @@ func (ct *ChoreTemplate) GenerateTemplateConfigs() error {
 	return decodeFieldValue(res, "_inputs", &(ct.Config.Inputs))
 }
 
+// GenerateChoreConfig runs the template's script with the given inputs to generate a chore config.
 func (ct *ChoreTemplate) GenerateChoreConfig(inputValues map[string]string) (*choreConfig, error) {
 	res, err := ct.getConfigV8Value(inputValues)
 	if err != nil {
@@ -183,6 +199,7 @@ func (ct *ChoreTemplate) GenerateChoreConfig(inputValues map[string]string) (*ch
 	return &cc, err
 }
 
+// decodeFieldValue is a helper that takes an attribute of a v8 object, and decodes it.
 func decodeFieldValue(value *v8.Value, field string, ptr interface{}) error {
 	v, err := value.Get(field)
 	if err != nil {
