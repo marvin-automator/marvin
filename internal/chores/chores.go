@@ -141,13 +141,31 @@ func FromTemplate(ct *ChoreTemplate, name string, inputs map[string]string) (*Ch
 	}, nil
 }
 
+var choreCancelers = make(map[string]context.CancelFunc)
+
 // Start activates the chore, and starts all triggers.
 func (c *Chore) Start(ctx context.Context) {
+	if _, ok := choreCancelers[c.Id]; ok {
+		return // This chore is already running.
+	}
+
 	c.Active = true
+
+	ctx, cancel := context.WithCancel(ctx)
+	choreCancelers[c.Id] = cancel
 
 	for i, ct := range c.Config.Triggers {
 		//TODO handle any errors returned by the trigger
 		ct.start(c, i, ctx)
+	}
+}
+
+// Stop stops a currently running chore, marking it as inactive.
+func (c *Chore) Stop() {
+	c.Active = false
+	cancel, ok := choreCancelers[c.Id]
+	if ok {
+		cancel()
 	}
 }
 
