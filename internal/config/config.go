@@ -7,12 +7,15 @@ import (
 	"path/filepath"
 )
 
+var DevMode bool
+
 var DataDir string
 var ServerHost string
 
 func init() {
 	viper.SetDefault("data_dir", "marvin_data")
 	viper.SetDefault("server_host", ":80")
+	viper.SetDefault("dev_mode", false)
 }
 
 func Setup() {
@@ -20,6 +23,8 @@ func Setup() {
 	ensureDir(DataDir)
 
 	ServerHost = viper.GetString("server_host")
+
+	DevMode = viper.GetBool("dev_mode")
 }
 
 func resolvePath(p string) string {
