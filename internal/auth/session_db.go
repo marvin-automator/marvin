@@ -28,8 +28,6 @@ func (s sessDB) getSession(sid string) (map[string]interface{}, error) {
 }
 
 func (s sessDB) Acquire(sid string, expires time.Duration) sessions.LifeTime {
-	s.cache[sid] = make(map[string]interface{})
-	s.store.SetWithExpiration(sid, make(map[string]interface{}), expires)
 	return sessions.LifeTime{}
 }
 
