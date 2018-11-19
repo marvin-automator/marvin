@@ -48,6 +48,7 @@ func RunApp() error {
 
 		// In development mode; just pass requests through to the React dev server.
 		if config.DevMode {
+			fmt.Println("Serving static assets in development mode.")
 			cmd := exec.Command("yarn", "start")
 			cmd.Dir = "./frontend"
 			err := cmd.Start()
@@ -79,6 +80,7 @@ func RunApp() error {
 			})
 		} else {
 			// Otherwise, we use packr to bundle in the built frontend
+			fmt.Println("Serving static assets in production mode.")
 			box := packr.NewBox("../../frontend/build")
 
 			p.Get("/{path:path}", func(ctx context.Context) {
