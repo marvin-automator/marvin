@@ -10,6 +10,7 @@ import (
 	"github.com/marvin-automator/marvin/internal/db"
 	"github.com/pkg/errors"
 	"text/template"
+	"time"
 )
 
 // RegisteredTrigger holds information about a trigger, registered in a template.
@@ -33,10 +34,11 @@ type ChoreTemplateConfig struct {
 
 // ChoreTemplate is a template for a chore (how surprising!)
 type ChoreTemplate struct {
-	Name   string              `json:"name"`
-	Id     string              `json:"id"`
-	Script string              `json:"script"`
-	Config ChoreTemplateConfig `json:"templateSettings"`
+	Name   	string              `json:"name"`
+	Id     	string              `json:"id"`
+	Created	string				`json:"created"`
+	Script	string              `json:"script"`
+	Config	ChoreTemplateConfig `json:"templateSettings"`
 }
 
 var (
@@ -51,10 +53,16 @@ func NewChoreTemplate(name, script string) (*ChoreTemplate, error) {
 		return nil, err
 	}
 
+	created, err := time.Now().MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+
 	ct := ChoreTemplate{
 		Name:   name,
 		Script: script,
 		Id:     id,
+		Created:string(created),
 	}
 
 	err = ct.GenerateTemplateConfigs()
