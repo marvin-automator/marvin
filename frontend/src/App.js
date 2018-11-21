@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from 'react-apollo';
 
 import MainLayout from "./layout/MainLayout";
+import Routes from "./pages"
+
+const client = new ApolloClient();
 
 const App = () => {
-    return <MainLayout>
-        <h1>Marvin</h1>
-    </MainLayout>
+    return <ApolloProvider client={client}>
+        <MainLayout>
+            <Routes/>
+        </MainLayout>
+    </ApolloProvider>
 }
 
 
