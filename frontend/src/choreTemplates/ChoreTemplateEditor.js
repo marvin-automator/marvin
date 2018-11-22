@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import {Grid, Form, Input, Button} from "semantic-ui-react";
+const CodeEditor = React.lazy(() => import('./CodeEditor'));
 
 class ChoreTemplateEditor extends React.Component {
     constructor(props) {
@@ -37,9 +38,9 @@ class ChoreTemplateEditor extends React.Component {
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column width="12">
-                    <div id="editor" style={{backgroundColor: "blue", width: "100%", height: "80vh"}}>
-                        {this.state.script}
-                    </div>
+                    <React.Suspense fallback={<div>Loading...</div>}>
+                    <CodeEditor width="100%" height="80vh" script={this.state.script} onChange={(v) => this.handleChange(null, {name: "code", value: v})} />
+                    </React.Suspense>
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
