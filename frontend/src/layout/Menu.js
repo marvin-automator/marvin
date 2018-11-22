@@ -24,7 +24,7 @@ const MarvinMenu = () => {
             <Icon name='cog' />
             Settings
         </Menu.Item>
-        <Menu.Item as="a" href="/auth/logout" position="bottom">
+        <Menu.Item as="a" href="/auth/logout">
             <Icon name='sign out' />
             Log out
         </Menu.Item>
