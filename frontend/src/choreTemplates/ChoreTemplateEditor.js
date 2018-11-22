@@ -15,10 +15,14 @@ class ChoreTemplateEditor extends React.Component {
         this.setState({[name]: value})
     };
 
+    handleSubmit = () => {
+        this.props.onSave(this.state);
+    };
+
     render() {
-        return <Grid>
+        return <Grid as={Form} onSubmit={this.handleSubmit}>
             <Grid.Row>
-                <Grid.Column width={6}>
+                <Grid.Column width={16}>
                     <Form.Field
                         id='title'
                         control={Input}
@@ -27,18 +31,19 @@ class ChoreTemplateEditor extends React.Component {
                         placeholder='Enter a name...'
                         value={this.state.name || ""}
                         onChange={this.handleChange}
+                        inline={false}
                     />
-                </Grid.Column>
-                <Grid.Column width={2}>
-                    <Button icon="save" content="Save" />
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column width="12">
-                    <div id="editor" style={{backgroundColor: "blue", width: "100%", height: "100vh"}}>
+                    <div id="editor" style={{backgroundColor: "blue", width: "100%", height: "80vh"}}>
                         {this.state.script}
                     </div>
                 </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+                <Grid.Column><Button icon="save" content="Save" primary type="submit" /></Grid.Column>
             </Grid.Row>
         </Grid>
     }
