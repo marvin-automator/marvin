@@ -39,7 +39,7 @@ class ChoreTemplateEditor extends React.Component {
             <Grid.Row>
                 <Grid.Column width="12">
                     <React.Suspense fallback={<div>Loading...</div>}>
-                    <CodeEditor width="100%" height="80vh" script={this.state.script} onChange={(v) => this.handleChange(null, {name: "code", value: v})} />
+                    <CodeEditor width="100%" height="80vh" script={this.state.script} onChange={(v) => this.handleChange(null, {name: "script", value: v})} />
                     </React.Suspense>
                 </Grid.Column>
             </Grid.Row>

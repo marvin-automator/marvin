@@ -1,18 +1,11 @@
 import React from 'react';
-import { gql } from 'apollo-boost';
 import { Query } from 'react-apollo';
 import { List } from 'semantic-ui-react'
 
-const GET_CHORES = gql`query {
-    ChoreTemplates {
-        name
-        id
-        created
-    }
-}`;
+import {GET_CHORE_TEMPLATES} from "../choreTemplates/query";
 
 const ChoreTemplates = () => {
-    return <Query query={GET_CHORES}>
+    return <Query query={GET_CHORE_TEMPLATES}>
         {({ loading, error, data }) => {
             if (loading) return <div>Loading...</div>;
             if (error) return <div>Error: {error}</div>;
