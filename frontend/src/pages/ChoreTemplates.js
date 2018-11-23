@@ -30,8 +30,8 @@ const ChoreTemplates = () => {
                                     return <List.Item key={ct.id}>
                                         <List.Icon name="file code outline" size='large' verticalAlign='middle' />
                                         <List.Content>
-                                            <List.Header>{ct.name}</List.Header>
-                                            <List.Description>{ct.created}</List.Description>
+                                            <List.Header as={Link} to={`/templates/${ct.id}`}>{ct.name}</List.Header>
+                                            <List.Description as={Link} to={`/templates/${ct.id}`}>{ct.created}</List.Description>
                                         </List.Content>
                                     </List.Item>
                                 })}
