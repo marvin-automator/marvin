@@ -43,4 +43,10 @@ query getTemplate($id: String!) {
     }
 }
 ${CHORE_TEMPLATE_ALL_FIELDS}
-`
+`;
+
+export const DELETE_TEMPLATE = gql`
+mutation foo($id: String!) {
+  deleteChoreTemplate(id: $id)
+}
+`;

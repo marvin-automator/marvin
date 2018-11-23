@@ -4,6 +4,7 @@ import { List, Grid, Button, Header} from 'semantic-ui-react'
 import {Link} from "@reach/router";
 
 import {GET_CHORE_TEMPLATES} from "../choreTemplates/query";
+import ActionsButton from "../choreTemplates/ActionsButton"
 
 const ChoreTemplates = () => {
     return <Query query={GET_CHORE_TEMPLATES}>
@@ -30,7 +31,7 @@ const ChoreTemplates = () => {
                                     return <List.Item key={ct.id}>
                                         <List.Icon name="file code outline" size='large' verticalAlign='middle' />
                                         <List.Content>
-                                            <Button basic icon="ellipsis vertical" size="small" aria-label="actions" floated="right" compact/>
+                                            <ActionsButton id={ct.id}/>
                                             <List.Header as={Link} to={`/templates/${ct.id}`}>{ct.name}</List.Header>
                                             <List.Description as={Link} to={`/templates/${ct.id}`}>{ct.created}</List.Description>
                                         </List.Content>
