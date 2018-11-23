@@ -31,6 +31,6 @@ const updateCache = (cache, { data: { createChoreTemplate } }) => {
         query: GET_CHORE_TEMPLATES,
         data: { ChoreTemplates: ChoreTemplates.concat([createChoreTemplate]) }
     });
-}
+};
 
 export default CreateChoreTemplate;

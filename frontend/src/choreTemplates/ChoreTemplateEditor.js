@@ -44,7 +44,9 @@ class ChoreTemplateEditor extends React.Component {
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
-                <Grid.Column><Button icon="save" content="Save" primary type="submit" /></Grid.Column>
+                <Grid.Column>
+                    <Button icon="save" content="Save" primary type="submit" disabled={!(this.state.name && this.state.name.trim() !== "")}/>
+                </Grid.Column>
             </Grid.Row>
         </Grid>
     }
