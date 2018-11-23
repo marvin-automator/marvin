@@ -32,7 +32,7 @@ class CodeEditor extends React.Component {
         };
 
         return <CodeMirror
-                value={this.props.code}
+                value={this.props.script}
                 options={options}
                 onChange={(editor, data, value) => {this.props.onChange(value)}}
                 editorDidMount={this.initializeEditor}

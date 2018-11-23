@@ -3,7 +3,7 @@ import { Mutation } from "react-apollo";
 import {Message} from "semantic-ui-react";
 import { navigate } from "@reach/router"
 
-import {CREATE_TEMPLATE, GET_CHORE_TEMPLATES} from "../choreTemplates/query";
+import {CREATE_TEMPLATE, GET_CHORE_TEMPLATES, GET_TEMPLATE} from "../choreTemplates/query";
 
 import ChoreTemplateEditor from "../choreTemplates/ChoreTemplateEditor";
 
@@ -31,6 +31,11 @@ const updateCache = (cache, { data: { createChoreTemplate } }) => {
         query: GET_CHORE_TEMPLATES,
         data: { ChoreTemplates: ChoreTemplates.concat([createChoreTemplate]) }
     });
+    cache.writeQuery({
+        query: GET_TEMPLATE,
+        data: {ChoreTemplateById: createChoreTemplate},
+        variables: {id: createChoreTemplate.id}
+    })
 };
 
 export default CreateChoreTemplate;
