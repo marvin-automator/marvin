@@ -114,12 +114,19 @@ func (s Store) Delete(key string) error {
 	})
 }
 
-func (s Store) EachKeyWithPrefix(prefix string, ptr interface{}, f func(key string) error) error {
+func (s Store) iterate(prefix, start string, reverse bool, ptr interface{}, f func(key string) error) error {
 	return db.View(func(txn *badger.Txn) error {
-		it := txn.NewIterator(badger.DefaultIteratorOptions)
+		opts := badger.DefaultIteratorOptions
+		if reverse {
+			opts.Reverse = true
+		}
+
+		it := txn.NewIterator(opts)
 		defer it.Close()
+
 		bprefix := s.makeKey(prefix)
-		for it.Seek(bprefix); it.ValidForPrefix(bprefix); it.Next() {
+		bstart := s.makeKey(start)
+		for it.Seek(bstart); it.ValidForPrefix(bprefix); it.Next() {
 			item := it.Item()
 
 			var val []byte
@@ -143,3 +150,16 @@ func (s Store) EachKeyWithPrefix(prefix string, ptr interface{}, f func(key stri
 		return nil
 	})
 }
+
+func (s Store) EachKeyWithPrefix(prefix string, ptr interface{}, f func(key string) error) error {
+	return s.iterate(prefix, prefix, false, ptr, f)
+}
+
+func (s Store) EachKeyAfter(start string, ptr interface{}, f func(key string) error) error {
+	return s.iterate(s.name, start, false, ptr, f)
+}
+
+func (s Store) EachKeyBefore(start string, ptr interface{}, f func(key string) error) error {
+	return s.iterate(s.name, start, false, ptr, f)
+}
+
