@@ -159,7 +159,7 @@ func (s Store) EachKeyAfter(start string, ptr interface{}, f func(key string) er
 	return s.iterate(s.name, start, false, ptr, f)
 }
 
-func (s Store) EachKeyBefore(start string, ptr interface{}, f func(key string) error) error {
-	return s.iterate(s.name, start, false, ptr, f)
+func (s Store) EachKeyBefore(end string, ptr interface{}, f func(key string) error) error {
+	return s.iterate("", end, true, ptr, f)
 }
 
