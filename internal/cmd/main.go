@@ -2,7 +2,10 @@ package cmd
 
 import (
 	"bufio"
+	"context"
 	"fmt"
+	"github.com/marvin-automator/marvin/internal"
+	"github.com/marvin-automator/marvin/internal/chores"
 	"github.com/marvin-automator/marvin/internal/config"
 	"github.com/marvin-automator/marvin/internal/web"
 	"github.com/mitchellh/go-homedir"
@@ -19,6 +22,13 @@ var rootCmd = &cobra.Command{
 Marvin allows you to automate all sorts of things.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
+		fmt.Println("Starting all active chores...")
+		n, err := chores.StartAllActiveChores(context.Background())
+		if err != nil {
+			internal.ErrorAndExit(fmt.Errorf("couldn't start chores: %v", err))
+		}
+		fmt.Printf("Started %v chores.\n", n)
+		
 		fmt.Println("Starting app...")
 		web.RunApp()
 		fmt.Println("Goodbye!")
