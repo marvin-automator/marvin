@@ -319,3 +319,17 @@ func GetChores() ([]*Chore, error) {
 
 	return res, nil
 }
+
+// StartAllActiveChores should be run at the start of Marvin to get all active chores up and running.
+func StartAllActiveChores(ctx context.Context) error {
+	chores, err := GetChores()
+	if err != nil {
+		return err
+	}
+
+	for _, c := range chores {
+		if c.Active {
+			c.Start(ctx)
+		}
+	}
+}
