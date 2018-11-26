@@ -5,7 +5,6 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/dgraph-io/badger"
-	"github.com/kataras/iris/core/errors"
 	"github.com/marvin-automator/marvin/internal/config"
 	"time"
 )
@@ -120,7 +119,7 @@ func (s Store) Delete(key string) error {
 var StopIterating = stopper("STOP_ITERATING!")
 
 type stopper string
-func (s stopper) Error() string {return s}
+func (s stopper) Error() string {return string(s)}
 
 func (s Store) iterate(prefix, start string, reverse bool, ptr interface{}, f func(key string) error) error {
 	return db.View(func(txn *badger.Txn) error {
