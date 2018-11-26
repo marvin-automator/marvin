@@ -47,6 +47,8 @@ func (ct *choreTrigger) start(c *Chore, index int, ctx context.Context) error {
 		}
 	}()
 
+	c.Log(InfoLog, fmt.Sprintf("🚀 Trigger started: %v.%v.%v", ct.Provider, ct.Group, ct.Action))
+
 	return nil
 }
 
@@ -154,9 +156,12 @@ func (c *Chore) Start(ctx context.Context) {
 	ctx, cancel := context.WithCancel(ctx)
 	choreCancelers[c.Id] = cancel
 
+	c.Log(InfoLog, "▶️ Started chore.")
 	for i, ct := range c.Config.Triggers {
-		//TODO handle any errors returned by the trigger
-		ct.start(c, i, ctx)
+		err := ct.start(c, i, ctx)
+		if err != nil {
+			c.Log(ErrorLog, fmt.Sprintf("Error starting trigger %v.%v.%v: %v", ct.Provider, ct.Group, ct.Action, err))
+		}
 	}
 }
 
@@ -167,6 +172,7 @@ func (c *Chore) Stop() {
 	if ok {
 		cancel()
 	}
+	c.Log(InfoLog, "🛑 Chore stopped.")
 }
 
 var choreContexts = make(map[string]*v8.Context)
@@ -176,9 +182,7 @@ var choreContexts = make(map[string]*v8.Context)
 func (c *Chore) triggerCallback(index int, value interface{}, ctx context.Context) {
 	jsCtx, ok := choreContexts[c.Id]
 	if !ok {
-		fmt.Printf("Creating context for chore %v\n", c.Name)
 		jsCtx = c.createContext(ctx)
-		fmt.Printf("Created context for chore %v\n", c.Name)
 		choreContexts[c.Id] = jsCtx
 	}
 
@@ -188,19 +192,14 @@ func (c *Chore) triggerCallback(index int, value interface{}, ctx context.Contex
 		return
 	}
 
-	b, _ := eventValue.MarshalJSON()
-	fmt.Printf("Set event input value %v\n", string(b))
 	err = jsCtx.Global().Set("__triggeredEvent", eventValue)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Running JS for trigger...")
 
 	go func() {
 		code := c.Template.combineScriptWithBoilerplate(c.Config.Inputs) + fmt.Sprintf("marvin.isSetup=false;marvin._triggers[%v].callback(__triggeredEvent)", index)
-		fmt.Println("CODE:\n\n", code, "\n\n_______")
-		res, err := jsCtx.Eval(code, "name.js")
-		fmt.Println("result:", res, " error:", err)
+		_, err := jsCtx.Eval(code, "name.js")
 	}()
 
 }

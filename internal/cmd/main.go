@@ -28,7 +28,7 @@ Marvin allows you to automate all sorts of things.`,
 			internal.ErrorAndExit(fmt.Errorf("couldn't start chores: %v", err))
 		}
 		fmt.Printf("Started %v chores.\n", n)
-		
+
 		fmt.Println("Starting app...")
 		web.RunApp()
 		fmt.Println("Goodbye!")
