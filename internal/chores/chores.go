@@ -200,6 +200,10 @@ func (c *Chore) triggerCallback(index int, value interface{}, ctx context.Contex
 	go func() {
 		code := c.Template.combineScriptWithBoilerplate(c.Config.Inputs) + fmt.Sprintf("marvin.isSetup=false;marvin._triggers[%v].callback(__triggeredEvent)", index)
 		_, err := jsCtx.Eval(code, "name.js")
+
+		if err != nil {
+			c.Log(ErrorLog, err.Error())
+		}
 	}()
 
 }
