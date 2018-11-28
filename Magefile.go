@@ -3,10 +3,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/gobuffalo/envy"
-	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
@@ -34,21 +32,13 @@ func runCommand(ignoreError bool, path, name string, args ...string) {
 	errorAndExit(err)
 }
 
+const V8_VERSION = "6.3.292.48.1"
+
 func Setup() {
 	println("Installing deps...")
 	runCommand(true, "", "go", "get",  "-u", "-v", "./...")
 	runCommand(true, "", "go", "-get", "-u", "-v", "github.com/gobuffalo/packr/packr")
 
-	println("Determining latest v8 version...")
-	resp, err := http.Get("https://rubygems.org/api/v1/versions/libv8/latest.json")
-	errorAndExit(err)
-	dec := json.NewDecoder(resp.Body)
-	defer resp.Body.Close()
-	type version struct {
-		Version string
-	}
-	v := version{}
-	dec.Decode(&v)
 
 	var os_arch string
 	switch runtime.GOOS {
@@ -60,7 +50,7 @@ func Setup() {
 		println("Unsupported os", runtime.GOOS)
 		os.Exit(1)
 	}
-	filename := fmt.Sprintf("libv8-%v-%v.gem", v.Version, os_arch)
+	filename := fmt.Sprintf("libv8-%v-%v.gem", V8_VERSION, os_arch)
 
 	wd, err := os.Getwd()
 	errorAndExit(err)
