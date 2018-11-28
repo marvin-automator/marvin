@@ -67,7 +67,7 @@ func Setup() {
 
 	os.Mkdir("v8binary", 0700)
 	runCommand(false, wd+ "/v8binary", "curl", "https://rubygems.org/downloads/" + filename, "-o", filename)
-	runCommand(false, wd + "/v8binary", "tar", "-xzvf", filename)
+	runCommand(false, wd + "/v8binary", "tar", "-xvf", filename)
 	runCommand(false, wd + "/v8binary", "tar", "-xzvf", "data.tar.gz")
 	runCommand(false, "", "ln", "-f", "-s", "./v8binary/vendor/v8/out/x64.release",  envy.GoPath() + "/src/github.com/augustoroman/v8/libv8")
 	runCommand(false, "", "ln", "-f", "-s", "./v8binary/vendor/v8/include", envy.GoPath() + "/src/github.com/augustoroman/v8/include")
