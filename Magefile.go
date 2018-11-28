@@ -71,5 +71,13 @@ func Setup() {
 	runCommand(false, wd + "/v8binary", "tar", "-xzvf", "data.tar.gz")
 	runCommand(false, "", "ln", "-f", "-s", wd + "/v8binary/vendor/v8/out/x64.release",  envy.GoPath() + "/src/github.com/augustoroman/v8/libv8")
 	runCommand(false, "", "ln", "-f", "-s", wd + "/v8binary/vendor/v8/include", envy.GoPath() + "/src/github.com/augustoroman/v8/include")
+
+	println("Installing frontend deps...")
+	runCommand(false, wd + "", "npm", "install", "-g", "yarn")
+	runCommand(false, wd + "/frontend", "yarn")
+	println("Building frontend...")
+	runCommand(false, wd + "/frontend", "yarn", "run", "build")
+
+	println("Building and installing marvin...")
 	runCommand(false, "", "packr", "install")
 }
