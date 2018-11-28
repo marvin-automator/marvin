@@ -36,8 +36,8 @@ func runCommand(ignoreError bool, path, name string, args ...string) {
 
 func Setup() {
 	println("Installing deps...")
-	runCommand(true, "", "go", "-u",  "get", "-v", "./...")
-	runCommand(true, "", "go", "-u", "install", "-v", "github.com/gobuffalo/packr/packr")
+	runCommand(true, "", "go", "get",  "-u", "-v", "./...")
+	runCommand(true, "", "go", "-get", "-u", "-v", "github.com/gobuffalo/packr/packr")
 
 	println("Determining latest v8 version...")
 	resp, err := http.Get("https://rubygems.org/api/v1/versions/libv8/latest.json")
