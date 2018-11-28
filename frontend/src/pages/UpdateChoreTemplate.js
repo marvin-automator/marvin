@@ -2,7 +2,7 @@ import React from "react";
 import { Query, Mutation } from "react-apollo";
 import {Message} from "semantic-ui-react";
 
-import {UPDATE_TEMPLATE, GET_TEMPLATE} from "../choreTemplates/query";
+import {UPDATE_TEMPLATE, GET_CHORE_TEMPLATES, GET_TEMPLATE} from "../choreTemplates/query";
 
 import ChoreTemplateEditor from "../choreTemplates/ChoreTemplateEditor";
 
