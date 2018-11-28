@@ -21,6 +21,7 @@ var rootCmd = &cobra.Command{
 
 Marvin allows you to automate all sorts of things.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		defer fmt.Println("Goodbye!")
 
 		fmt.Println("Starting all active chores...")
 		n, err := chores.StartAllActiveChores(context.Background())
@@ -30,8 +31,10 @@ Marvin allows you to automate all sorts of things.`,
 		fmt.Printf("Started %v chores.\n", n)
 
 		fmt.Println("Starting app...")
-		web.RunApp()
-		fmt.Println("Goodbye!")
+		err = web.RunApp()
+		if err != nil {
+			internal.ErrorAndExit(err)
+		}
 	},
 }
 
