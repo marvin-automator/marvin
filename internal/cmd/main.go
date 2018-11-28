@@ -25,16 +25,12 @@ Marvin allows you to automate all sorts of things.`,
 
 		fmt.Println("Starting all active chores...")
 		n, err := chores.StartAllActiveChores(context.Background())
-		if err != nil {
-			internal.ErrorAndExit(fmt.Errorf("couldn't start chores: %v", err))
-		}
+		internal.ErrorAndExit(err)
 		fmt.Printf("Started %v chores.\n", n)
 
 		fmt.Println("Starting app...")
 		err = web.RunApp()
-		if err != nil {
-			internal.ErrorAndExit(err)
-		}
+		internal.ErrorAndExit(err)
 	},
 }
 
