@@ -49,3 +49,16 @@ func TestGroup_AddManualTrigger(t *testing.T) {
 			return nil, nil
 		})
 }
+
+func TestProviderGroupAndActionPath(t *testing.T) {
+	reg := makeRegistry()
+	r := require.New(t)
+
+	p := reg.Providers()[1]
+	g := p.Groups()[1]
+	a := g.Actions()[0]
+
+	r.Equal("provider2", p.Info().Path())
+	r.Equal("provider2.g2", g.Info().Path())
+	r.Equal("provider2.g2.runFoo", a.Info().Path())
+}

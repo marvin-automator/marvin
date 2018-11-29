@@ -91,7 +91,8 @@ type Provider struct {
 }
 
 func (p *Provider) AddGroup(name, description string, svgIcon []byte) actions.Group {
-	g := &Group{actions.BaseInfo{name, description, svgIcon}, make(map[string]actions.Action)}
+	parent := p.Info()
+	g := &Group{actions.BaseInfo{name, description, svgIcon, &parent}, make(map[string]actions.Action)}
 	p.groups[name] = g
 	return g
 }
@@ -110,8 +111,9 @@ func (p *Provider) SetOAuth2Endpoint(ep oauth2.Endpoint) {
 }
 
 func (g *Group) addAction(name, description string, svgIcon []byte, runFunc interface{}, trigger bool) {
+	p := g.Info()
 	info := actions.Info{
-		BaseInfo:  actions.BaseInfo{name, description, svgIcon},
+		BaseInfo:  actions.BaseInfo{name, description, svgIcon, &p},
 		IsTrigger: trigger,
 	}
 
@@ -152,7 +154,7 @@ func NewRegistry() *ProviderRegistry {
 
 func (r *ProviderRegistry) AddProvider(name, description string, svgIcon []byte) actions.Provider {
 	p := &Provider{
-		BaseInfo: actions.BaseInfo{name, description, svgIcon},
+		BaseInfo: actions.BaseInfo{name, description, svgIcon, nil},
 		groups:   make(map[string]*Group),
 	}
 

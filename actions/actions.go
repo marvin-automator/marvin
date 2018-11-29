@@ -4,16 +4,26 @@ import (
 	"context"
 	"golang.org/x/oauth2"
 	"reflect"
+	"strings"
 )
 
 type BaseInfo struct {
 	Name        string
 	Description string
 	SVGIcon     []byte
+	Parent		*BaseInfo
 }
 
 func (i BaseInfo) Info() BaseInfo {
 	return i
+}
+
+func (i BaseInfo) Path() string {
+	names := []string{i.Name}
+	for p := i.Parent; p != nil; p = p.Parent {
+		names = append([]string{p.Name}, names...)
+	}
+	return strings.Join(names, ".")
 }
 
 type Info struct {
