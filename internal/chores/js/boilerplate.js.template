@@ -28,9 +28,9 @@ marvin.input = (name, description) => {
 {{range $provider := .Providers}}
 {{$provider.Info.Name}} = {};
 {{range $group := $provider.Groups}}
-        {{$provider.Info.Name}}.{{$group.Info.Name}} = {};
+        {{$group.Info.Path}} = {};
         {{range $action := $group.Actions -}}
-            {{$provider.Info.Name}}.{{$group.Info.Name}}.{{$action.Info.Name}} = {{if $action.Info.IsTrigger -}}
+            {{$action.Info.Path}} = {{if $action.Info.IsTrigger -}}
                 (input, callback) => marvin._triggers.push({
                         provider: "{{$provider.Info.Name}}",
                         group: "{{$group.Info.Name}}",
