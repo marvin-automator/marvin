@@ -54,9 +54,9 @@ func TestProviderGroupAndActionPath(t *testing.T) {
 	reg := makeRegistry()
 	r := require.New(t)
 
-	p := reg.Providers()[1]
-	g := p.Groups()[1]
-	a := g.Actions()[0]
+	p := reg.providers["provider2"]
+	g := p.groups["g2"]
+	a := g.actions["runFoo"]
 
 	r.Equal("provider2", p.Info().Path())
 	r.Equal("provider2.g2", g.Info().Path())
