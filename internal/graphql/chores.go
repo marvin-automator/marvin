@@ -118,6 +118,57 @@ func getChoreMutationFields() graphql.Fields {
 				return err == nil, err
 			},
 		},
+
+		"createChore": &graphql.Field{
+			Type: choreTemplateType,
+			Args: graphql.FieldConfigArgument{
+				"templateId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+				"name": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
+				"inputs": &graphql.ArgumentConfig{Type: graphql.NewList(graphql.NewInputObject(graphql.InputObjectConfig{
+					Name: "ChoreInput",
+					Description: "Defines a value for a particular chore input defined in a template",
+					Fields: graphql.InputObjectConfigFieldMap{
+						"name": &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(graphql.String)},
+						"value": &graphql.InputObjectFieldConfig{Type: graphql.NewNonNull(graphql.String)},
+					},
+				}))},
+			},
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				ctId := p.Args["templateId"].(string)
+				ct, err := chores.LoadChoreTemplate(ctId)
+				if err != nil {
+					return nil, err
+				}
+
+				inputs := make(map[string]string)
+				gqlInputs := p.Args["inputs"].([]interface{})
+				for _, i := range gqlInputs {
+					im := i.(map[string]interface{})
+					inputs[im["name"].(string)] = im["value"].(string)
+				}
+
+				c, err := chores.FromTemplate(ct, p.Args["name"].(string), inputs)
+				if err != nil {
+					return nil, err
+				}
+
+				return c, c.Save()
+			},
+		},
+
+		"deleteChore": &graphql.Field{
+			Type: graphql.Boolean,
+			Args: idArgs,
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				c, err := chores.GetChore(p.Args["id"].(string))
+				if err != nil {
+					return false, err
+				}
+
+				err = c.Delete()
+				return err == nil, err
+			},
+		},
 	}
 }
 
