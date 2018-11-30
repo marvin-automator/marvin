@@ -19,7 +19,7 @@ type ChoreLog struct {
 	Message string	`json:"message"`
 }
 
-func (c *Chore) Log(logType, message string) error {
+func (c *Chore) Log(logType, message string, args ...interface{}) error {
 	t := time.Now()
 	id := c.makeLogId(t)
 
@@ -27,7 +27,7 @@ func (c *Chore) Log(logType, message string) error {
 		Id: id,
 		Time: t,
 		Type: logType,
-		Message: message,
+		Message: fmt.Sprintf(message, args...),
 	}
 
 	s := db.GetStore(logsStoreName)

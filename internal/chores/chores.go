@@ -40,6 +40,8 @@ func (ct *choreTrigger) start(c *Chore, index int, ctx context.Context) error {
 			select {
 			case v := <-outInterfaces:
 				fmt.Printf("Received value %v\n", v)
+				jv, _ := json.Marshal(v)
+				c.Log(InfoLog, "%v emitted %v", t.Info().Path(), string(jv))
 				c.triggerCallback(index, v, ctx)
 			case <-ctx.Done():
 				return
@@ -47,7 +49,7 @@ func (ct *choreTrigger) start(c *Chore, index int, ctx context.Context) error {
 		}
 	}()
 
-	c.Log(InfoLog, fmt.Sprintf("🚀 Trigger started: %v.%v.%v", ct.Provider, ct.Group, ct.Action))
+	c.Log(InfoLog, "🚀 Trigger started: %v.%v.%v", ct.Provider, ct.Group, ct.Action)
 
 	return nil
 }
@@ -160,7 +162,7 @@ func (c *Chore) Start(ctx context.Context) {
 	for i, ct := range c.Config.Triggers {
 		err := ct.start(c, i, ctx)
 		if err != nil {
-			c.Log(ErrorLog, fmt.Sprintf("Error starting trigger %v.%v.%v: %v", ct.Provider, ct.Group, ct.Action, err))
+			c.Log(ErrorLog, "Error starting trigger %v.%v.%v: %v", ct.Provider, ct.Group, ct.Action, err)
 		}
 	}
 }
@@ -235,16 +237,16 @@ func (c *Chore) createContext(ctx context.Context) *v8.Context {
 			return undefined, err
 		}
 
-		c.Log(InfoLog, fmt.Sprintf("Called %v(%v)", a.Info().Path(), string(inBytes)))
+		c.Log(InfoLog, "Called %v(%v)", a.Info().Path(), string(inBytes))
 		out, err := a.Run(in, ctx)
 		if err != nil {
-			c.Log(ErrorLog, fmt.Sprintf("%v raised an error: %v", a.Info().Path(), err.Error()))
+			c.Log(ErrorLog, "%v raised an error: %v", a.Info().Path(), err.Error())
 			return undefined, err
 		}
 
 		jsOut, err := jsCtx.Create(out)
 		outBytes, _ := jsOut.MarshalJSON()
-		c.Log(InfoLog, fmt.Sprintf("%v returned %v", a.Info().Path(), string(outBytes)))
+		c.Log(InfoLog, "%v returned %v", a.Info().Path(), string(outBytes))
 		return jsOut, err
 	})
 	fmt.Println("Assigning _runAction")
