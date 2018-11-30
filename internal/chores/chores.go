@@ -235,12 +235,17 @@ func (c *Chore) createContext(ctx context.Context) *v8.Context {
 			return undefined, err
 		}
 
+		c.Log(InfoLog, fmt.Sprintf("Called %v(%v)", a.Info().Path(), string(inBytes)))
 		out, err := a.Run(in, ctx)
 		if err != nil {
+			c.Log(ErrorLog, fmt.Sprintf("%v raised an error: %v", a.Info().Path(), err.Error()))
 			return undefined, err
 		}
 
-		return jsCtx.Create(out)
+		jsOut, err := jsCtx.Create(out)
+		outBytes, _ := jsOut.MarshalJSON()
+		c.Log(InfoLog, fmt.Sprintf("%v returned %v", a.Info().Path(), string(outBytes)))
+		return jsOut, err
 	})
 	fmt.Println("Assigning _runAction")
 	if err := jsCtx.Global().Set("_runAction", runAction); err != nil {
