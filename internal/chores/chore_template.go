@@ -77,8 +77,8 @@ const templateStoreName = "chore_templates"
 // LoadChoreTemplate loads a single template from the database
 func LoadChoreTemplate(id string) (*ChoreTemplate, error) {
 	ct, ok := templateCache[id]
-	if !ok {
-		return ct, errTemplateNotFound
+	if ok {
+		return ct, nil
 	}
 
 	s := db.GetStore(templateStoreName)
