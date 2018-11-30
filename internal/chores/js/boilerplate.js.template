@@ -3,7 +3,7 @@ marvin = {
     _inputs: [],
     _inputValues: {
         {{range $name, $value := .Inputs}}
-        {{$name}}: "{{$value}}",
+        "{{$name}}": "{{$value}}",
         {{end}}
     },
     _inputsSeen: {},
