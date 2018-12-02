@@ -2,6 +2,7 @@ package actions
 
 import (
 	"context"
+	"encoding/gob"
 	"fmt"
 	"github.com/marvin-automator/marvin/actions"
 	"golang.org/x/oauth2"
@@ -123,6 +124,9 @@ func (g *Group) addAction(name, description string, svgIcon []byte, runFunc inte
 	}
 
 	a.validate()
+	if trigger {
+		gob.Register(reflect.New(a.Info().InputType).Elem().Interface())
+	}
 
 	g.actions[name] = a
 }

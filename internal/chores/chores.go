@@ -304,7 +304,7 @@ func GetChore(id string) (*Chore, error) {
 
 // GetChores gets all chores from the database.
 func GetChores() ([]*Chore, error) {
-	res := make([]*Chore, len(choreCache))
+	res := make([]*Chore, 0, len(choreCache))
 	if choresLoaded {
 		for _, c := range choreCache {
 			res = append(res, c)
