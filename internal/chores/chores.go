@@ -108,7 +108,7 @@ func (ct *choreTrigger) UnmarshalJSON(data []byte) error {
 }
 
 // holds configuration data for the chore.
-type choreConfig struct {
+type ChoreConfig struct {
 	// configurable parameters that are used by the script specify behavior.
 	Inputs   map[string]string `json:"inputs"`
 
@@ -123,7 +123,7 @@ type Chore struct {
 	Id       string        `json:"id"`
 	Active   bool          `json:"active"`
 	Template ChoreTemplate `json:"template"`
-	Config   choreConfig   `json:"choreSettings"`
+	Config   ChoreConfig   `json:"choreSettings"`
 	Snapshot []byte        `json:"-"`
 }
 

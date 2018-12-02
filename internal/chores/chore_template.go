@@ -194,13 +194,13 @@ func (ct *ChoreTemplate) GenerateTemplateConfigs() error {
 }
 
 // GenerateChoreConfig runs the template's script with the given inputs to generate a chore config.
-func (ct *ChoreTemplate) GenerateChoreConfig(inputValues map[string]string) (*choreConfig, error) {
+func (ct *ChoreTemplate) GenerateChoreConfig(inputValues map[string]string) (*ChoreConfig, error) {
 	res, err := ct.getConfigV8Value(inputValues)
 	if err != nil {
 		return nil, err
 	}
 
-	cc := choreConfig{}
+	cc := ChoreConfig{}
 	cc.Inputs = inputValues
 
 	err = decodeFieldValue(res, "_triggers", &(cc.Triggers))
