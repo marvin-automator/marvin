@@ -17,16 +17,48 @@ var choreType = graphql.NewObject(graphql.ObjectConfig{
 	Description: "Describes a workflow executed by Marvin",
 })
 
+var choreSettingsType = graphql.NewObject(graphql.ObjectConfig{
+	Name: "ChoreSettings",
+	Fields: graphql.BindFields(chores.ChoreConfig{}),
+})
+
 var choreTemplateType = graphql.NewObject(graphql.ObjectConfig{
 	Name:        "ChoreTemplate",
 	Fields:      graphql.BindFields(chores.ChoreTemplate{}),
 	Description: "Describes a template for chores.",
 })
 
+type inputValue struct {
+	Name string `json:"name"`
+	Value string `json:"value"`
+}
+
 func getChoreQueryFields() graphql.Fields {
 
 	choreType.AddFieldConfig("template", &graphql.Field{
 		Type: choreTemplateType,
+	})
+
+	choreSettingsType.AddFieldConfig("inputs", &graphql.Field{
+		Type: graphql.NewList(graphql.NewObject(graphql.ObjectConfig{
+			Name: "InputValue",
+			Fields: graphql.BindFields(inputValue{}),
+		})),
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			cf := p.Source.(chores.ChoreConfig)
+			res := make([]inputValue, len(cf.Inputs))
+			i := 0
+			for name, value := range cf.Inputs {
+				res[i] = inputValue{name, value}
+				i += 1
+			}
+
+			return res, nil
+		},
+	})
+
+	choreType.AddFieldConfig("choreSettings", &graphql.Field{
+		Type: choreSettingsType,
 	})
 
 	return graphql.Fields{
@@ -119,8 +151,9 @@ func getChoreMutationFields() graphql.Fields {
 			},
 		},
 
+		// chore mutations
 		"createChore": &graphql.Field{
-			Type: choreTemplateType,
+			Type: choreType,
 			Args: graphql.FieldConfigArgument{
 				"templateId": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
 				"name": &graphql.ArgumentConfig{Type: graphql.NewNonNull(graphql.String)},
