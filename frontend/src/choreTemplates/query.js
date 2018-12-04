@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-const CHORE_TEMPLATE_ALL_FIELDS = gql`fragment AllTemplateFields on ChoreTemplate {
+export const CHORE_TEMPLATE_ALL_FIELDS = gql`fragment AllTemplateFields on ChoreTemplate {
     id
     name
     script
