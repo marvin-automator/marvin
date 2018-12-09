@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import {Grid, Form, Input, Button} from "semantic-ui-react";
+import {Link} from "@reach/router"
 const CodeEditor = React.lazy(() => import('./CodeEditor'));
 
 class ChoreTemplateEditor extends React.Component {
@@ -46,6 +47,7 @@ class ChoreTemplateEditor extends React.Component {
             <Grid.Row>
                 <Grid.Column>
                     <Button icon="save" content="Save" primary type="submit" disabled={!(this.state.name && this.state.name.trim() !== "")}/>
+                    {this.state.id ? <Button icon="add" content="Create chore" positive as={Link} to={`/chores/new/${this.state.id}`} /> : null}
                 </Grid.Column>
             </Grid.Row>
         </Grid>
