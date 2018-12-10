@@ -14,7 +14,8 @@ const logsStoreName = "choreLogs"
 
 type ChoreLog struct {
 	Id	string		`json:"id"`
-	Time time.Time	`json:"time"`
+	Time time.Time	`json:"-"`
+	TimeStr string	`json:"time"`
 	Type string		`json:"type"`
 	Message string	`json:"message"`
 }
@@ -26,6 +27,7 @@ func (c *Chore) Log(logType, message string, args ...interface{}) error {
 	log := ChoreLog{
 		Id: id,
 		Time: t,
+		TimeStr: t.Format(time.RFC3339),
 		Type: logType,
 		Message: fmt.Sprintf(message, args...),
 	}
@@ -60,8 +62,11 @@ func (c *Chore) GetLogsUpTo(t time.Time, n int) ([]ChoreLog, error) {
 		return nil, err
 	}
 
+	if loaded == 0 {
+		return []ChoreLog{}, nil
+	}
+
 	if loaded < n {
-		panic(fmt.Sprintf("loaded < n, %v < %v", loaded, n))
 		result = result[n-loaded:n-1]
 	}
 

@@ -3,6 +3,7 @@ package graphql
 import (
 	"github.com/graphql-go/graphql"
 	"github.com/marvin-automator/marvin/internal/chores"
+	"time"
 )
 
 var idArgs = graphql.FieldConfigArgument{
@@ -59,6 +60,35 @@ func getChoreQueryFields() graphql.Fields {
 
 	choreType.AddFieldConfig("choreSettings", &graphql.Field{
 		Type: choreSettingsType,
+	})
+
+	choreType.AddFieldConfig("logs", &graphql.Field{
+		Type: graphql.NewList(graphql.NewObject(graphql.ObjectConfig{
+			Name: "choreLogs",
+			Fields: graphql.BindFields(chores.ChoreLog{}),
+		})),
+		Args: graphql.FieldConfigArgument{
+			"upTo": &graphql.ArgumentConfig{Type: graphql.String},
+			"count": &graphql.ArgumentConfig{Type: graphql.Int},
+		},
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			n := 0
+			if newn, ok := p.Args["count"].(int); ok {
+				n = newn
+			}
+
+			t := time.Now()
+			var err error
+			if upTo, ok := p.Args["upTo"].(string); ok {
+				t, err = time.Parse(time.RFC3339, upTo)
+				if err != nil {
+					return nil, err
+				}
+			}
+
+			chore := p.Source.(*chores.Chore)
+			return chore.GetLogsUpTo(t, n)
+		},
 	})
 
 	return graphql.Fields{
