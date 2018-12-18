@@ -18,7 +18,12 @@ type typeTransformer struct {
 }
 
 func (t typeTransformer) Transform(input interface{}) (interface{}, error) {
-	iv := reflect.ValueOf(input)
+	panic(fmt.Errorf("Transform called! %v", t))
+	iv := reflect.Indirect(reflect.ValueOf(input))
+	if !iv.IsValid() {
+		return nil, nil
+	}
+
 	if !iv.Type().AssignableTo(t.InputType) {
 		f := runtime.FuncForPC(t.Transformer.Pointer())
 		return nil, fmt.Errorf("transformer %v expected %v, got %v", f.Name(), t.InputType.Name(), iv.Type().Name())
@@ -41,6 +46,7 @@ func RegisterTypeTransformer(transformer interface{}) {
 	}
 
 	inType := rt.In(0)
+
 	outType := rt.Out(0)
 
 	tk := typeKey(inType)
@@ -139,7 +145,7 @@ func bindFields(t reflect.Type) graphql.Fields {
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				val := extractValue(tag, p.Source)
 				var err error
-				if !fieldTransformer.Transformer.IsValid() {
+				if tfieldTransformer.Transformer.IsValid() {
 					val, err = fieldTransformer.Transform(val)
 				}
 
