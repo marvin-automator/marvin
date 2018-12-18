@@ -139,7 +139,7 @@ func bindFields(t reflect.Type) graphql.Fields {
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				val := extractValue(tag, p.Source)
 				var err error
-				if !fieldTransformer.Transformer.IsNil() {
+				if !fieldTransformer.Transformer.IsValid() {
 					val, err = fieldTransformer.Transform(val)
 				}
 
