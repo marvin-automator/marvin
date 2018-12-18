@@ -12,22 +12,10 @@ var idArgs = graphql.FieldConfigArgument{
 	},
 }
 
-var choreType = graphql.NewObject(graphql.ObjectConfig{
-	Name:        "Chore",
-	Fields:      graphql.BindFields(chores.Chore{}),
-	Description: "Describes a workflow executed by Marvin",
-})
+var choreType = CreateOutputTypeFromStruct(chores.Chore{})
 
-var choreSettingsType = graphql.NewObject(graphql.ObjectConfig{
-	Name: "ChoreSettings",
-	Fields: graphql.BindFields(chores.ChoreConfig{}),
-})
 
-var choreTemplateType = graphql.NewObject(graphql.ObjectConfig{
-	Name:        "ChoreTemplate",
-	Fields:      graphql.BindFields(chores.ChoreTemplate{}),
-	Description: "Describes a template for chores.",
-})
+var choreTemplateType = CreateOutputTypeFromStruct(chores.ChoreTemplate{})
 
 type inputValue struct {
 	Name string `json:"name"`
@@ -36,15 +24,10 @@ type inputValue struct {
 
 func getChoreQueryFields() graphql.Fields {
 
-	choreType.AddFieldConfig("template", &graphql.Field{
-		Type: choreTemplateType,
-	})
+	choreSettingsType := CreateOutputTypeFromStruct(choreTemplateType).(*graphql.Object)
 
 	choreSettingsType.AddFieldConfig("inputs", &graphql.Field{
-		Type: graphql.NewList(graphql.NewObject(graphql.ObjectConfig{
-			Name: "InputValue",
-			Fields: graphql.BindFields(inputValue{}),
-		})),
+		Type: graphql.NewList(CreateOutputTypeFromStruct(inputValue{})),
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 			cf := p.Source.(chores.ChoreConfig)
 			res := make([]inputValue, len(cf.Inputs))
@@ -58,15 +41,8 @@ func getChoreQueryFields() graphql.Fields {
 		},
 	})
 
-	choreType.AddFieldConfig("choreSettings", &graphql.Field{
-		Type: choreSettingsType,
-	})
-
-	choreType.AddFieldConfig("logs", &graphql.Field{
-		Type: graphql.NewList(graphql.NewObject(graphql.ObjectConfig{
-			Name: "choreLogs",
-			Fields: graphql.BindFields(chores.ChoreLog{}),
-		})),
+	choreType.(*graphql.Object).AddFieldConfig("logs", &graphql.Field{
+		Type: graphql.NewList(CreateOutputTypeFromStruct(chores.ChoreLog{})),
 		Args: graphql.FieldConfigArgument{
 			"upTo": &graphql.ArgumentConfig{Type: graphql.String},
 			"count": &graphql.ArgumentConfig{Type: graphql.Int},
