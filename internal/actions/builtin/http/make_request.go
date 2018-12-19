@@ -8,16 +8,16 @@ import (
 )
 
 type requestInput struct {
-	URL     string
-	Method  string
-	Body    string
-	Headers map[string]string
+	URL     string				`json:"url"`
+	Method  string				`json:"method"`
+	Body    string				`json:"body"`
+	Headers map[string]string	`json:"headers"`
 }
 
 type responseOutput struct {
-	Status  int
-	Headers map[string][]string
-	Body    string
+	Status  int					`json:"status"`
+	Headers map[string][]string	`json:"headers"`
+	Body    string				`json:"body"`
 }
 
 func outFromHttpResponse(response *http.Response) (responseOutput, error) {
