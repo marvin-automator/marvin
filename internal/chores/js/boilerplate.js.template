@@ -7,11 +7,11 @@ marvin = {
         {{end}}
     },
     _inputsSeen: {},
-    isSetup: true
+    isSetupPhase: true
 };
 
 marvin._runAction = (provider, group, name, input) => {
-        if(marvin.isSetup){
+        if(marvin.isSetupPhase){
             throw new Error(`Can't call an action: ${provider}.${group}.{name}, during setup.`);
         }
         return _runAction(provider, group, name, input);
