@@ -9,6 +9,7 @@ import (
 	"github.com/marvin-automator/marvin/internal/auth"
 	"github.com/marvin-automator/marvin/internal/config"
 	"github.com/marvin-automator/marvin/internal/graphql"
+	"github.com/marvin-automator/marvin/internal/jsdefs"
 	"io/ioutil"
 	"mime"
 	"net/http"
@@ -42,6 +43,8 @@ func RunApp() error {
 
 		h.ServeHTTP(ctx.ResponseWriter(), ctx.Request())
 	})...)
+
+	app.Get("ternjs-defs.json", jsdefs.Handler)
 
 	var frontendHandler context.Handler
 	// In development mode; just pass requests through to the React dev server.
