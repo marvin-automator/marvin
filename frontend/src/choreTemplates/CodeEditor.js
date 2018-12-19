@@ -42,9 +42,8 @@ class CodeEditor extends React.Component {
 
     initializeEditor = async (editor) => {
         console.log("initializing editor");
-        let EcmaDefs = await fetchDefs();
         let server = new CM.TernServer({
-            defs: [defs],
+            defs: await fetchDefs(),
             useWorker: true, workerScript: workerScript,
             workerDeps: [
                 "https://ternjs.net/node_modules/acorn/dist/acorn.js",
@@ -84,13 +83,13 @@ CodeEditor.defaultProps = {
 
 export default CodeEditor;
 
-let defs = null;
+window._defs = null;
 async function fetchDefs() {
-    if (defs !== null) {
-        return defs;
+    if (window._defs !== null) {
+        return window._defs;
     }
 
-    let resp = await fetch("http://ternjs.net/defs/ecmascript.json");
-    defs = await resp.json();
-    return defs;
+    let urls = ["https://ternjs.net/defs/ecmascript.json", "/ternjs-defs.json"];
+    window.defs = await Promise.all(urls.map((url) => fetch(url).then((resp) => resp.json())))
+    return window.defs;
 }
