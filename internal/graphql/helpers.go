@@ -18,7 +18,6 @@ type typeTransformer struct {
 }
 
 func (t typeTransformer) Transform(input interface{}) (interface{}, error) {
-	panic(fmt.Errorf("Transform called! %v", t))
 	iv := reflect.Indirect(reflect.ValueOf(input))
 	if !iv.IsValid() {
 		return nil, nil
