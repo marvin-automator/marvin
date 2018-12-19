@@ -15,21 +15,13 @@ func init() {
 	g.AddAction("nextScheduledTime", "Get the next time a cron trigger with the given expression would run.", []byte{}, getNextExecutionTime)
 }
 
-type CronInput struct {
-	Expression string
-}
-
-type CronEvent struct {
-	Time time.Time `json:"time"`
-}
-
-func cronTrigger(in CronInput, ctx context.Context) (<-chan CronEvent, error) {
-	expr, err := cronexpr.Parse(in.Expression)
+func cronTrigger(exprs string, ctx context.Context) (<-chan time.Time, error) {
+	expr, err := cronexpr.Parse(exprs)
 	if err != nil {
 		return nil, err
 	}
 
-	out := make(chan CronEvent, 10)
+	out := make(chan time.Time, 10)
 	var f func()
 	f = func() {
 		now := time.Now()
@@ -42,7 +34,7 @@ func cronTrigger(in CronInput, ctx context.Context) (<-chan CronEvent, error) {
 		case <-ctx.Done():
 		case now = <-t.C:
 			fmt.Println("Sending event")
-			out <- CronEvent{now}
+			out <- now
 			fmt.Println("Event sent")
 			go f()
 		}
@@ -52,11 +44,11 @@ func cronTrigger(in CronInput, ctx context.Context) (<-chan CronEvent, error) {
 	return out, nil
 }
 
-func getNextExecutionTime(in CronInput, ctx context.Context) (CronEvent, error) {
-	expr, err := cronexpr.Parse(in.Expression)
+func getNextExecutionTime(exprs string, ctx context.Context) (time.Time, error) {
+	expr, err := cronexpr.Parse(exprs)
 	if err != nil {
-		return CronEvent{}, err
+		return time.Time{}, err
 	}
 
-	return CronEvent{expr.Next(time.Now())}, nil
+	return expr.Next(time.Now()), nil
 }

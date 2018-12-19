@@ -44,9 +44,8 @@ func (a *action) validate() {
 	ft := a.runFunc.Type()
 	ctx := context.Background()
 	if !(ft.NumIn() == 2 &&
-		ft.In(0).Kind() == reflect.Struct &&
 		reflect.TypeOf(ctx).AssignableTo(ft.In(1))) {
-		panic(fmt.Sprintf("Action %v should have a function that takes 2 arguments. The first is a struct type that you define, the second is a context.Context", name))
+		panic(fmt.Sprintf("Action %v should have a function that takes 2 arguments. The first is any type that you define, as long as it is json-unmarshalable, the second is a context.Context", name))
 	}
 
 	if a.info.IsTrigger {
@@ -64,8 +63,8 @@ func (a *action) validateAction(ft reflect.Type) {
 	name := a.Info().Name
 
 	var e *error
-	if !(ft.NumOut() == 2 && ft.Out(0).Kind() == reflect.Struct && ft.Out(1).Implements(reflect.TypeOf(e).Elem())) {
-		panic(fmt.Sprintf("Action %v should have a function that returns 2 values, one of a struct type that you define, and an error.", name))
+	if !(ft.NumOut() == 2 && ft.Out(1).Implements(reflect.TypeOf(e).Elem())) {
+		panic(fmt.Sprintf("Action %v should have a function that returns 2 values, The second must implement error.", name))
 	}
 }
 
