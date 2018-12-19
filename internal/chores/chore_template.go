@@ -36,7 +36,7 @@ type ChoreTemplateConfig struct {
 type ChoreTemplate struct {
 	Name   	string              `json:"name"`
 	Id     	string              `json:"id"`
-	Created	string				`json:"created"`
+	Created	time.Time				`json:"created"`
 	Script	string              `json:"script"`
 	Config	ChoreTemplateConfig `json:"templateSettings"`
 }
@@ -53,16 +53,11 @@ func NewChoreTemplate(name, script string) (*ChoreTemplate, error) {
 		return nil, err
 	}
 
-	created, err := time.Now().MarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-
 	ct := ChoreTemplate{
 		Name:   name,
 		Script: script,
 		Id:     id,
-		Created:string(created),
+		Created:time.Now(),
 	}
 
 	err = ct.GenerateTemplateConfigs()

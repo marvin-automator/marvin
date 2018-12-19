@@ -6,16 +6,26 @@ import (
 	"time"
 )
 
-var idArgs = graphql.FieldConfigArgument{
-	"id": &graphql.ArgumentConfig{
-		Type: graphql.String,
-	},
+var (
+	idArgs graphql.FieldConfigArgument
+	choreType graphql.Output
+	choreTemplateType graphql.Output
+)
+func init() {
+	RegisterTypeTransformer(func(t time.Time) string {
+		return t.Format(time.RFC3339)
+	})
+
+
+	idArgs = graphql.FieldConfigArgument{
+		"id": &graphql.ArgumentConfig{
+			Type: graphql.String,
+		},
+	}
+
+	choreType = CreateOutputTypeFromStruct(chores.Chore{})
+	choreTemplateType = CreateOutputTypeFromStruct(chores.ChoreTemplate{})
 }
-
-var choreType = CreateOutputTypeFromStruct(chores.Chore{})
-
-
-var choreTemplateType = CreateOutputTypeFromStruct(chores.ChoreTemplate{})
 
 type inputValue struct {
 	Name string `json:"name"`
