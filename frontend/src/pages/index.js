@@ -6,7 +6,7 @@ import CreateChoreTemplate from "./CreateChoreTemplate";
 import UpdateChoreTemplate from "./UpdateChoreTemplate";
 
 import CreateChore from "./CreateChore"
-
+import ChorePage from "./ChorePage"
 const Routes = () => {
     return <Router>
         <Home path="/" />
@@ -14,6 +14,7 @@ const Routes = () => {
         <CreateChoreTemplate path="/templates/new"/>
         <UpdateChoreTemplate path="/templates/:id" />
 
+        <ChorePage path="/chores/:id" />
         <CreateChore path="/chores/new/:templateId" />
     </Router>
 };

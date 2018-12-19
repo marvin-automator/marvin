@@ -30,3 +30,20 @@ export const CREATE_CHORE = gql`mutation createChore($templateId: String!, $name
 }
 
 ${ALL_CHORE_FIELDS}`;
+
+export const GET_CHORE_BY_ID = gql`query getChore($choreId: String!) {
+    choreById(id: $choreId) {
+        ...allChoreFields
+    }
+}
+
+
+${ALL_CHORE_FIELDS}`;
+
+export const SET_CHORE_ACTIVE = gql`mutation setActive($choreId: String!, $active: Boolean!) {
+    setChoreActive(id: $choreId, active: $active) {
+        ...allChoreFields
+    }
+}
+
+${ALL_CHORE_FIELDS}`;
