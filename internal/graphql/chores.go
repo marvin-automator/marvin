@@ -10,6 +10,7 @@ var (
 	idArgs graphql.FieldConfigArgument
 	choreType graphql.Output
 	choreTemplateType graphql.Output
+	choreSettingsType graphql.Output
 )
 func init() {
 	RegisterTypeTransformer(func(t time.Time) string {
@@ -23,8 +24,9 @@ func init() {
 		},
 	}
 
-	choreType = CreateOutputTypeFromStruct(chores.Chore{})
+	choreSettingsType = CreateOutputTypeFromStruct(chores.ChoreConfig{}).(*graphql.Object)
 	choreTemplateType = CreateOutputTypeFromStruct(chores.ChoreTemplate{})
+	choreType = CreateOutputTypeFromStruct(chores.Chore{})
 }
 
 type inputValue struct {
@@ -34,9 +36,7 @@ type inputValue struct {
 
 func getChoreQueryFields() graphql.Fields {
 
-	choreSettingsType := CreateOutputTypeFromStruct(choreTemplateType).(*graphql.Object)
-
-	choreSettingsType.AddFieldConfig("inputs", &graphql.Field{
+	choreSettingsType.(*graphql.Object).AddFieldConfig("inputs", &graphql.Field{
 		Type: graphql.NewList(CreateOutputTypeFromStruct(inputValue{})),
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 			cf := p.Source.(chores.ChoreConfig)
