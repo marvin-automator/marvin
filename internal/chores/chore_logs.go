@@ -42,6 +42,10 @@ func (c *Chore) makeLogId(t time.Time) string {
 
 // GetLogsUpTo returns the n latest logs befofe a specific time t.
 func (c *Chore) GetLogsUpTo(t time.Time, n int) ([]ChoreLog, error) {
+	if n == 0 {
+		return []ChoreLog{}, nil
+	}
+
 	s := db.GetStore(logsStoreName)
 
 	loaded := 0
