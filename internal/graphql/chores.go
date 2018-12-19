@@ -1,6 +1,7 @@
 package graphql
 
 import (
+	"context"
 	"github.com/graphql-go/graphql"
 	"github.com/marvin-automator/marvin/internal/chores"
 	"time"
@@ -216,6 +217,29 @@ func getChoreMutationFields() graphql.Fields {
 
 				err = c.Delete()
 				return err == nil, err
+			},
+		},
+
+		"setChoreActive": &graphql.Field{
+			Type: choreType,
+			Args: graphql.FieldConfigArgument{
+				"id": &graphql.ArgumentConfig{Type: graphql.String, Description: "The id of the chore."},
+				"active": &graphql.ArgumentConfig{Type: graphql.Boolean},
+			},
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				c, err := chores.GetChore(p.Args["id"].(string))
+				if err != nil {
+					return false, err
+				}
+
+				if p.Args["active"].(bool) {
+					c.Start(context.Background()) //TODO: figure out how to pass a global context here.
+					c.Save()
+				} else {
+					c.Stop()
+				}
+
+				return c, nil
 			},
 		},
 	}
