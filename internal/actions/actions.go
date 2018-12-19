@@ -7,6 +7,7 @@ import (
 	"github.com/marvin-automator/marvin/actions"
 	"golang.org/x/oauth2"
 	"reflect"
+	"strings"
 )
 
 type action struct {
@@ -45,7 +46,7 @@ func (a *action) validate() {
 	ctx := context.Background()
 	if !(ft.NumIn() == 2 &&
 		reflect.TypeOf(ctx).AssignableTo(ft.In(1))) {
-		panic(fmt.Sprintf("Action %v should have a function that takes 2 arguments. The first is any type that you define, as long as it is json-unmarshalable, the second is a context.Context", name))
+		panic(fmt.Sprintf("Action %v should have a function that takes 2 arguments. The first can be any type, as long as it is json-unmarshalable, the second is a context.Context", name))
 	}
 
 	if a.info.IsTrigger {
@@ -75,6 +76,10 @@ func (a *action) validateTrigger(ft reflect.Type) {
 	if !(ft.NumOut() == 2 && ft.Out(0).Kind() == reflect.Chan && ft.Out(1).Implements(reflect.TypeOf(e).Elem()) &&
 		ft.Out(0).ChanDir()&reflect.RecvDir == reflect.RecvDir) {
 		panic(fmt.Sprintf("Trigger %v should have a function that returns 2 values:\n- A readable channel containing structs representing events\n - an error in case anything went wrong.", name))
+	}
+
+	if !strings.HasPrefix(a.info.Name, "on") {
+		panic(fmt.Sprintf("Trigger names must start with \"on\", change the name of \"%v\"", a.info.Name))
 	}
 }
 

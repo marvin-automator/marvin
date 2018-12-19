@@ -11,7 +11,7 @@ import (
 func init() {
 	p := actions.Registry.AddProvider("time", "Time-related actions", []byte{})
 	g := p.AddGroup("cron", "Cron-related tasks", []byte{})
-	g.AddManualTrigger("schedule", "Schedule a function to run on an interval based on a Cron expression.", []byte{}, cronTrigger)
+	g.AddManualTrigger("onCronSchedule", "Schedule a function to run on an interval based on a Cron expression.", []byte{}, cronTrigger)
 	g.AddAction("nextScheduledTime", "Get the next time a cron trigger with the given expression would run.", []byte{}, getNextExecutionTime)
 }
 
