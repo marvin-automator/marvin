@@ -70,10 +70,10 @@ func getFunctionType(a actions.Action, typeMap map[string]map[string]string) (st
 	if a.Info().IsTrigger {
 		callbackName := a.Info().Name + "Callback"
 		typeMap[callbackName] = map[string]string{
-			"!type": fmt.Sprintf("fn(callback: %v)", outTypeName),
+			"!type": fmt.Sprintf("fn(event: %v)", outTypeName),
 		}
 
-		ftype = fmt.Sprintf("fn(%v, %v)", inTypeName, callbackName)
+		ftype = fmt.Sprintf("fn(input: %v, callback: %v)", inTypeName, callbackName)
 	} else {
 		ftype = fmt.Sprintf("fn(%v) -> %v", inTypeName, outTypeName)
 	}
