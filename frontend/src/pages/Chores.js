@@ -29,8 +29,10 @@ const Chores = () => {
                                         <List.Content>
                                             <List.Header as={Link} to={`/chores/${chore.id}`}>{chore.name}</List.Header>
                                             <List.Description>
-                                                <Icon name="file code outline"/>{chore.template.name}&nbsp;
-                                                <StatusSwitch id={chore.id} active={chore.active} />
+                                                <List horizontal={true}>
+                                                <List.Item><Icon name="file code outline"/>{chore.template.name}&nbsp;</List.Item>
+                                                    <List.Item><StatusSwitch id={chore.id} active={chore.active} /></List.Item>
+                                                </List>
                                             </List.Description>
                                         </List.Content>
                                     </List.Item>
