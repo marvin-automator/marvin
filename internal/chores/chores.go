@@ -174,6 +174,9 @@ func (c *Chore) Stop() {
 	if ok {
 		cancel()
 	}
+	
+	delete(choreCancelers, c.Id)
+
 	c.Log(InfoLog, "🛑 Chore stopped.")
 }
 

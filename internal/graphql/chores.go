@@ -234,10 +234,11 @@ func getChoreMutationFields() graphql.Fields {
 
 				if p.Args["active"].(bool) {
 					c.Start(context.Background()) //TODO: figure out how to pass a global context here.
-					c.Save()
 				} else {
 					c.Stop()
 				}
+
+				c.Save()
 
 				return c, nil
 			},
