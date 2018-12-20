@@ -79,7 +79,7 @@ func getChoreQueryFields() graphql.Fields {
 	})
 
 	return graphql.Fields{
-		"Chores": &graphql.Field{
+		"chores": &graphql.Field{
 			Type: graphql.NewList(choreType),
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				return chores.GetChores()
