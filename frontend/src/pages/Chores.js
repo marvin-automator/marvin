@@ -3,6 +3,8 @@ import { Query } from 'react-apollo';
 import { List, Grid, Header, Icon} from 'semantic-ui-react'
 import {Link} from "@reach/router";
 
+import StatusSwitch from "../chores/StatusSwitch";
+
 import {GET_CHORES} from "../chores/queries";
 
 const Chores = () => {
@@ -26,7 +28,10 @@ const Chores = () => {
                                         <List.Icon name="tasks" size='large' verticalAlign='middle' />
                                         <List.Content>
                                             <List.Header as={Link} to={`/chores/${chore.id}`}>{chore.name}</List.Header>
-                                            <List.Description><Icon name="file code outline"/>{chore.template.name}</List.Description>
+                                            <List.Description>
+                                                <Icon name="file code outline"/>{chore.template.name}&nbsp;
+                                                <StatusSwitch id={chore.id} active={chore.active} />
+                                            </List.Description>
                                         </List.Content>
                                     </List.Item>
                                 })}

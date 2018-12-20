@@ -53,7 +53,7 @@ const CreateChore = enhancer(({templateId, tempChore, setTempChore}) => {
 });
 
 const updateCache = (cache, { data: { updateChoreTemplate } }) => {
-
+    //TODO: Update the cache here.
 };
 
 export default CreateChore;
