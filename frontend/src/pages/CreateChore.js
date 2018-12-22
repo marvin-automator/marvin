@@ -8,7 +8,7 @@ import {Form, Input, Button} from "semantic-ui-react";
 import {Message} from "semantic-ui-react";
 
 import {GET_TEMPLATE} from "../choreTemplates/query";
-import {CREATE_CHORE} from "../chores/queries";
+import {CREATE_CHORE, GET_CHORES, GET_CHORE_BY_ID} from "../chores/queries";
 
 import ChoreTemplateEditor from "../choreTemplates/ChoreTemplateEditor";
 
@@ -29,7 +29,7 @@ const CreateChore = enhancer(({templateId, tempChore, setTempChore}) => {
                 }
             });
             return <Mutation mutation={CREATE_CHORE} variables={{name: tempChore.name, inputs: inputValues, templateId: templateId}}
-                             onCompleted={({createChore:{id}}) => navigate(`/chores/${id }`)}>
+                             onCompleted={({createChore:{id}}) => navigate(`/chores/${id }`)} update={updateCache}>
                 {(createChore, {error}) => {
                     return <React.Fragment>
                         <h1>Chore from: {data.name}</h1>
@@ -52,8 +52,23 @@ const CreateChore = enhancer(({templateId, tempChore, setTempChore}) => {
     </Query>
 });
 
-const updateCache = (cache, { data: { updateChoreTemplate } }) => {
-    //TODO: Update the cache here.
+const updateCache = (cache, { data: { createChore } }) => {
+    let chores;
+    try {
+        chores = cache.readQuery({query: GET_CHORES}).chores;
+    } catch {
+        // We don't want to set an initial state for the cache here, because that'd lead future queries to not hit the server.
+        return
+    }
+    cache.writeQuery({
+        query: GET_CHORES,
+        data: { chores: chores.concat([createChore]) }
+    });
+    cache.writeQuery({
+        query: GET_CHORE_BY_ID,
+        data: {choreById: createChore},
+        variables: {id: createChore.id}
+    })
 };
 
 export default CreateChore;
