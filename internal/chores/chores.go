@@ -203,7 +203,7 @@ func (c *Chore) triggerCallback(index int, value interface{}, ctx context.Contex
 	}
 
 	go func() {
-		code := c.Template.combineScriptWithBoilerplate(c.Config.Inputs) + fmt.Sprintf("marvin.isSetupPhase=false;marvin._triggers[%v].callback(__triggeredEvent)", index)
+		code := fmt.Sprintf("marvin.isSetupPhase=false;marvin._triggers[%v].callback(__triggeredEvent)", index)
 		_, err := jsCtx.Eval(code, "name.js")
 
 		if err != nil {
@@ -257,9 +257,13 @@ func (c *Chore) createContext(ctx context.Context) *v8.Context {
 		panic(err)
 	}
 
-	fmt.Println("Injecting console")
 	cons := v8console.Config{Stdout: os.Stdout, Stderr: os.Stderr}
 	cons.Inject(jsCtx)
+
+	code := c.Template.combineScriptWithBoilerplate(c.Config.Inputs)
+	if _, err := jsCtx.Eval(code, "init.js"); err != nil {
+		panic(err)
+	}
 
 	return jsCtx
 }

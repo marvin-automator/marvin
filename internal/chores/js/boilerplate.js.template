@@ -1,4 +1,4 @@
-marvin = {
+let marvin = {
     _triggers: [],
     _inputs: [],
     _inputValues: {
