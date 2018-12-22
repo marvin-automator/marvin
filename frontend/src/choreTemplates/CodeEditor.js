@@ -3,25 +3,34 @@ import PropTypes from "prop-types";
 
 import "codemirror/lib/codemirror.css"
 import * as CM from "codemirror/lib/codemirror";
+
 import "codemirror/mode/javascript/javascript";
 import "codemirror/addon/dialog/dialog";
 import "codemirror/addon/dialog/dialog.css"
 import "codemirror/addon/fold/foldgutter.css";
 import "codemirror/addon/fold/brace-fold";
 import "codemirror/addon/fold/foldcode";
-import "codemirror/addon/fold/foldgutter.css"
+import "codemirror/addon/fold/foldgutter.css";
 
+import JSHint from "jshint"
 import "codemirror/addon/hint/javascript-hint";
-import "codemirror/addon/hint/show-hint";
-import"codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/tern/tern"
 import "codemirror/addon/tern/tern.css"
 import "codemirror/theme/material.css";
+import "codemirror/addon/edit/matchbrackets";
+import "codemirror/addon/edit/closebrackets";
+import "codemirror/addon/edit/continuelist"
+
+import "codemirror/addon/lint/lint";
+import "codemirror/addon/lint/javascript-lint";
+import "codemirror/addon/lint/lint.css";
 
 import {UnControlled as CodeMirror} from 'react-codemirror2'
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 let workerScript = require("file-loader!codemirror/addon/tern/worker");
+
+window.JSHINT = JSHint.JSHINT;
 
 class CodeEditor extends React.Component {
     render() {
@@ -29,6 +38,11 @@ class CodeEditor extends React.Component {
             mode: "javascript",
             theme: 'material',
             lineNumbers: true,
+            lint: {
+                esversion: 6,
+            },
+            autoCloseBrackets: true,
+            gutters: ["CodeMirror-lint-markers"]
         };
 
         return <CodeMirror
