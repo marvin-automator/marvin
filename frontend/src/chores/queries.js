@@ -55,3 +55,27 @@ export const SET_CHORE_ACTIVE = gql`mutation setActive($choreId: String!, $activ
 }
 
 ${ALL_CHORE_FIELDS}`;
+
+export const GET_CHORE_LOGS = gql`query getLogs($id: String!, $upTo: String!, $count: Int!) {
+  choreById(id: $id) {
+    id
+    logs(upTo: $upTo, count: $count) {
+      id
+      message
+      type
+      time
+    }
+  }
+}`;
+
+export const GET_LATEST_LOGS = gql`query getLatestLogs($id: String!, $count: Int!) {
+  choreById(id: $id) {
+    id
+    logs(count: $count) {
+      id
+      message
+      type
+      time
+    }
+  }
+}`;
