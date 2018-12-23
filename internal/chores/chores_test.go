@@ -20,7 +20,7 @@ func addCustomTriggerAndAction() {
 	p := actions.Registry.AddProvider("testProvider", "", b)
 	g := p.AddGroup("testGroup", "", b)
 
-	g.AddManualTrigger("testTrigger", "", b, func(tv TestValue, ctx context.Context) (<-chan TestValue, error) {
+	g.AddManualTrigger("onTestTrigger", "", b, func(tv TestValue, ctx context.Context) (<-chan TestValue, error) {
 		c := make(chan TestValue)
 
 		go func(){
@@ -40,7 +40,7 @@ func addCustomTriggerAndAction() {
 func createTemplate() (*ChoreTemplate, error) {
 	return NewChoreTemplate("test", `
 let inp = marvin.input("myInput", "Just some input")
-testProvider.testGroup.testTrigger({s: inp}, (r) => {
+testProvider.testGroup.onTestTrigger({s: inp}, (r) => {
 	testProvider.testGroup.testAction({s: r.s});
 })
 `)

@@ -13,7 +13,7 @@ var testScript = `
 var i1 = marvin.input("my_input", "description");
 var i2 = marvin.input("another_input", "description2");
 
-myProvider.myGroup.aTrigger({s: i2}, (e) => e);
+myProvider.myGroup.onTrigger({s: i2}, (e) => e);
 `
 
 func setupRegistry() {
@@ -25,7 +25,7 @@ func setupRegistry() {
 	g.AddAction("anAction", "", bs, func(s struct{}, ctx context.Context) (struct{}, error) {
 		return struct{}{}, nil
 	})
-	g.AddManualTrigger("aTrigger", "", bs, func(s struct{ S string }, ctx context.Context) (<-chan struct{}, error) {
+	g.AddManualTrigger("onTrigger", "", bs, func(s struct{ S string }, ctx context.Context) (<-chan struct{}, error) {
 		return nil, nil
 	})
 }
@@ -48,7 +48,7 @@ func TestChoreTemplate_GenerateTemplateConfigs(t *testing.T) {
 	r.Equal(inputs, ct.Config.Inputs)
 
 	triggers := []RegisteredTrigger{
-		{"myProvider", "myGroup", "aTrigger"},
+		{"myProvider", "myGroup", "onTrigger"},
 	}
 	r.Equal(triggers, ct.Config.Triggers)
 }
@@ -70,7 +70,7 @@ func TestChoreTemplate_GenerateChoreConfig(t *testing.T) {
 		{RegisteredTrigger{
 			"myProvider",
 			"myGroup",
-			"aTrigger"},
+			"onTrigger"},
 			struct{ S string }{"val2"}},
 	}
 	r.Equal(triggers, cc.Triggers)
