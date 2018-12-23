@@ -1,8 +1,8 @@
 import React from "react";
-import {Table, Segment, Loader, Header, Icon} from "semantic-ui-react";
-import {Query} from "react-apollo"
+import {Table, Segment, Loader, Header, Icon, Button} from "semantic-ui-react";
+import {Query, Mutation} from "react-apollo"
 
-import {GET_CHORE_LOGS, GET_LATEST_LOGS} from "./queries";
+import {GET_CHORE_LOGS, GET_LATEST_LOGS, CLEAR_CHORE_LOGS} from "./queries";
 
 function wait(n) {
     return new Promise((resolve) => {
@@ -30,6 +30,7 @@ export default class ChoreLogs extends React.Component {
         return <>
             <Segment attached="top">
                 <Header as="h2">Logs</Header>
+                <ClearBtn id={this.props.id}/>
             </Segment>
             <Table compact="very" attached="bottom" verticalAlign="top">
                 <Table.Body>
@@ -71,3 +72,10 @@ export default class ChoreLogs extends React.Component {
     }
 };
 
+const ClearBtn = ({id}) => {
+    return <Mutation mutation={CLEAR_CHORE_LOGS} variables={{id}} >
+        {(clearLogs) => {
+            return <Button content="Clear" onClick={clearLogs} />
+        }}
+    </Mutation>
+}

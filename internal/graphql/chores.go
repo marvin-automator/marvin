@@ -220,6 +220,20 @@ func getChoreMutationFields() graphql.Fields {
 			},
 		},
 
+		"clearChoreLogs": &graphql.Field{
+			Type: graphql.Boolean,
+			Args: idArgs,
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				c, err := chores.GetChore(p.Args["id"].(string))
+				if err != nil {
+					return false, err
+				}
+
+				err = c.ClearLogs()
+				return err == nil, err
+			},
+		},
+
 		"setChoreActive": &graphql.Field{
 			Type: choreType,
 			Args: graphql.FieldConfigArgument{

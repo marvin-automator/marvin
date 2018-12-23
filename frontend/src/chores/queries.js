@@ -79,3 +79,7 @@ export const GET_LATEST_LOGS = gql`query getLatestLogs($id: String!, $count: Int
     }
   }
 }`;
+
+export const CLEAR_CHORE_LOGS = gql`mutation clearLogs($id: String!){
+    clearChoreLogs(id: $id)
+}`;
