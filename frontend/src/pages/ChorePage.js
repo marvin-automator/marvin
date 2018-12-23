@@ -5,6 +5,7 @@ import {GET_CHORE_BY_ID} from "../chores/queries";
 import { Query } from 'react-apollo';
 
 import ChoreLogs from "../chores/ChoreLogs";
+import StatusSwitch from "../chores/StatusSwitch";
 
 const ChorePage = ({id}) => {
     return <Query query={GET_CHORE_BY_ID} variables={{choreId: id}}>
@@ -13,8 +14,11 @@ const ChorePage = ({id}) => {
 
             return <Grid>
                 <Grid.Row>
-                    <Grid.Column>
+                    <Grid.Column width={12}>
                         <Header as="h1">{choreById.name}</Header>
+                    </Grid.Column>
+                    <Grid.Column width={4}>
+                        <StatusSwitch id={id} active={choreById.active}/>
                     </Grid.Column>
                 </Grid.Row>
 
