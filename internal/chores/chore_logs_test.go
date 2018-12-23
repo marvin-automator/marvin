@@ -42,3 +42,20 @@ func TestChore_GetLogsUpTo(t *testing.T) {
 	r.Equal(expectedlogTypes, logTypes)
 	r.Equal(expectedmessages, messages)
 }
+
+func TestChore_ClearLogs(t *testing.T) {
+	db.SetupTestDB()
+	defer db.TearDownTestDB()
+
+	r := require.New(t)
+
+	c := Chore{Id: "id"}
+	c.Log("", "")
+	c.Log("", "")
+	c.ClearLogs()
+
+	l, err := c.GetLogsUpTo(time.Now(), 100)
+
+	r.NoError(err)
+	r.Equal(0, len(l))
+}

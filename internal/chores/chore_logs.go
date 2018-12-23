@@ -76,3 +76,13 @@ func (c *Chore) GetLogsUpTo(t time.Time, n int) ([]ChoreLog, error) {
 
 	return result, nil
 }
+
+
+// ClearLogs deletes all logs associated with this chore
+func (c *Chore) ClearLogs() error {
+	s := db.GetStore(logsStoreName)
+
+	return s.EachKeyNoValues(c.Id, func(key string) error {
+		return s.Delete(key)
+	})
+}
