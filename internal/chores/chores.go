@@ -289,7 +289,7 @@ func (c *Chore) Delete() error {
 	}
 
 	delete(choreCache, c.Id)
-	return nil
+	return c.ClearLogs()
 }
 
 // GetChore gets a single chore from the database.
