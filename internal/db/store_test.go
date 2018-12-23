@@ -73,3 +73,25 @@ func TestStore_EachKeyWithPrefix(t *testing.T) {
 	r.Equal([]string{"pt0", "pt1", "pt2", "pt3"}, keys)
 	r.Equal(pts, resultValues)
 }
+
+func TestStore_EachKeyNoValues(t *testing.T) {
+	SetupTestDB()
+	defer TearDownTestDB()
+
+	r := require.New(t)
+
+	s := GetStore("testing")
+
+	s.Set("key1", "myvalue")
+	s.Set("key2", "myvalue")
+	s.Set("otherKey", "myvalue")
+
+	expected := []string{"key1", "key2"}
+	seen := make([]string, 0, 2)
+	s.EachKeyNoValues("key", func(key string) error {
+		seen = append(seen, key)
+		return nil
+	})
+
+	r.Equal(expected, seen)
+}

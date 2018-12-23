@@ -121,11 +121,15 @@ var StopIterating = stopper("STOP_ITERATING!")
 type stopper string
 func (s stopper) Error() string {return string(s)}
 
-func (s Store) iterate(prefix, start string, reverse bool, ptr interface{}, f func(key string) error) error {
+func (s Store) iterate(prefix, start string, reverse, keysOnly bool, ptr interface{}, f func(key string) error) error {
 	return db.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
 		if reverse {
 			opts.Reverse = true
+		}
+
+		if keysOnly {
+			opts.PrefetchValues = false
 		}
 
 		it := txn.NewIterator(opts)
@@ -136,19 +140,21 @@ func (s Store) iterate(prefix, start string, reverse bool, ptr interface{}, f fu
 		for it.Seek(bstart); it.ValidForPrefix(bprefix); it.Next() {
 			item := it.Item()
 
-			var val []byte
-			val, err := item.ValueCopy(val)
-			if err != nil {
-				return err
+			if !keysOnly {
+				var val []byte
+				val, err := item.ValueCopy(val)
+				if err != nil {
+					return err
+				}
+
+				dec := gob.NewDecoder(bytes.NewBuffer(val))
+				err = dec.Decode(ptr)
+				if err != nil {
+					return err
+				}
 			}
 
-			dec := gob.NewDecoder(bytes.NewBuffer(val))
-			err = dec.Decode(ptr)
-			if err != nil {
-				return err
-			}
-
-			err = f(s.dbKeyToStorekey(item.Key()))
+			err := f(s.dbKeyToStorekey(item.Key()))
 
 			if err != nil {
 				if err == StopIterating {
@@ -162,14 +168,18 @@ func (s Store) iterate(prefix, start string, reverse bool, ptr interface{}, f fu
 }
 
 func (s Store) EachKeyWithPrefix(prefix string, ptr interface{}, f func(key string) error) error {
-	return s.iterate(prefix, prefix, false, ptr, f)
+	return s.iterate(prefix, prefix, false, false, ptr, f)
 }
 
 func (s Store) EachKeyAfter(start string, ptr interface{}, f func(key string) error) error {
-	return s.iterate(s.name, start, false, ptr, f)
+	return s.iterate(s.name, start, false, false, ptr, f)
 }
 
 func (s Store) EachKeyBefore(end string, ptr interface{}, f func(key string) error) error {
-	return s.iterate("", end, true, ptr, f)
+	return s.iterate("", end, true, false, ptr, f)
+}
+
+func (s Store) EachKeyNoValues(prefix string, f func(key string) error) error {
+	return s.iterate(prefix, prefix, false, true, nil, f)
 }
 
