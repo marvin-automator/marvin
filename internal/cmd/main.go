@@ -7,6 +7,7 @@ import (
 	"github.com/marvin-automator/marvin/internal"
 	"github.com/marvin-automator/marvin/internal/chores"
 	"github.com/marvin-automator/marvin/internal/config"
+	"github.com/marvin-automator/marvin/internal/db"
 	"github.com/marvin-automator/marvin/internal/web"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -23,13 +24,20 @@ Marvin allows you to automate all sorts of things.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		defer fmt.Println("Goodbye!")
 
+		bg, cancel := context.WithCancel(context.Background())
+
 		fmt.Println("Starting all active chores...")
-		n, err := chores.StartAllActiveChores(context.Background())
+		n, err := chores.StartAllActiveChores(bg)
 		internal.ErrorAndExit(err)
 		fmt.Printf("Started %v chores.\n", n)
 
+		fmt.Println("Starting database GC")
+		db.PeriodicallyRunGC(bg)
+
 		fmt.Println("Starting app...")
 		err = web.RunApp()
+		cancel()
+
 		internal.ErrorAndExit(err)
 	},
 }
