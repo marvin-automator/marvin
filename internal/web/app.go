@@ -10,6 +10,7 @@ import (
 	"github.com/marvin-automator/marvin/internal/config"
 	"github.com/marvin-automator/marvin/internal/graphql"
 	"github.com/marvin-automator/marvin/internal/jsdefs"
+	"github.com/marvin-automator/marvin/internal/oauth2"
 	"io/ioutil"
 	"mime"
 	"net/http"
@@ -47,6 +48,9 @@ func RunApp() error {
 	app.Get("ternjs-defs.json", jsdefs.Handler)
 
 	app.Get("/oauth/login/")
+
+	app.Get("/oauth/login/{provider}", oauth2.Redirect)
+	app.Get("/oauth/callback/{provider}", oauth2.CallbackHandler)
 
 	var frontendHandler context.Handler
 	// In development mode; just pass requests through to the React dev server.
