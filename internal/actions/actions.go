@@ -92,6 +92,8 @@ type Provider struct {
 	actions.BaseInfo
 	groups map[string]*Group
 
+	Requirements Requirements
+
 	OAuth2Endpoint oauth2.Endpoint
 }
 
@@ -111,8 +113,8 @@ func (p *Provider) Groups() []actions.Group {
 	return res
 }
 
-func (p *Provider) SetOAuth2Endpoint(ep oauth2.Endpoint) {
-	p.OAuth2Endpoint = ep
+func (p *Provider) AddOAuth2(ep oauth2.Endpoint, helpTemplate string) {
+	p.Requirements.AddOAuth2(p, ep, helpTemplate)
 }
 
 func (g *Group) addAction(name, description string, svgIcon []byte, runFunc interface{}, trigger bool) {
@@ -178,6 +180,11 @@ func (r *ProviderRegistry) Providers() []actions.Provider {
 	}
 
 	return ps
+}
+
+func (r *ProviderRegistry) Provider(name string) *Provider {
+	p, _ := r.providers[name]
+	return p
 }
 
 func (r *ProviderRegistry) GetAction(provider, group, action string) (actions.Action, error) {

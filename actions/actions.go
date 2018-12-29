@@ -49,7 +49,7 @@ type Provider interface {
 	AddGroup(name, description string, svgIcon []byte) Group
 	Groups() []Group
 
-	SetOAuth2Endpoint(endpoint oauth2.Endpoint)
+	AddOAuth2(endpoint oauth2.Endpoint, helpTemplate string)
 	Info() BaseInfo
 }
 
