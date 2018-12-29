@@ -14,7 +14,7 @@ import (
 )
 
 func getProvider(ctx context.Context) (*actions2.Provider, error) {
-	pname := ctx.Values().GetString("provider")
+	pname := ctx.Params().GetString("provider")
 	provider := actions.Registry.(*actions2.ProviderRegistry).Provider(pname)
 
 	if provider == nil {
@@ -32,7 +32,7 @@ func CallbackHandler(ctx context.Context) {
 	p, err := getProvider(ctx)
 	o := p.Requirements.OAuth2
 
-	state := ctx.Values().GetString("state")
+	state := ctx.FormValue("state")
 	sess := auth.GetSession(ctx)
 	if subtle.ConstantTimeCompare([]byte(state), []byte(sess.GetString("oauth_state"))) != 1 {
 		ctx.StatusCode(iris.StatusBadRequest)
@@ -45,8 +45,8 @@ func CallbackHandler(ctx context.Context) {
 		return
 	}
 
-	conf := o.GoConfig(strings.Split(ctx.Values().GetString("scopes"), ","))
-	tok, err := conf.Exchange(ctx.Request().Context(), ctx.Values().GetString("code"))
+	conf := o.GoConfig(strings.Split(ctx.Params().GetString("scopes"), ","))
+	tok, err := conf.Exchange(ctx.Request().Context(), ctx.FormValue("code"))
 	if err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString(err.Error())
@@ -82,6 +82,6 @@ func Redirect(ctx context.Context) {
 	sess.Set("oauth_state", state)
 
 	o := p.Requirements.OAuth2
-	scopes := strings.Split(ctx.Values().GetString("scopes"), ",")
+	scopes := strings.Split(ctx.Params().GetString("scopes"), ",")
 	ctx.Redirect(o.GoConfig(scopes).AuthCodeURL(state, oauth2.AccessTypeOffline))
 }

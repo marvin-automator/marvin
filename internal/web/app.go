@@ -46,6 +46,8 @@ func RunApp() error {
 
 	app.Get("ternjs-defs.json", jsdefs.Handler)
 
+	app.Get("/oauth/login/")
+
 	var frontendHandler context.Handler
 	// In development mode; just pass requests through to the React dev server.
 	if config.DevMode {
