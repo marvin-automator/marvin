@@ -18,11 +18,11 @@ func init() {
 }
 
 type Profile struct {
-	Created time.Time `json:"created"`
-	Name string `json:"name"`
-	LotteryNumbers []uint8 `json:"lottery_numbers"`
-	Friends []Profile `json:"friends"`
-	Buddy *Profile `json:"-"`
+	Created        time.Time `json:"created"`
+	Name           string    `json:"name"`
+	LotteryNumbers []uint8   `json:"lottery_numbers"`
+	Friends        []Profile `json:"friends"`
+	Buddy          *Profile  `json:"-"`
 }
 
 func isUnexporte(p cmp.Path) bool {
@@ -54,7 +54,7 @@ func TestRegisterTypeTransformer(t *testing.T) {
 	f := CreateOutputTypeFromStruct(Profile{}).(*graphql.Object).Fields()["created"]
 	n := time.Now()
 	res, err := f.Resolve(graphql.ResolveParams{
-		Source: Profile{Created:n},
+		Source: Profile{Created: n},
 	})
 
 	r.NoError(err)

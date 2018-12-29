@@ -11,7 +11,7 @@ type BaseInfo struct {
 	Name        string
 	Description string
 	SVGIcon     []byte
-	Parent		*BaseInfo
+	Parent      *BaseInfo
 }
 
 func (i BaseInfo) Info() BaseInfo {

@@ -9,11 +9,11 @@ import (
 )
 
 type OAuth struct {
-	Provider actions.Provider
-	Endpoint oauth2.Endpoint
+	Provider           actions.Provider
+	Endpoint           oauth2.Endpoint
 	ConfigHelpTemplate string
-	config Config
-	GatAccount AccountGetter
+	config             Config
+	GatAccount         AccountGetter
 }
 
 func (o *OAuth) Init(p actions.Provider) {
@@ -46,20 +46,19 @@ func (o *OAuth) Fulfilled() bool {
 
 func (o *OAuth) GoConfig(scopes []string) oauth2.Config {
 	return oauth2.Config{
-		Endpoint: o.Endpoint,
-		ClientID: o.config.ClientID,
+		Endpoint:     o.Endpoint,
+		ClientID:     o.config.ClientID,
 		ClientSecret: o.config.Secret,
-		Scopes: scopes,
-		RedirectURL: o.RedirectURL(),
+		Scopes:       scopes,
+		RedirectURL:  o.RedirectURL(),
 	}
 }
 
 func (o *OAuth) RedirectURL() string {
-	return  "/oauth/callback/" + o.Provider.Info().Name
+	return "/oauth/callback/" + o.Provider.Info().Name
 }
 
 type Config struct {
-	ClientID	string 	`json:"client_id"`
-	Secret		string 	`json:"secret"`
+	ClientID string `json:"client_id"`
+	Secret   string `json:"secret"`
 }
-

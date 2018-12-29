@@ -119,7 +119,8 @@ func (s Store) Delete(key string) error {
 var StopIterating = stopper("STOP_ITERATING!")
 
 type stopper string
-func (s stopper) Error() string {return string(s)}
+
+func (s stopper) Error() string { return string(s) }
 
 func (s Store) iterate(prefix, start string, reverse, keysOnly bool, ptr interface{}, f func(key string) error) error {
 	return db.View(func(txn *badger.Txn) error {
@@ -182,4 +183,3 @@ func (s Store) EachKeyBefore(end string, ptr interface{}, f func(key string) err
 func (s Store) EachKeyNoValues(prefix string, f func(key string) error) error {
 	return s.iterate(prefix, prefix, false, true, nil, f)
 }
-

@@ -10,11 +10,11 @@ import (
 var marvinDefs = map[string]map[string]interface{}{
 	"input": {
 		"!type": "fn(name: string, description: string) -> string",
-		"!doc": "Define an input variable that users of your template can set when creating a chore. In the execution phaze, this function will return the value the user set.",
+		"!doc":  "Define an input variable that users of your template can set when creating a chore. In the execution phaze, this function will return the value the user set.",
 	},
 	"isSetupPhase": {
 		"!type": "bool",
-		"!doc": "Whether the template is executing in the setup phase.",
+		"!doc":  "Whether the template is executing in the setup phase.",
 	},
 }
 
@@ -58,7 +58,7 @@ func makeActionDef(a actions.Action, typeMap map[string]map[string]string) (map[
 	ftype, otherTypes := getFunctionType(a, typeMap)
 	return map[string]string{
 		"!description": a.Info().Description,
-		"!type": ftype,
+		"!type":        ftype,
 	}, otherTypes
 }
 
@@ -90,7 +90,7 @@ func getType(t reflect.Type, typeMap map[string]map[string]string) (string, map[
 	case reflect.Bool:
 		return "bool", typeMap
 	case reflect.Int, reflect.Uint, reflect.Int8, reflect.Uint8, reflect.Int16, reflect.Uint16,
-	reflect.Int32, reflect.Uint32, reflect.Int64, reflect.Uint64, reflect.Float64, reflect.Float32:
+		reflect.Int32, reflect.Uint32, reflect.Int64, reflect.Uint64, reflect.Float64, reflect.Float32:
 		return "number", typeMap
 	case reflect.Slice:
 		tn, typeMap := getType(t.Elem(), typeMap)
@@ -143,7 +143,6 @@ func getStructTypeFields(t reflect.Type, typeMap map[string]map[string]string) (
 				continue
 			}
 
-
 			var anonymousFields map[string]string
 
 			ftname := typeName(ftype)
@@ -168,6 +167,6 @@ func getStructTypeFields(t reflect.Type, typeMap map[string]map[string]string) (
 
 func typeName(t reflect.Type) string {
 	pp := strings.Split(t.PkgPath(), "/")
-	pkg := pp[len(pp) - 1]
+	pkg := pp[len(pp)-1]
 	return pkg + "." + t.Name()
 }

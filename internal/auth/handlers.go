@@ -28,7 +28,7 @@ func renderPasswordTemplate(ctx context.Context, error error, password, next str
 	err := tpl.Execute(w, map[string]interface{}{
 		"error":    error,
 		"password": password,
-		"next": 	next,
+		"next":     next,
 	})
 
 	if err != nil {

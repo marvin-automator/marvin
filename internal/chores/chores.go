@@ -110,10 +110,10 @@ func (ct *choreTrigger) UnmarshalJSON(data []byte) error {
 // holds configuration data for the chore.
 type ChoreConfig struct {
 	// configurable parameters that are used by the script specify behavior.
-	Inputs   map[string]string `json:"inputs"`
+	Inputs map[string]string `json:"inputs"`
 
 	// The registered triggers, associated with their parameters.
-	Triggers []choreTrigger    `json:"triggers"`
+	Triggers []choreTrigger `json:"triggers"`
 }
 
 // A chore is a workflow for Marvin to execute. It consists of a number of triggers with callbacks that specify what
@@ -174,7 +174,7 @@ func (c *Chore) Stop() {
 	if ok {
 		cancel()
 	}
-	
+
 	delete(choreCancelers, c.Id)
 
 	c.Log(InfoLog, "🛑 Chore stopped.")

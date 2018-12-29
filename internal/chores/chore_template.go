@@ -34,11 +34,11 @@ type ChoreTemplateConfig struct {
 
 // ChoreTemplate is a template for a chore (how surprising!)
 type ChoreTemplate struct {
-	Name   	string              `json:"name"`
-	Id     	string              `json:"id"`
-	Created	time.Time				`json:"created"`
-	Script	string              `json:"script"`
-	Config	ChoreTemplateConfig `json:"templateSettings"`
+	Name    string              `json:"name"`
+	Id      string              `json:"id"`
+	Created time.Time           `json:"created"`
+	Script  string              `json:"script"`
+	Config  ChoreTemplateConfig `json:"templateSettings"`
 }
 
 var (
@@ -54,10 +54,10 @@ func NewChoreTemplate(name, script string) (*ChoreTemplate, error) {
 	}
 
 	ct := ChoreTemplate{
-		Name:   name,
-		Script: script,
-		Id:     id,
-		Created:time.Now(),
+		Name:    name,
+		Script:  script,
+		Id:      id,
+		Created: time.Now(),
 	}
 
 	err = ct.GenerateTemplateConfigs()

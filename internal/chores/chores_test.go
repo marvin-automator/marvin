@@ -8,8 +8,8 @@ import (
 	"time"
 )
 
-type TestValue struct{
-	S string	`json:"s"`
+type TestValue struct {
+	S string `json:"s"`
 }
 
 var donech = make(chan TestValue)
@@ -23,7 +23,7 @@ func addCustomTriggerAndAction() {
 	g.AddManualTrigger("onTestTrigger", "", b, func(tv TestValue, ctx context.Context) (<-chan TestValue, error) {
 		c := make(chan TestValue)
 
-		go func(){
+		go func() {
 			c <- TestValue{tv.S + "_triggered"}
 		}()
 

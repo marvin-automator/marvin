@@ -7,7 +7,7 @@ import (
 
 const storeName = "oauth2_accounts"
 
-func makeAccountKey(providerName, accountId string) string{
+func makeAccountKey(providerName, accountId string) string {
 	return fmt.Sprintf("%v|%v", providerName, accountId)
 }
 

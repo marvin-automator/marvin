@@ -8,13 +8,12 @@ import (
 	"strings"
 )
 
-
 var outputRegistry = map[string]graphql.Output{}
 
 type typeTransformer struct {
 	Transformer reflect.Value
-	InputType reflect.Type
-	GraphType graphql.Output
+	InputType   reflect.Type
+	GraphType   graphql.Output
 }
 
 func (t typeTransformer) Transform(input interface{}) (interface{}, error) {
@@ -40,7 +39,7 @@ var typeTransformers = map[string]typeTransformer{}
 
 func RegisterTypeTransformer(transformer interface{}) {
 	rt := reflect.TypeOf(transformer)
-	if !(rt.Kind() == reflect.Func && rt.NumIn() == 1 && (rt.NumOut() == 1 || rt.NumOut() == 2 && rt.Out(2).Implements(reflect.TypeOf(error(nil))))){
+	if !(rt.Kind() == reflect.Func && rt.NumIn() == 1 && (rt.NumOut() == 1 || rt.NumOut() == 2 && rt.Out(2).Implements(reflect.TypeOf(error(nil))))) {
 		panic(fmt.Errorf("RegisterTypeResolver expects a function with one input and one or two outputs. The second output, if present, must be an error."))
 	}
 
@@ -51,8 +50,8 @@ func RegisterTypeTransformer(transformer interface{}) {
 	tk := typeKey(inType)
 	typeTransformers[tk] = typeTransformer{
 		Transformer: reflect.ValueOf(transformer),
-		GraphType: getGraphType(outType),
-		InputType: inType,
+		GraphType:   getGraphType(outType),
+		InputType:   inType,
 	}
 }
 
@@ -74,7 +73,7 @@ func outputTypeFromStructType(rt reflect.Type) graphql.Output {
 	fields := make(graphql.Fields, 0)
 
 	ot := graphql.NewObject(graphql.ObjectConfig{
-		Name: rt.Name(),
+		Name:   rt.Name(),
 		Fields: fields,
 	})
 
@@ -173,7 +172,7 @@ func getGraphType(tipe reflect.Type) graphql.Output {
 	case reflect.String:
 		return graphql.String
 	case reflect.Int, reflect.Int8, reflect.Int32, reflect.Int64,
-	reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		return graphql.Int
 	case reflect.Float32, reflect.Float64:
 		return graphql.Float
@@ -221,4 +220,3 @@ func extractTag(tag reflect.StructTag) string {
 	}
 	return t
 }
-

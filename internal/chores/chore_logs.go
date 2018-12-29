@@ -13,11 +13,11 @@ const InfoLog = "info"
 const logsStoreName = "choreLogs"
 
 type ChoreLog struct {
-	Id	string		`json:"id"`
-	Time time.Time	`json:"-"`
-	TimeStr string	`json:"time"`
-	Type string		`json:"type"`
-	Message string	`json:"message"`
+	Id      string    `json:"id"`
+	Time    time.Time `json:"-"`
+	TimeStr string    `json:"time"`
+	Type    string    `json:"type"`
+	Message string    `json:"message"`
 }
 
 func (c *Chore) Log(logType, message string, args ...interface{}) error {
@@ -25,10 +25,10 @@ func (c *Chore) Log(logType, message string, args ...interface{}) error {
 	id := c.makeLogId(t)
 
 	log := ChoreLog{
-		Id: id,
-		Time: t,
+		Id:      id,
+		Time:    t,
 		TimeStr: t.Format(time.RFC3339),
-		Type: logType,
+		Type:    logType,
 		Message: fmt.Sprintf(message, args...),
 	}
 
@@ -53,7 +53,7 @@ func (c *Chore) GetLogsUpTo(t time.Time, n int) ([]ChoreLog, error) {
 	var cl ChoreLog
 	err := s.EachKeyBefore(c.makeLogId(t), &cl, func(key string) error {
 		loaded += 1
-		result[n - loaded] = cl
+		result[n-loaded] = cl
 
 		if loaded == n {
 			return db.StopIterating
@@ -71,12 +71,11 @@ func (c *Chore) GetLogsUpTo(t time.Time, n int) ([]ChoreLog, error) {
 	}
 
 	if loaded < n {
-		result = result[n-loaded:n-1]
+		result = result[n-loaded : n-1]
 	}
 
 	return result, nil
 }
-
 
 // ClearLogs deletes all logs associated with this chore
 func (c *Chore) ClearLogs() error {
