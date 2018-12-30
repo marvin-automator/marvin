@@ -3,21 +3,26 @@ package oauth2
 import (
 	"bytes"
 	"github.com/kataras/iris/core/errors"
-	"github.com/marvin-automator/marvin/actions"
 	"golang.org/x/oauth2"
 	"text/template"
 )
 
 type OAuth struct {
-	Provider           actions.Provider
+	ProviderName       string
 	Endpoint           oauth2.Endpoint
 	ConfigHelpTemplate string
 	config             Config
 	GatAccount         AccountGetter
 }
 
-func (o *OAuth) Init(p actions.Provider) {
-	o.Provider = p
+const requirementName = "oauth2"
+
+func (o *OAuth) Name() string {
+	return requirementName
+}
+
+func (o *OAuth) Init(providerName string) {
+	o.ProviderName = providerName
 }
 
 func (o *OAuth) ConfigHelp() string {
@@ -55,7 +60,7 @@ func (o *OAuth) GoConfig(scopes []string) oauth2.Config {
 }
 
 func (o *OAuth) RedirectURL() string {
-	return "/oauth/callback/" + o.Provider.Info().Name
+	return "/oauth/callback/" + o.ProviderName
 }
 
 type Config struct {

@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-func getProvider(ctx context.Context) (*actions2.Provider, error) {
+func getProvider(ctx context.Context) (*OAuth, error) {
 	pname := ctx.Params().GetString("provider")
 	provider := actions.Registry.(*actions2.ProviderRegistry).Provider(pname)
 
@@ -21,16 +21,15 @@ func getProvider(ctx context.Context) (*actions2.Provider, error) {
 		return nil, errors.New("Provider not found")
 	}
 
-	if provider.Requirements.OAuth2 == nil {
-		return nil, errors.New("Provider does not use OAuth2.")
+	if o, ok := provider.Requirements[requirementName]; ok {
+		return o.(*OAuth), nil
 	}
 
-	return provider, nil
+	return nil, errors.New("Provider does not use OAuth2.")
 }
 
 func CallbackHandler(ctx context.Context) {
-	p, err := getProvider(ctx)
-	o := p.Requirements.OAuth2
+	o, err := getProvider(ctx)
 
 	state := ctx.FormValue("state")
 	sess := auth.GetSession(ctx)
@@ -60,7 +59,7 @@ func CallbackHandler(ctx context.Context) {
 		return
 	}
 
-	err = SaveAccount(p.Name, acc)
+	err = SaveAccount(o.ProviderName, acc)
 	if err != nil {
 		ctx.StatusCode(500)
 		ctx.WriteString("There was an issue storing the account: " + err.Error())
@@ -71,7 +70,7 @@ func CallbackHandler(ctx context.Context) {
 }
 
 func Redirect(ctx context.Context) {
-	p, err := getProvider(ctx)
+	o, err := getProvider(ctx)
 	if err != nil {
 		ctx.StatusCode(404)
 		ctx.WriteString(err.Error())
@@ -81,7 +80,8 @@ func Redirect(ctx context.Context) {
 	sess := auth.GetSession(ctx)
 	sess.Set("oauth_state", state)
 
-	o := p.Requirements.OAuth2
 	scopes := strings.Split(ctx.Params().GetString("scopes"), ",")
-	ctx.Redirect(o.GoConfig(scopes).AuthCodeURL(state, oauth2.AccessTypeOffline))
+	conf := o.GoConfig(scopes)
+	url := conf.AuthCodeURL(state, oauth2.AccessTypeOffline)
+	ctx.Redirect(url)
 }
