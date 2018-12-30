@@ -9,11 +9,3 @@ type Requirement interface {
 	SetConfig(interface{}) error
 	Fulfilled() bool
 }
-
-
-
-
-
-
-
-
