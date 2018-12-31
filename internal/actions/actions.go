@@ -115,6 +115,7 @@ func (p *Provider) Groups() []actions.Group {
 
 func (p *Provider) AddRequirement(req actions.Requirement) {
 	p.Requirements[req.Name()] = req
+	req.Init(p.Name)
 }
 
 func (g *Group) addAction(name, description string, svgIcon []byte, runFunc interface{}, trigger bool) {
