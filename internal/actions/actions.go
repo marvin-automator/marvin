@@ -5,7 +5,6 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/marvin-automator/marvin/actions"
-	"golang.org/x/oauth2"
 	"reflect"
 	"strings"
 )
@@ -88,36 +87,6 @@ type Group struct {
 	actions map[string]actions.Action
 }
 
-type Provider struct {
-	actions.BaseInfo
-	groups map[string]*Group
-
-	Requirements map[string]actions.Requirement
-
-	OAuth2Endpoint oauth2.Endpoint
-}
-
-func (p *Provider) AddGroup(name, description string, svgIcon []byte) actions.Group {
-	parent := p.Info()
-	g := &Group{actions.BaseInfo{name, description, svgIcon, &parent}, make(map[string]actions.Action)}
-	p.groups[name] = g
-	return g
-}
-
-func (p *Provider) Groups() []actions.Group {
-	res := make([]actions.Group, 0, len(p.groups))
-	for _, g := range p.groups {
-		res = append(res, g)
-	}
-
-	return res
-}
-
-func (p *Provider) AddRequirement(req actions.Requirement) {
-	p.Requirements[req.Name()] = req
-	req.Init(p.Name)
-}
-
 func (g *Group) addAction(name, description string, svgIcon []byte, runFunc interface{}, trigger bool) {
 	p := g.Info()
 	info := actions.Info{
@@ -153,6 +122,36 @@ func (g *Group) Actions() []actions.Action {
 	}
 
 	return res
+}
+
+type Provider struct {
+	actions.BaseInfo
+	groups map[string]*Group
+
+	Requirements map[string]actions.Requirement
+
+	OAuth2Endpoint oauth2.Endpoint
+}
+
+func (p *Provider) AddGroup(name, description string, svgIcon []byte) actions.Group {
+	parent := p.Info()
+	g := &Group{actions.BaseInfo{name, description, svgIcon, &parent}, make(map[string]actions.Action)}
+	p.groups[name] = g
+	return g
+}
+
+func (p *Provider) Groups() []actions.Group {
+	res := make([]actions.Group, 0, len(p.groups))
+	for _, g := range p.groups {
+		res = append(res, g)
+	}
+
+	return res
+}
+
+func (p *Provider) AddRequirement(req actions.Requirement) {
+	p.Requirements[req.Name()] = req
+	req.Init(p.Name)
 }
 
 type ProviderRegistry struct {
