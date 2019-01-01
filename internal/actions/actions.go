@@ -5,6 +5,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/marvin-automator/marvin/actions"
+	"golang.org/x/oauth2"
 	"reflect"
 	"strings"
 )
@@ -154,6 +155,16 @@ func (p *Provider) AddRequirement(req actions.Requirement) {
 	req.Init(p.Name)
 }
 
+func (p *Provider) loadRequirementConfig() error {
+	for _, req := range p.Requirements {
+		err := loadRequirementConfig(p.Name, req)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 type ProviderRegistry struct {
 	providers map[string]*Provider
 }
@@ -200,6 +211,20 @@ func (r *ProviderRegistry) GetAction(provider, group, action string) (actions.Ac
 	return nil, fmt.Errorf("no provider: %v", provider)
 }
 
+func (p *ProviderRegistry) LoadProviderConfigs() error {
+	for _, p := range p.Providers() {
+		err := p.loadRequirementConfig()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+var GlobalRegistry *ProviderRegistry
+
 func init() {
-	actions.Registry = NewRegistry()
+	GlobalRegistry = NewRegistry()
+	actions.Registry = GlobalRegistry
 }

@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/marvin-automator/marvin/internal"
+	"github.com/marvin-automator/marvin/internal/actions"
 	"github.com/marvin-automator/marvin/internal/chores"
 	"github.com/marvin-automator/marvin/internal/config"
 	"github.com/marvin-automator/marvin/internal/db"
@@ -33,6 +34,9 @@ Marvin allows you to automate all sorts of things.`,
 
 		fmt.Println("Starting database GC")
 		db.PeriodicallyRunGC(bg)
+
+		err = actions.GlobalRegistry.LoadProviderConfigs()
+		internal.ErrorAndExit(err)
 
 		fmt.Println("Starting app...")
 		err = web.RunApp()
