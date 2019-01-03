@@ -9,11 +9,11 @@ import (
 	"net/http"
 )
 
-func init()  {
+func init() {
 	p := actions.Registry.AddProvider("pushbullet", "Send push notifications using PushBullet", icons.Get("pusher.svg"))
 
 	p.AddRequirement(oauth2.Requirement(oauth22.Endpoint{
-		AuthURL: "https://www.pushbullet.com/authorize",
+		AuthURL:  "https://www.pushbullet.com/authorize",
 		TokenURL: "https://api.pushbullet.com/oauth2/token",
 	}, helpTemplate, getAccount))
 }
@@ -29,16 +29,16 @@ func getAccount(client *http.Client) (oauth2.Account, error) {
 	err = dec.Decode(&acc)
 
 	return oauth2.Account{
-		Name: acc.Name,
-		Id: acc.Iden,
+		Name:     acc.Name,
+		Id:       acc.Iden,
 		ImageURL: acc.ImageURL,
 	}, err
 }
 
 type account struct {
-	Iden 		string `json:"iden"`
-	Name 		string `json:"name"`
-	ImageURL	string `json:"image_url"`
+	Iden     string `json:"iden"`
+	Name     string `json:"name"`
+	ImageURL string `json:"image_url"`
 }
 
 var helpTemplate = `
