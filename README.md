@@ -1,4 +1,7 @@
 # Marvin
+# Installing
+
+I'm putting a process in place to create builds for Mac and Linux that you'll be able to download from the [releases page](https://github.com/marvin-automator/marvin/releases). In the meantime, use the development instructions below to build it from source. The 
 
 # Development
 - If you don't have it already, [install Go](https://golang.org).
