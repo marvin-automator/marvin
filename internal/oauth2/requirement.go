@@ -2,7 +2,7 @@ package oauth2
 
 import (
 	"bytes"
-	"github.com/kataras/iris/core/errors"
+	"github.com/kataras/iris/v12/core/errors"
 	"golang.org/x/oauth2"
 	"text/template"
 )

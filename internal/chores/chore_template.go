@@ -3,7 +3,7 @@ package chores
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/augustoroman/v8"
+	"github.com/joesonw/js8"
 	"github.com/gobuffalo/packr"
 	"github.com/marvin-automator/marvin/actions"
 	"github.com/marvin-automator/marvin/internal"

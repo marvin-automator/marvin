@@ -2,9 +2,9 @@ package oauth2
 
 import (
 	"crypto/subtle"
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/context"
-	"github.com/kataras/iris/core/errors"
+	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/context"
+	"github.com/kataras/iris/v12/core/errors"
 	"github.com/markbates/going/randx"
 	"github.com/marvin-automator/marvin/actions"
 	actions2 "github.com/marvin-automator/marvin/internal/actions"
