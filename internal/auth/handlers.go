@@ -3,14 +3,14 @@ package auth
 import (
 	"bytes"
 	"errors"
-	"github.com/gobuffalo/packr"
-	"github.com/gorilla/securecookie"
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/context"
-	"github.com/kataras/iris/sessions"
-	"github.com/marvin-automator/marvin/internal/db"
 	"html/template"
 	"strings"
+
+	"github.com/gobuffalo/packr"
+	"github.com/gorilla/securecookie"
+	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/sessions"
+	"github.com/marvin-automator/marvin/internal/db"
 )
 
 var html, tplErr = packr.NewBox("./templates").FindString("password.html")
@@ -23,7 +23,7 @@ func init() {
 	tpl = template.Must(template.New("auth").Parse(html))
 }
 
-func renderPasswordTemplate(ctx context.Context, error error, password, next string) {
+func renderPasswordTemplate(ctx iris.Context, error error, password, next string) {
 	w := bytes.NewBufferString("")
 	err := tpl.Execute(w, map[string]interface{}{
 		"error":    error,
@@ -39,7 +39,7 @@ func renderPasswordTemplate(ctx context.Context, error error, password, next str
 
 func AuthHandlers(p iris.Party) {
 	p.Use(ensureAuthSession)
-	p.Get("/", func(ctx context.Context) {
+	p.Get("/", func(ctx iris.Context) {
 		next := validateRedirectURL(ctx.FormValueDefault("next", "/"))
 		if IsAuthenticated(ctx) {
 			ctx.Redirect(next)
@@ -49,7 +49,7 @@ func AuthHandlers(p iris.Party) {
 		renderPasswordTemplate(ctx, nil, "", next)
 	})
 
-	p.Post("/", func(ctx context.Context) {
+	p.Post("/", func(ctx iris.Context) {
 		next := ctx.FormValueDefault("next", "/")
 		pw := ctx.FormValue("password")
 		correct, err := IsPasswordValid(pw)
@@ -69,7 +69,7 @@ func AuthHandlers(p iris.Party) {
 		ctx.Redirect(next)
 	})
 
-	p.Get("/logout", func(ctx context.Context) {
+	p.Get("/logout", func(ctx iris.Context) {
 		s := GetSession(ctx)
 		s.Set("authenticated", false)
 		ctx.Redirect("/", iris.StatusTemporaryRedirect)
@@ -86,7 +86,7 @@ func validateRedirectURL(u string) string {
 
 var sess *sessions.Sessions
 
-func ensureAuthSession(ctx context.Context) {
+func ensureAuthSession(ctx iris.Context) {
 	if sess == nil {
 		if err := makeSessions(); err != nil {
 			panic(err)
@@ -101,13 +101,13 @@ func ensureAuthSession(ctx context.Context) {
 }
 
 // Returns the session for this request.
-func GetSession(ctx context.Context) *sessions.Session {
+func GetSession(ctx iris.Context) *sessions.Session {
 	return ctx.Values().Get("session").(*sessions.Session)
 }
 
-var RequireLogin = context.Handlers{
+var RequireLogin = iris.Handlers{
 	ensureAuthSession,
-	func(ctx context.Context) {
+	func(ctx iris.Context) {
 		if !IsAuthenticated(ctx) {
 			next := ctx.Path()
 			ctx.Redirect("/auth?next=" + next)
@@ -117,7 +117,7 @@ var RequireLogin = context.Handlers{
 	},
 }
 
-func IsAuthenticated(ctx context.Context) bool {
+func IsAuthenticated(ctx iris.Context) bool {
 	return GetSession(ctx).GetBooleanDefault("authenticated", false)
 }
 

@@ -58,8 +58,8 @@ func Setup() {
 	runCommand(false, wd+"/v8binary", "curl", "https://rubygems.org/downloads/"+filename, "-o", filename)
 	runCommand(false, wd+"/v8binary", "tar", "-xvf", filename)
 	runCommand(false, wd+"/v8binary", "tar", "-xzvf", "data.tar.gz")
-	runCommand(false, "", "ln", "-f", "-s", wd+"/v8binary/vendor/v8/out/x64.release", envy.GoPath()+"/src/github.com/augustoroman/v8/libv8")
-	runCommand(false, "", "ln", "-f", "-s", wd+"/v8binary/vendor/v8/include", envy.GoPath()+"/src/github.com/augustoroman/v8/include")
+	runCommand(false, "", "ln", "-f", "-s", wd+"/v8binary/vendor/v8/out/x64.release", envy.GoPath()+"/src/github.com/joesonw/js8/libv8")
+	runCommand(false, "", "ln", "-f", "-s", wd+"/v8binary/vendor/v8/include", envy.GoPath()+"/src/github.com/joesonw/js8/include")
 
 	println("Installing frontend deps...")
 	runCommand(false, wd+"", "npm", "install", "-g", "yarn")

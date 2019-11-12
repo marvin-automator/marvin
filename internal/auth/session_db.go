@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"github.com/kataras/iris/sessions"
+	"github.com/kataras/iris/v12/sessions"
 	"github.com/marvin-automator/marvin/internal/db"
 	"time"
 )
